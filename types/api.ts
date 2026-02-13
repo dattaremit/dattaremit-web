@@ -8,63 +8,83 @@ export type AddressType = "PRESENT" | "PERMANENT";
 
 export interface Address {
   id: string;
-  userId: string;
   type: AddressType;
-  label?: string | null;
-  street: string;
+  addressLine1: string;
+  addressLine2?: string | null;
   city: string;
   state: string;
-  zipCode: string;
   country: string;
+  postalCode: string;
   isDefault: boolean;
-  createdAt: string;
-  updatedAt: string;
+  userId: string;
+  created_at: string;
+  updated_at: string;
 }
 
 export interface User {
   id: string;
   clerkUserId: string;
+  firstName: string;
+  lastName: string;
   email: string;
-  name?: string | null;
-  phone?: string | null;
-  dateOfBirth?: string | null;
-  createdAt: string;
-  updatedAt: string;
+  publicKey: string;
+  phoneNumberPrefix: string;
+  phoneNumber: string;
+  dateOfBirth: string;
+  accountStatus: string;
   addresses?: Address[];
+  created_at: string;
+  updated_at: string;
 }
 
-export interface UserPayload {
-  name?: string;
-  phone?: string;
+export interface CreateUserPayload {
+  clerkUserId: string;
+  firstName: string;
+  lastName: string;
+  email: string;
+  publicKey: string;
+  phoneNumberPrefix: string;
+  phoneNumber: string;
+  dateOfBirth: string;
+}
+
+export interface UpdateUserPayload {
+  firstName?: string;
+  lastName?: string;
+  email?: string;
+  phoneNumberPrefix?: string;
+  phoneNumber?: string;
   dateOfBirth?: string;
 }
 
 export interface CreateAddressPayload {
   type: AddressType;
-  label?: string;
-  street: string;
+  addressLine1: string;
+  addressLine2?: string;
   city: string;
   state: string;
-  zipCode: string;
   country: string;
+  postalCode: string;
   isDefault?: boolean;
 }
 
 export interface UpdateAddressPayload {
   type?: AddressType;
-  label?: string;
-  street?: string;
+  addressLine1?: string;
+  addressLine2?: string;
   city?: string;
   state?: string;
-  zipCode?: string;
   country?: string;
+  postalCode?: string;
   isDefault?: boolean;
 }
 
 export type AccountUser = Omit<User, "addresses">;
 
 export interface Account {
-  user: AccountUser;
+  user: AccountUser | null;
   addresses: Address[];
+  wallet: unknown;
+  accountStatus: string;
+  isBackedUp: boolean;
 }
-

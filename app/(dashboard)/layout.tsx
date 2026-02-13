@@ -8,6 +8,8 @@ import Image from "next/image";
 import { Home, Clock3, CircleUser } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { SidebarAccountDropdown } from "@/components/sidebar-account-dropdown";
+import { useAccount } from "@/hooks/api";
+import { ApiError } from "@/services/api";
 
 const tabs = [
   { href: "/", label: "Home", icon: Home },
@@ -27,6 +29,7 @@ export default function DashboardLayout({
   const { isSignedIn, isLoaded } = useAuth();
   const router = useRouter();
   const pathname = usePathname();
+  const { data: account, isLoading: accountLoading, error } = useAccount();
 
   useEffect(() => {
     if (!isLoaded) return;
@@ -36,7 +39,53 @@ export default function DashboardLayout({
     }
   }, [isLoaded, isSignedIn, router]);
 
+  useEffect(() => {
+    if (!isLoaded || !isSignedIn || accountLoading) return;
+
+    const noProfile = error instanceof ApiError && error.status === 404;
+    const needsProfileInfo =
+      account?.user &&
+      (!account.user.firstName ||
+        !account.user.lastName ||
+        !account.user.phoneNumber ||
+        !account.user.dateOfBirth);
+
+    // If no user in DB or missing required profile fields, redirect to edit-profile
+    if (noProfile || needsProfileInfo) {
+      if (pathname !== "/edit-profile") {
+        router.replace("/edit-profile");
+      }
+      return;
+    }
+
+    // Block edit-addresses if user has no profile
+    if (pathname === "/edit-addresses" && !account?.user) {
+      router.replace("/edit-profile");
+    }
+  }, [isLoaded, isSignedIn, accountLoading, error, account, pathname, router]);
+
   if (!isLoaded || !isSignedIn) {
+    return null;
+  }
+
+  // Show nothing while redirecting to edit-profile or edit-addresses
+  if (accountLoading) {
+    return null;
+  }
+
+  const noProfile = error instanceof ApiError && error.status === 404;
+  const needsProfileInfo =
+    account?.user &&
+    (!account.user.firstName ||
+      !account.user.lastName ||
+      !account.user.phoneNumber ||
+      !account.user.dateOfBirth);
+
+  if ((noProfile || needsProfileInfo) && pathname !== "/edit-profile") {
+    return null;
+  }
+
+  if (pathname === "/edit-addresses" && !account?.user) {
     return null;
   }
 

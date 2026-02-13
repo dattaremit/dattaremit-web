@@ -9,8 +9,9 @@ import {
   personalInfoSchema,
   type PersonalInfoFormData,
 } from "@/schemas/personal-info.schema";
+import { useQueryClient } from "@tanstack/react-query";
 import { useAccount, useCreateUser, useUpdateUser } from "@/hooks/api";
-import { splitName } from "@/utils/profile-helpers";
+import { queryKeys } from "@/constants/query-keys";
 import { toast } from "sonner";
 import { Loader2 } from "lucide-react";
 import { format } from "date-fns";
@@ -49,6 +50,7 @@ export function PersonalInfoForm() {
   const existingUser = account?.user;
   const isExistingUser = !!existingUser;
 
+  const queryClient = useQueryClient();
   const createUserMutation = useCreateUser();
   const updateUserMutation = useUpdateUser();
   const loading = createUserMutation.isPending || updateUserMutation.isPending;
@@ -58,7 +60,8 @@ export function PersonalInfoForm() {
     defaultValues: {
       firstName: "",
       lastName: "",
-      phone: "",
+      phoneNumberPrefix: "+880",
+      phoneNumber: "",
       dateOfBirth: "",
     },
   });
@@ -66,32 +69,47 @@ export function PersonalInfoForm() {
   const hasPopulated = useRef(false);
 
   useEffect(() => {
-    if (!account || hasPopulated.current) return;
+    if (!account?.user || hasPopulated.current) return;
     hasPopulated.current = true;
 
-    const { firstName, lastName } = splitName(account.user.name || "");
+    const u = account.user;
     form.reset({
-      firstName,
-      lastName,
-      phone: account.user.phone || "",
-      dateOfBirth: account.user.dateOfBirth
-        ? account.user.dateOfBirth.substring(0, 10)
+      firstName: u.firstName || "",
+      lastName: u.lastName || "",
+      phoneNumberPrefix: u.phoneNumberPrefix || "+880",
+      phoneNumber: u.phoneNumber || "",
+      dateOfBirth: u.dateOfBirth
+        ? u.dateOfBirth.substring(0, 10)
         : "",
     });
   }, [account, form]);
 
   const onSubmit = async (data: PersonalInfoFormData) => {
     try {
-      const userData = {
-        name: `${data.firstName} ${data.lastName}`.trim(),
-        phone: data.phone,
-        dateOfBirth: data.dateOfBirth,
-      };
-
       if (isExistingUser) {
-        await updateUserMutation.mutateAsync(userData);
+        await updateUserMutation.mutateAsync({
+          firstName: data.firstName,
+          lastName: data.lastName,
+          phoneNumberPrefix: data.phoneNumberPrefix,
+          phoneNumber: data.phoneNumber,
+          dateOfBirth: data.dateOfBirth,
+        });
       } else {
-        await createUserMutation.mutateAsync(userData);
+        await createUserMutation.mutateAsync({
+          clerkUserId: clerkUser?.id || "",
+          firstName: data.firstName,
+          lastName: data.lastName,
+          email:
+            clerkUser?.emailAddresses[0]?.emailAddress || "",
+          publicKey: "",
+          phoneNumberPrefix: data.phoneNumberPrefix,
+          phoneNumber: data.phoneNumber,
+          dateOfBirth: data.dateOfBirth,
+        });
+      }
+
+      if (!isExistingUser) {
+        await queryClient.invalidateQueries({ queryKey: queryKeys.account });
       }
 
       toast.success(
@@ -180,15 +198,29 @@ export function PersonalInfoForm() {
 
             <FormField
               control={form.control}
-              name="phone"
+              name="phoneNumber"
               render={({ field }) => (
                 <FormItem>
                   <PhoneInput
                     label="Phone Number"
-                    value={field.value}
-                    onChangePhone={field.onChange}
+                    value={
+                      form.getValues("phoneNumberPrefix") + field.value
+                    }
+                    onChangePhone={(fullPhone) => {
+                      // Parse the full phone back into prefix and number
+                      const prefix = form.getValues("phoneNumberPrefix");
+                      if (fullPhone.startsWith(prefix)) {
+                        field.onChange(fullPhone.substring(prefix.length));
+                      } else {
+                        // Country changed - find new prefix
+                        field.onChange(fullPhone.replace(/^\+\d{1,4}/, ""));
+                      }
+                    }}
+                    onChangeCountry={(dialCode) => {
+                      form.setValue("phoneNumberPrefix", dialCode);
+                    }}
                     placeholder="1XXX-XXXXXX"
-                    error={form.formState.errors.phone?.message}
+                    error={form.formState.errors.phoneNumber?.message}
                   />
                 </FormItem>
               )}

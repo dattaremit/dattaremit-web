@@ -28,6 +28,7 @@ interface PhoneInputProps {
   label?: string;
   value: string;
   onChangePhone: (value: string) => void;
+  onChangeCountry?: (dialCode: string) => void;
   placeholder?: string;
   error?: string;
   defaultCountryCode?: string;
@@ -42,6 +43,7 @@ export function PhoneInput({
   label,
   value,
   onChangePhone,
+  onChangeCountry,
   placeholder,
   error,
   defaultCountryCode = DEFAULT_COUNTRY_CODE,
@@ -74,6 +76,7 @@ export function PhoneInput({
     const country = COUNTRIES.find((c) => c.code === countryCode);
     if (country) {
       onChangePhone(country.dial + localNumber);
+      onChangeCountry?.(country.dial);
     }
     setOpen(false);
   };

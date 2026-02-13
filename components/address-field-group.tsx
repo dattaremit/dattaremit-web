@@ -25,12 +25,25 @@ export function AddressFieldGroup({ prefix, title }: AddressFieldGroupProps) {
       <h3 className="text-lg font-semibold">{title}</h3>
       <FormField
         control={form.control}
-        name={`${prefix}.street`}
+        name={`${prefix}.addressLine1`}
         render={({ field }) => (
           <FormItem>
             <FormLabel>Street Address</FormLabel>
             <FormControl>
               <Input placeholder="Enter street address" {...field} />
+            </FormControl>
+            <FormMessage />
+          </FormItem>
+        )}
+      />
+      <FormField
+        control={form.control}
+        name={`${prefix}.addressLine2`}
+        render={({ field }) => (
+          <FormItem>
+            <FormLabel>Address Line 2 (Optional)</FormLabel>
+            <FormControl>
+              <Input placeholder="Apt, Suite, Floor, etc." {...field} />
             </FormControl>
             <FormMessage />
           </FormItem>

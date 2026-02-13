@@ -4,7 +4,8 @@ import type {
   User,
   Address,
   Account,
-  UserPayload,
+  CreateUserPayload,
+  UpdateUserPayload,
   CreateAddressPayload,
   UpdateAddressPayload,
 } from "@/types/api";
@@ -69,15 +70,11 @@ api.interceptors.response.use(
 );
 
 // ── Users ──
-export const createUser = (data: UserPayload): Promise<User> =>
+export const createUser = (data: CreateUserPayload): Promise<User> =>
   api.post("/users", data);
 
-export const getMe = (): Promise<User> => api.get("/users/me");
-
-export const updateMe = (data: UserPayload): Promise<User> =>
+export const updateMe = (data: UpdateUserPayload): Promise<User> =>
   api.put("/users/me", data);
-
-export const deleteMe = (): Promise<void> => api.delete("/users/me");
 
 // ── Account ──
 export const getAccount = (): Promise<Account> => api.get("/account");
@@ -98,5 +95,3 @@ export const updateAddress = (
 
 export const deleteAddress = (id: string): Promise<void> =>
   api.delete(`/addresses/${id}`);
-
-

@@ -37,7 +37,7 @@ export default function AccountPage() {
   };
 
   const displayName =
-    serverUser?.name ||
+    (serverUser ? `${serverUser.firstName} ${serverUser.lastName}`.trim() : null) ||
     clerkUser?.fullName ||
     clerkUser?.emailAddresses[0]?.emailAddress;
 
@@ -65,11 +65,11 @@ export default function AccountPage() {
           </p>
           <Card>
             <CardContent className="p-0">
-              {serverUser.phone && (
+              {serverUser.phoneNumber && (
                 <>
                   <div className="flex items-center gap-3 px-4 py-3">
                     <Phone className="h-4 w-4 text-muted-foreground" />
-                    <span className="text-sm">{serverUser.phone}</span>
+                    <span className="text-sm">{serverUser.phoneNumberPrefix}{serverUser.phoneNumber}</span>
                   </div>
                   <Separator />
                 </>

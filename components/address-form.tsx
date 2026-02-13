@@ -49,7 +49,8 @@ export function AddressForm() {
     createAddressMutation.isPending || updateAddressMutation.isPending;
 
   const emptyAddress = {
-    street: "",
+    addressLine1: "",
+    addressLine2: "",
     city: "",
     state: "",
     postalCode: "",
@@ -97,10 +98,11 @@ export function AddressForm() {
     try {
       const presentData = {
         type: "PRESENT" as const,
-        street: data.presentAddress.street,
+        addressLine1: data.presentAddress.addressLine1,
+        addressLine2: data.presentAddress.addressLine2 || undefined,
         city: data.presentAddress.city,
         state: data.presentAddress.state,
-        zipCode: data.presentAddress.postalCode,
+        postalCode: data.presentAddress.postalCode,
         country: data.presentAddress.country,
         isDefault: true,
       };
@@ -110,10 +112,11 @@ export function AddressForm() {
         : data.permanentAddress;
       const permanentData = {
         type: "PERMANENT" as const,
-        street: finalPermanent.street,
+        addressLine1: finalPermanent.addressLine1,
+        addressLine2: finalPermanent.addressLine2 || undefined,
         city: finalPermanent.city,
         state: finalPermanent.state,
-        zipCode: finalPermanent.postalCode,
+        postalCode: finalPermanent.postalCode,
         country: finalPermanent.country,
       };
 

@@ -3,10 +3,13 @@ import * as yup from "yup";
 export const personalInfoSchema = yup.object({
   firstName: yup.string().trim().required("First name is required"),
   lastName: yup.string().trim().required("Last name is required"),
-  phone: yup
+  phoneNumberPrefix: yup.string().trim().required("Country code is required"),
+  phoneNumber: yup
     .string()
+    .trim()
     .required("Phone number is required")
-    .min(5, "Phone number must be at least 5 characters"),
+    .min(4, "Phone number must be at least 4 digits")
+    .matches(/^\d+$/, "Phone number must contain only digits"),
   dateOfBirth: yup.string().required("Date of birth is required"),
 });
 
