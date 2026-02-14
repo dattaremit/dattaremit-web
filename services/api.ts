@@ -9,6 +9,14 @@ import type {
   CreateAddressPayload,
   UpdateAddressPayload,
   ZynkKycData,
+  PlaidLinkToken,
+  FundingAccount,
+  CreateFundingAccountResponse,
+  ExternalAccount,
+  CreateExternalAccountPayload,
+  Activity,
+  ActivityListResponse,
+  ActivityQueryParams,
 } from "@/types/api";
 
 const API_BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL;
@@ -105,3 +113,49 @@ export const createZynkEntity = (idempotencyKey?: string): Promise<User> =>
 
 export const startKyc = (): Promise<ZynkKycData> =>
   api.post("/zynk/kyc");
+
+// ── Zynk (Plaid) ──
+export const generatePlaidLinkToken = (): Promise<PlaidLinkToken> =>
+  api.post("/zynk/plaid-link-token");
+
+export const updatePlaidLinkToken = (): Promise<PlaidLinkToken> =>
+  api.put("/zynk/plaid-link-token");
+
+// ── Zynk (Funding Account) ──
+export const createFundingAccount = (): Promise<CreateFundingAccountResponse> =>
+  api.post("/zynk/funding-account", undefined, {
+    headers: { "idempotency-key": crypto.randomUUID() },
+  });
+
+export const getFundingAccount = (): Promise<FundingAccount> =>
+  api.get("/zynk/funding-account");
+
+export const activateFundingAccount = (): Promise<FundingAccount> =>
+  api.post("/zynk/funding-account/activate", undefined, {
+    headers: { "idempotency-key": crypto.randomUUID() },
+  });
+
+export const deactivateFundingAccount = (): Promise<FundingAccount> =>
+  api.post("/zynk/funding-account/deactivate");
+
+// ── External Accounts ──
+export const createExternalAccount = (
+  data: CreateExternalAccountPayload
+): Promise<ExternalAccount> =>
+  api.post("/external-accounts", data, {
+    headers: { "idempotency-key": crypto.randomUUID() },
+  });
+
+export const getExternalAccounts = (): Promise<ExternalAccount[]> =>
+  api.get("/external-accounts");
+
+export const deleteExternalAccount = (id: string): Promise<void> =>
+  api.delete(`/external-accounts/${id}`);
+
+// ── Activity ──
+export const getActivities = (
+  params?: ActivityQueryParams
+): Promise<ActivityListResponse> => api.get("/activity", { params });
+
+export const getActivity = (id: string): Promise<Activity> =>
+  api.get(`/activity/${id}`);

@@ -52,20 +52,24 @@ export default function KycPage() {
           <div className="flex flex-col items-center gap-4 py-8">
             <ShieldCheck className="h-16 w-16 text-green-500" />
             <p className="text-center text-sm text-muted-foreground">
-              Your verification links are ready. Please review the Terms of
-              Service first, then complete KYC.
+              Your verification link is ready.{" "}
+              {kycData.tosLink
+                ? "Please review the Terms of Service first, then complete KYC."
+                : "Please complete the KYC process."}
             </p>
             <div className="flex w-full max-w-xs flex-col gap-3">
-              <Button asChild variant="outline" className="w-full">
-                <a
-                  href={kycData.tosLink}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                >
-                  Review Terms of Service
-                  <ExternalLink className="ml-2 h-4 w-4" />
-                </a>
-              </Button>
+              {kycData.tosLink && (
+                <Button asChild variant="outline" className="w-full">
+                  <a
+                    href={kycData.tosLink}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                  >
+                    Review Terms of Service
+                    <ExternalLink className="ml-2 h-4 w-4" />
+                  </a>
+                </Button>
+              )}
               <Button asChild className="w-full">
                 <a
                   href={kycData.kycLink}
