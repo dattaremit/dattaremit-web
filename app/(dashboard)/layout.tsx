@@ -5,7 +5,7 @@ import { useAuth } from "@clerk/nextjs";
 import { useRouter, usePathname } from "next/navigation";
 import Link from "next/link";
 import Image from "next/image";
-import { Home, Clock3, CircleUser, Wallet } from "lucide-react";
+import { Home, Clock3, CircleUser } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { SidebarAccountDropdown } from "@/components/sidebar-account-dropdown";
 import { useAccount } from "@/hooks/api";
@@ -13,7 +13,6 @@ import { ApiError } from "@/services/api";
 
 const tabs = [
   { href: "/", label: "Home", icon: Home },
-  { href: "/wallets", label: "Wallets", icon: Wallet },
   { href: "/activity", label: "Activity", icon: Clock3 },
   { href: "/account", label: "Account", icon: CircleUser },
 ];

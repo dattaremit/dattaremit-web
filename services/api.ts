@@ -10,10 +10,7 @@ import type {
   UpdateAddressPayload,
   ZynkKycData,
   PlaidLinkToken,
-  FundingAccount,
-  CreateFundingAccountResponse,
-  ExternalAccount,
-  CreateExternalAccountPayload,
+  AddExternalAccountPayload,
   Activity,
   ActivityListResponse,
   ActivityQueryParams,
@@ -118,39 +115,10 @@ export const startKyc = (): Promise<ZynkKycData> =>
 export const generatePlaidLinkToken = (): Promise<PlaidLinkToken> =>
   api.post("/zynk/plaid-link-token");
 
-export const updatePlaidLinkToken = (): Promise<PlaidLinkToken> =>
-  api.put("/zynk/plaid-link-token");
-
-// ── Zynk (Funding Account) ──
-export const createFundingAccount = (): Promise<CreateFundingAccountResponse> =>
-  api.post("/zynk/funding-account", undefined, {
-    headers: { "idempotency-key": crypto.randomUUID() },
-  });
-
-export const getFundingAccount = (): Promise<FundingAccount> =>
-  api.get("/zynk/funding-account");
-
-export const activateFundingAccount = (): Promise<FundingAccount> =>
-  api.post("/zynk/funding-account/activate", undefined, {
-    headers: { "idempotency-key": crypto.randomUUID() },
-  });
-
-export const deactivateFundingAccount = (): Promise<FundingAccount> =>
-  api.post("/zynk/funding-account/deactivate");
-
-// ── External Accounts ──
-export const createExternalAccount = (
-  data: CreateExternalAccountPayload
-): Promise<ExternalAccount> =>
-  api.post("/external-accounts", data, {
-    headers: { "idempotency-key": crypto.randomUUID() },
-  });
-
-export const getExternalAccounts = (): Promise<ExternalAccount[]> =>
-  api.get("/external-accounts");
-
-export const deleteExternalAccount = (id: string): Promise<void> =>
-  api.delete(`/external-accounts/${id}`);
+// ── Zynk (External Account) ──
+export const addExternalAccount = (
+  data: AddExternalAccountPayload
+): Promise<User> => api.post("/zynk/external-account", data);
 
 // ── Activity ──
 export const getActivities = (

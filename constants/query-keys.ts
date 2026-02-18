@@ -5,11 +5,6 @@ export const queryKeys = {
     all: ["addresses"] as const,
     detail: (id: string) => ["addresses", id] as const,
   },
-  fundingAccount: ["fundingAccount"] as const,
-  externalAccounts: {
-    all: ["externalAccounts"] as const,
-    detail: (id: string) => ["externalAccounts", id] as const,
-  },
   activities: {
     all: ["activities"] as const,
     list: (params?: Record<string, unknown>) =>

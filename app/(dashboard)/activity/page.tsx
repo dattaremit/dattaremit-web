@@ -5,7 +5,6 @@ import {
   Clock3,
   ArrowDownLeft,
   ArrowUpRight,
-  Wallet,
   ShieldCheck,
   UserCheck,
   ChevronLeft,
@@ -36,8 +35,6 @@ const TRANSFER_TYPES: ActivityType[] = [
   "TRANSFER",
   "PAYMENT",
   "REFUND",
-  "EXTERNAL_ACCOUNT_ADDED",
-  "EXTERNAL_ACCOUNT_REMOVED",
 ];
 
 const KYC_TYPES: ActivityType[] = [
@@ -58,10 +55,6 @@ function getActivityIcon(type: ActivityType) {
   if (["DEPOSIT", "REFUND"].includes(type)) return ArrowDownLeft;
   if (["WITHDRAWAL", "TRANSFER", "PAYMENT"].includes(type))
     return ArrowUpRight;
-  if (
-    ["EXTERNAL_ACCOUNT_ADDED", "EXTERNAL_ACCOUNT_REMOVED"].includes(type)
-  )
-    return Wallet;
   if (type.startsWith("KYC_")) return ShieldCheck;
   if (type.startsWith("ACCOUNT_")) return UserCheck;
   return Clock3;

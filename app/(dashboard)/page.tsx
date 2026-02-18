@@ -1,8 +1,8 @@
 "use client";
 
 import { useRouter } from "next/navigation";
-import { Building2, ArrowRight } from "lucide-react";
-import { useAccount, useFundingAccount } from "@/hooks/api";
+import { Building2, CheckCircle2, ArrowRight } from "lucide-react";
+import { useAccount } from "@/hooks/api";
 import { ApiError } from "@/services/api";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Button } from "@/components/ui/button";
@@ -13,18 +13,12 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import { FundingAccountCard } from "@/components/funding-account-card";
 
 export default function HomePage() {
   const router = useRouter();
 
   const { data: account, isLoading, error, refetch } = useAccount();
   const user = account?.user;
-
-  const {
-    data: fundingAccount,
-    error: fundingError,
-  } = useFundingAccount();
 
   const needsProfile = error instanceof ApiError && error.status === 404;
   const realError =
@@ -33,9 +27,6 @@ export default function HomePage() {
         ? error.message
         : "Failed to load data"
       : null;
-
-  const noFundingAccount =
-    fundingError instanceof ApiError && fundingError.status === 400;
 
   // Layout handles redirect for needsProfile and needsProfileInfo cases
   if (isLoading || needsProfile) {
@@ -85,7 +76,7 @@ export default function HomePage() {
         </p>
       </div>
 
-      {account.accountStatus === "ACTIVE" && noFundingAccount && (
+      {account.accountStatus === "ACTIVE" && !user?.zynkExternalAccountId && (
         <Card>
           <CardHeader className="flex flex-row items-center gap-3 space-y-0">
             <div className="flex h-10 w-10 items-center justify-center rounded-full bg-primary/10">
@@ -109,8 +100,20 @@ export default function HomePage() {
         </Card>
       )}
 
-      {fundingAccount && !noFundingAccount && (
-        <FundingAccountCard fundingAccount={fundingAccount} />
+      {user?.zynkExternalAccountId && (
+        <Card>
+          <CardHeader className="flex flex-row items-center gap-3 space-y-0">
+            <div className="flex h-10 w-10 items-center justify-center rounded-full bg-green-100 dark:bg-green-900/30">
+              <CheckCircle2 className="h-5 w-5 text-green-600 dark:text-green-400" />
+            </div>
+            <div className="flex-1">
+              <CardTitle className="text-base">Account Linked</CardTitle>
+              <CardDescription>
+                Your bank account is connected and ready to use.
+              </CardDescription>
+            </div>
+          </CardHeader>
+        </Card>
       )}
     </div>
   );

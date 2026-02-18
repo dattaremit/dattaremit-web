@@ -13,64 +13,59 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import { Badge } from "@/components/ui/badge";
-import { Skeleton } from "@/components/ui/skeleton";
 import { PlaidLinkButton } from "@/components/plaid-link-button";
-import {
-  useFundingAccount,
-  useCreateFundingAccount,
-} from "@/hooks/api";
+import { useAccount, useAddExternalAccount } from "@/hooks/api";
 import { ApiError } from "@/services/api";
 
 export default function LinkBankPage() {
   const router = useRouter();
   const queryClient = useQueryClient();
-  const {
-    data: fundingAccount,
-    isLoading,
-    error,
-  } = useFundingAccount();
-  const createFunding = useCreateFundingAccount();
+  const { data: account } = useAccount();
+  const user = account?.user;
+  const addExternal = useAddExternalAccount();
 
-  const noFundingAccount =
-    error instanceof ApiError && error.status === 400;
+  function handlePlaidSuccess(publicToken: string, metadata: unknown) {
+    const meta = metadata as {
+      accounts?: { id: string; name?: string }[];
+      institution?: { name?: string };
+    };
+    const accounts = meta?.accounts;
+    const accountId = accounts?.[0]?.id;
 
-  function handlePlaidSuccess() {
-    createFunding.mutate(undefined, {
-      onSuccess: () => {
-        queryClient.invalidateQueries({ queryKey: queryKeys.fundingAccount });
-        queryClient.invalidateQueries({ queryKey: queryKeys.account });
-        toast.success("Bank account linked successfully!");
+    if (!accountId) {
+      toast.error("No account selected. Please try again.");
+      return;
+    }
+
+    const accountName =
+      accounts?.[0]?.name ||
+      meta?.institution?.name ||
+      "external_account";
+
+    addExternal.mutate(
+      {
+        accountName,
+        paymentRail: "ach_pull",
+        plaidPublicToken: publicToken,
+        plaidAccountId: accountId,
       },
-      onError: (err) => {
-        toast.error(
-          err instanceof ApiError
-            ? err.message
-            : "Failed to create funding account"
-        );
-      },
-    });
-  }
-
-  if (isLoading) {
-    return (
-      <div className="flex flex-1 flex-col items-center justify-center">
-        <Card className="w-full max-w-md">
-          <CardHeader>
-            <Skeleton className="h-6 w-48" />
-            <Skeleton className="mt-2 h-4 w-64" />
-          </CardHeader>
-          <CardContent>
-            <Skeleton className="h-10 w-full" />
-          </CardContent>
-        </Card>
-      </div>
+      {
+        onSuccess: () => {
+          queryClient.invalidateQueries({ queryKey: queryKeys.account });
+          toast.success("Bank account linked successfully!");
+        },
+        onError: (err) => {
+          toast.error(
+            err instanceof ApiError
+              ? err.message
+              : "Failed to link external account"
+          );
+        },
+      }
     );
   }
 
-  if (fundingAccount && !noFundingAccount) {
-    const last4 = fundingAccount.accountInfo.bank_account_number.slice(-4);
-
+  if (user?.zynkExternalAccountId) {
     return (
       <div className="flex flex-1 flex-col items-center justify-center">
         <Card className="w-full max-w-md">
@@ -83,29 +78,7 @@ export default function LinkBankPage() {
               Your bank account is connected and ready to use.
             </CardDescription>
           </CardHeader>
-          <CardContent className="space-y-4">
-            <div className="rounded-lg border p-4 space-y-2">
-              <div className="flex items-center justify-between">
-                <span className="text-sm text-muted-foreground">Bank</span>
-                <span className="text-sm font-medium">
-                  {fundingAccount.accountInfo.bank_name}
-                </span>
-              </div>
-              <div className="flex items-center justify-between">
-                <span className="text-sm text-muted-foreground">Account</span>
-                <span className="text-sm font-medium">****{last4}</span>
-              </div>
-              <div className="flex items-center justify-between">
-                <span className="text-sm text-muted-foreground">Status</span>
-                <Badge
-                  variant={
-                    fundingAccount.status === "active" ? "default" : "secondary"
-                  }
-                >
-                  {fundingAccount.status}
-                </Badge>
-              </div>
-            </div>
+          <CardContent>
             <Button
               className="w-full"
               onClick={() => router.push("/")}
@@ -132,7 +105,7 @@ export default function LinkBankPage() {
           </CardDescription>
         </CardHeader>
         <CardContent className="flex flex-col items-center gap-4">
-          {createFunding.isPending ? (
+          {addExternal.isPending ? (
             <Button disabled size="lg">
               <Loader2 className="animate-spin" />
               Setting up account...
@@ -140,10 +113,10 @@ export default function LinkBankPage() {
           ) : (
             <PlaidLinkButton onSuccess={handlePlaidSuccess} />
           )}
-          {createFunding.isError && (
+          {addExternal.isError && (
             <p className="text-sm text-destructive">
-              {createFunding.error instanceof ApiError
-                ? createFunding.error.message
+              {addExternal.error instanceof ApiError
+                ? addExternal.error.message
                 : "Something went wrong. Please try again."}
             </p>
           )}

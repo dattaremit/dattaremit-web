@@ -32,6 +32,7 @@ export interface User {
   phoneNumber: string;
   dateOfBirth: string;
   accountStatus: string;
+  zynkExternalAccountId?: string | null;
   addresses?: Address[];
   created_at: string;
   updated_at: string;
@@ -91,9 +92,7 @@ export type AccountUser = Omit<User, "addresses">;
 export interface Account {
   user: AccountUser | null;
   addresses: Address[];
-  wallet: unknown;
   accountStatus: string;
-  isBackedUp: boolean;
 }
 
 // ── Plaid ──
@@ -102,57 +101,13 @@ export interface PlaidLinkToken {
   plaid_token: string;
 }
 
-// ── Funding Account ──
+// ── External Account ──
 
-export interface FundingAccountInfo {
-  currency: string;
-  bank_name: string;
-  bank_address: string;
-  bank_routing_number: string;
-  bank_account_number: string;
-  bank_beneficiary_name: string;
-  bank_beneficiary_address: string;
-  payment_rail: string;
-  payment_rails: string[];
-}
-
-export interface FundingAccount {
-  id: string;
-  entityId: string;
-  jurisdictionId: string;
-  providerId: string;
-  status: string;
-  accountInfo: FundingAccountInfo;
-}
-
-export interface CreateFundingAccountResponse {
-  user: User;
-  fundingAccount: FundingAccount;
-}
-
-// ── External Accounts ──
-
-export type ExternalAccountStatus = "ACTIVE" | "INACTIVE";
-
-export interface ExternalAccount {
-  id: string;
-  userId: string;
-  zynkExternalAccountId: string | null;
-  walletAddress: string;
-  walletId: string | null;
-  label: string | null;
-  type: string;
-  status: ExternalAccountStatus;
-  created_at: string;
-  updated_at: string;
-}
-
-export interface CreateExternalAccountPayload {
-  walletAddress: string;
-  chain?: "ethereum" | "solana";
-  label?: string;
-  type?: string;
-  walletId?: string;
+export interface AddExternalAccountPayload {
+  accountName: string;
+  paymentRail: string;
+  plaidPublicToken: string;
+  plaidAccountId: string;
 }
 
 // ── Activity ──
@@ -160,8 +115,6 @@ export interface CreateExternalAccountPayload {
 export type ActivityType =
   | "DEPOSIT"
   | "WITHDRAWAL"
-  | "EXTERNAL_ACCOUNT_ADDED"
-  | "EXTERNAL_ACCOUNT_REMOVED"
   | "TRANSFER"
   | "PAYMENT"
   | "REFUND"
@@ -172,7 +125,8 @@ export type ActivityType =
   | "KYC_VERIFIED"
   | "KYC_FAILED"
   | "ACCOUNT_APPROVED"
-  | "ACCOUNT_ACTIVATED";
+  | "ACCOUNT_ACTIVATED"
+  | "ACCOUNT_DEACTIVATED";
 
 export type ActivityStatus = "PENDING" | "FAILED" | "COMPLETE";
 
