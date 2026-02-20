@@ -35,7 +35,7 @@ export default function DashboardLayout({
     if (!isLoaded) return;
 
     if (!isSignedIn) {
-      router.replace("/sign-in");
+      router.replace("/welcome");
     }
   }, [isLoaded, isSignedIn, router]);
 
