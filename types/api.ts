@@ -34,6 +34,7 @@ export interface User {
   accountStatus: string;
   zynkExternalAccountId?: string | null;
   zynkDepositAccountId?: string | null;
+  achPushEnabled?: boolean;
   addresses?: Address[];
   created_at: string;
   updated_at: string;
@@ -106,7 +107,7 @@ export interface PlaidLinkToken {
 
 export interface AddExternalAccountPayload {
   accountName: string;
-  paymentRail: string;
+  paymentRail?: string;
   plaidPublicToken: string;
   plaidAccountId: string;
 }

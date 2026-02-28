@@ -1,7 +1,8 @@
 "use client";
 
+import { useState } from "react";
 import { useRouter } from "next/navigation";
-import { Building2, CheckCircle2, Loader2, ArrowRight, Landmark } from "lucide-react";
+import { Building2, CheckCircle2, Loader2, ArrowRight, Landmark, Zap } from "lucide-react";
 import { toast } from "sonner";
 import { useQueryClient } from "@tanstack/react-query";
 import { queryKeys } from "@/constants/query-keys";
@@ -13,6 +14,8 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
+import { Switch } from "@/components/ui/switch";
+import { Label } from "@/components/ui/label";
 import { PlaidLinkButton } from "@/components/plaid-link-button";
 import { useAccount, useAddExternalAccount } from "@/hooks/api";
 import { ApiError } from "@/services/api";
@@ -23,6 +26,7 @@ export default function LinkBankPage() {
   const { data: account } = useAccount();
   const user = account?.user;
   const addExternal = useAddExternalAccount();
+  const [useFastTransfer, setUseFastTransfer] = useState(false);
 
   function handlePlaidSuccess(publicToken: string, metadata: unknown) {
     const meta = metadata as {
@@ -45,7 +49,8 @@ export default function LinkBankPage() {
     addExternal.mutate(
       {
         accountName,
-        paymentRail: "ach_pull",
+        paymentRail:
+          user?.achPushEnabled && useFastTransfer ? "ach_push" : "ach_pull",
         plaidPublicToken: publicToken,
         plaidAccountId: accountId,
       },
@@ -93,6 +98,28 @@ export default function LinkBankPage() {
               </CardDescription>
             </CardHeader>
             <CardContent className="flex flex-col items-center gap-3">
+              {user?.achPushEnabled && !user?.zynkExternalAccountId && (
+                <div className="flex w-full items-center justify-between rounded-lg border p-3">
+                  <div className="flex items-center gap-2">
+                    <Zap className="h-4 w-4 text-amber-500" />
+                    <div>
+                      <Label htmlFor="fast-transfer" className="text-sm font-medium">
+                        Fast Transfer
+                      </Label>
+                      <p className="text-xs text-muted-foreground">
+                        {useFastTransfer
+                          ? "Instant ACH push"
+                          : "Regular ACH pull (1-3 days)"}
+                      </p>
+                    </div>
+                  </div>
+                  <Switch
+                    id="fast-transfer"
+                    checked={useFastTransfer}
+                    onCheckedChange={setUseFastTransfer}
+                  />
+                </div>
+              )}
               {user?.zynkExternalAccountId ? (
                 <p className="text-sm font-medium text-green-600 dark:text-green-400">
                   Account linked
