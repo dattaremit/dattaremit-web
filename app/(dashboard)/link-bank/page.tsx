@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
-import { Building2, CheckCircle2, Loader2, ArrowRight, Landmark, Zap } from "lucide-react";
+import { Building2, CheckCircle2, Loader2, ArrowRight, Landmark, Zap, ShieldCheck } from "lucide-react";
 import { toast } from "sonner";
 import { useQueryClient } from "@tanstack/react-query";
 import { queryKeys } from "@/constants/query-keys";
@@ -24,6 +24,7 @@ export default function LinkBankPage() {
   const router = useRouter();
   const queryClient = useQueryClient();
   const { data: account } = useAccount();
+  const accountStatus = account?.accountStatus;
   const user = account?.user;
   const addExternal = useAddExternalAccount();
   const [useFastTransfer, setUseFastTransfer] = useState(false);
@@ -81,6 +82,30 @@ export default function LinkBankPage() {
           Connect your bank and add a beneficiary to start sending money.
         </p>
 
+        {accountStatus !== "ACTIVE" ? (
+          <Card className="mx-auto w-full max-w-md">
+            <CardHeader className="text-center">
+              <div className="mx-auto mb-2 flex h-12 w-12 items-center justify-center rounded-full bg-primary/10">
+                <ShieldCheck className="h-6 w-6 text-primary" />
+              </div>
+              <CardTitle className="text-lg">Verify Your Identity</CardTitle>
+              <CardDescription>
+                {accountStatus === "PENDING"
+                  ? "Your KYC verification is being reviewed. You'll be able to connect your bank account once it's approved."
+                  : "Complete your KYC verification to connect your bank account."}
+              </CardDescription>
+            </CardHeader>
+            {accountStatus !== "PENDING" && (
+              <CardContent className="flex justify-center">
+                <Button onClick={() => router.push("/kyc")}>
+                  Complete KYC
+                  <ArrowRight />
+                </Button>
+              </CardContent>
+            )}
+          </Card>
+        ) : (
+        <>
         <div className="grid gap-4 sm:grid-cols-2">
           {/* Link Bank Account Card */}
           <Card>
@@ -176,6 +201,8 @@ export default function LinkBankPage() {
           <div className="text-center pt-2">
             <Button onClick={() => router.push("/")}>Go to Dashboard</Button>
           </div>
+        )}
+        </>
         )}
       </div>
     </div>

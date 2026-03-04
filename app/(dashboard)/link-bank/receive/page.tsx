@@ -5,13 +5,13 @@ import { useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { toast } from "sonner";
 import { useQueryClient } from "@tanstack/react-query";
-import { Loader2, ArrowLeft } from "lucide-react";
+import { Loader2, ArrowLeft, ShieldCheck, ArrowRight } from "lucide-react";
 import { queryKeys } from "@/constants/query-keys";
 import {
   depositAccountSchema,
   type DepositAccountFormData,
 } from "@/schemas/deposit-account.schema";
-import { useAddDepositAccount } from "@/hooks/api";
+import { useAccount, useAddDepositAccount } from "@/hooks/api";
 import { ApiError } from "@/services/api";
 import { Button } from "@/components/ui/button";
 import {
@@ -41,6 +41,8 @@ import {
 export default function ReceiveBankPage() {
   const router = useRouter();
   const queryClient = useQueryClient();
+  const { data: account } = useAccount();
+  const accountStatus = account?.accountStatus;
   const addDeposit = useAddDepositAccount();
 
   const form = useForm<DepositAccountFormData>({
@@ -77,6 +79,34 @@ export default function ReceiveBankPage() {
       );
     }
   };
+
+  if (accountStatus !== "ACTIVE") {
+    return (
+      <div className="flex flex-1 flex-col items-center justify-center">
+        <Card className="w-full max-w-md">
+          <CardHeader className="text-center">
+            <div className="mx-auto mb-2 flex h-12 w-12 items-center justify-center rounded-full bg-primary/10">
+              <ShieldCheck className="h-6 w-6 text-primary" />
+            </div>
+            <CardTitle className="text-lg">Verify Your Identity</CardTitle>
+            <CardDescription>
+              {accountStatus === "PENDING"
+                ? "Your KYC verification is being reviewed. You'll be able to add a beneficiary once it's approved."
+                : "Complete your KYC verification to add a beneficiary."}
+            </CardDescription>
+          </CardHeader>
+          {accountStatus !== "PENDING" && (
+            <CardContent className="flex justify-center">
+              <Button onClick={() => router.push("/kyc")}>
+                Complete KYC
+                <ArrowRight />
+              </Button>
+            </CardContent>
+          )}
+        </Card>
+      </div>
+    );
+  }
 
   return (
     <div className="flex flex-1 flex-col items-center justify-center">
