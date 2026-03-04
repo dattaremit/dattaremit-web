@@ -13,7 +13,7 @@ import { useQueryClient } from "@tanstack/react-query";
 import { useAccount, useCreateUser, useUpdateUser } from "@/hooks/api";
 import { queryKeys } from "@/constants/query-keys";
 import { toast } from "sonner";
-import { Loader2 } from "lucide-react";
+import { Loader2, CalendarIcon } from "lucide-react";
 import { format } from "date-fns";
 import {
   Card,
@@ -245,17 +245,23 @@ export function PersonalInfoForm() {
                   <Popover>
                     <PopoverTrigger asChild>
                       <FormControl>
-                        <Button
-                          variant="outline"
+                        <button
+                          type="button"
                           className={cn(
-                            "w-full justify-start text-left font-normal",
+                            "border-input flex h-11 w-full items-center gap-2 rounded-lg border bg-transparent px-4 text-left text-base font-normal shadow-xs transition-[color,box-shadow] outline-none md:text-sm",
+                            "focus-visible:border-ring focus-visible:ring-ring/50 focus-visible:ring-[3px]",
+                            "dark:bg-input/30 dark:border-input",
+                            "hover:bg-accent/50",
                             !field.value && "text-muted-foreground"
                           )}
                         >
-                          {field.value
-                            ? format(new Date(field.value), "PPP")
-                            : "Select your date of birth"}
-                        </Button>
+                          <CalendarIcon className="h-4 w-4 shrink-0 opacity-60" />
+                          <span className="flex-1">
+                            {field.value
+                              ? format(new Date(field.value), "PPP")
+                              : "Select your date of birth"}
+                          </span>
+                        </button>
                       </FormControl>
                     </PopoverTrigger>
                     <PopoverContent className="w-auto p-0" align="start">
@@ -272,8 +278,8 @@ export function PersonalInfoForm() {
                           field.value ? new Date(field.value) : new Date(2000, 0)
                         }
                         captionLayout="dropdown"
-                        fromYear={1920}
-                        toYear={new Date().getFullYear()}
+                        startMonth={new Date(1920, 0)}
+                        endMonth={new Date(new Date().getFullYear(), 11)}
                       />
                     </PopoverContent>
                   </Popover>
