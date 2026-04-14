@@ -48,7 +48,7 @@ export function Providers({ children }: { children: React.ReactNode }) {
       signUpUrl="/sign-up"
       afterSignOutUrl="/sign-in"
       signInForceRedirectUrl="/"
-      signUpForceRedirectUrl="/"
+      signUpForceRedirectUrl="/onboarding/profile"
     >
       <ThemeProvider
         attribute="class"

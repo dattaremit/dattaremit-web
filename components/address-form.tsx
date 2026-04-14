@@ -31,7 +31,26 @@ import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
 import { CountrySelector } from "@/components/country-selector";
 
-export function AddressForm() {
+export interface AddressFormProps {
+  /** Where to navigate after first successful create. Defaults to "/kyc". */
+  nextHrefOnCreate?: string;
+  /** Where to navigate after a successful update. Defaults to "/". */
+  nextHrefOnUpdate?: string;
+  /** When true, skip the surrounding Card chrome. */
+  chromeless?: boolean;
+  title?: string;
+  description?: string;
+  submitLabel?: { create?: string; update?: string };
+}
+
+export function AddressForm({
+  nextHrefOnCreate = "/kyc",
+  nextHrefOnUpdate = "/",
+  chromeless = false,
+  title,
+  description,
+  submitLabel,
+}: AddressFormProps = {}) {
   const router = useRouter();
   const queryClient = useQueryClient();
 
@@ -91,9 +110,9 @@ export function AddressForm() {
       toast.success("Address saved successfully");
 
       if (existingAddress) {
-        router.replace("/");
+        router.replace(nextHrefOnUpdate);
       } else {
-        router.replace("/kyc");
+        router.replace(nextHrefOnCreate);
       }
     } catch (err: unknown) {
       const message =
@@ -103,28 +122,32 @@ export function AddressForm() {
   };
 
   if (isLoading) {
+    const skeletons = (
+      <div className="space-y-4">
+        {Array.from({ length: 5 }).map((_, i) => (
+          <Skeleton key={i} className="h-10 w-full" />
+        ))}
+      </div>
+    );
+    if (chromeless) return skeletons;
     return (
       <Card>
         <CardHeader>
           <Skeleton className="h-8 w-48" />
           <Skeleton className="mt-2 h-4 w-32" />
         </CardHeader>
-        <CardContent className="space-y-4">
-          {Array.from({ length: 5 }).map((_, i) => (
-            <Skeleton key={i} className="h-10 w-full" />
-          ))}
-        </CardContent>
+        <CardContent>{skeletons}</CardContent>
       </Card>
     );
   }
 
-  return (
-    <Card>
-      <CardHeader>
-        <CardTitle className="text-2xl">Your Address</CardTitle>
-        <CardDescription>Where do you live?</CardDescription>
-      </CardHeader>
-      <CardContent>
+  const headerTitle = title ?? "Your Address";
+  const headerDescription = description ?? "Where do you live?";
+  const submitText = existingAddress
+    ? submitLabel?.update ?? "Update"
+    : submitLabel?.create ?? "Save";
+
+  const formContent = (
         <Form {...form}>
           <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
             <FormField
@@ -208,12 +231,32 @@ export function AddressForm() {
                 {addressMutation.isPending && (
                   <Loader2 className="mr-2 h-4 w-4 animate-spin" />
                 )}
-                {existingAddress ? "Update" : "Save"}
+                {submitText}
               </Button>
             </div>
           </form>
         </Form>
-      </CardContent>
+  );
+
+  if (chromeless) {
+    return (
+      <div className="space-y-6">
+        <div>
+          <h2 className="text-2xl font-bold">{headerTitle}</h2>
+          <p className="mt-1 text-sm text-muted-foreground">{headerDescription}</p>
+        </div>
+        {formContent}
+      </div>
+    );
+  }
+
+  return (
+    <Card>
+      <CardHeader>
+        <CardTitle className="text-2xl">{headerTitle}</CardTitle>
+        <CardDescription>{headerDescription}</CardDescription>
+      </CardHeader>
+      <CardContent>{formContent}</CardContent>
     </Card>
   );
 }

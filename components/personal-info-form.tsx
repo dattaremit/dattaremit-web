@@ -43,7 +43,29 @@ import { PhoneInput } from "@/components/phone-input";
 import { CountrySelector } from "@/components/country-selector";
 import { cn } from "@/lib/utils";
 
-export function PersonalInfoForm() {
+export interface PersonalInfoFormProps {
+  /** Where to navigate after a successful create. Defaults to "/edit-addresses". */
+  nextHrefOnCreate?: string;
+  /** Where to navigate after a successful update. Defaults to staying put (undefined → no redirect). */
+  nextHrefOnUpdate?: string;
+  /** When true, skip the surrounding Card chrome (the layout already provides one). */
+  chromeless?: boolean;
+  /** Override the title shown above the form. */
+  title?: string;
+  /** Override the subtitle. */
+  description?: string;
+  /** Override submit button label. */
+  submitLabel?: { create?: string; update?: string };
+}
+
+export function PersonalInfoForm({
+  nextHrefOnCreate = "/edit-addresses",
+  nextHrefOnUpdate,
+  chromeless = false,
+  title,
+  description,
+  submitLabel,
+}: PersonalInfoFormProps = {}) {
   const router = useRouter();
   const { user: clerkUser } = useUser();
 
@@ -129,7 +151,9 @@ export function PersonalInfoForm() {
       );
 
       if (!isExistingUser) {
-        router.push("/edit-addresses");
+        router.push(nextHrefOnCreate);
+      } else if (nextHrefOnUpdate) {
+        router.push(nextHrefOnUpdate);
       }
     } catch (err: unknown) {
       const message =
@@ -139,31 +163,33 @@ export function PersonalInfoForm() {
   };
 
   if (isLoading) {
+    const skeletons = (
+      <div className="space-y-4">
+        <Skeleton className="h-10 w-full" />
+        <Skeleton className="h-10 w-full" />
+        <Skeleton className="h-10 w-full" />
+        <Skeleton className="h-10 w-full" />
+      </div>
+    );
+    if (chromeless) return skeletons;
     return (
       <Card>
         <CardHeader>
           <Skeleton className="h-8 w-48" />
           <Skeleton className="mt-2 h-4 w-32" />
         </CardHeader>
-        <CardContent className="space-y-4">
-          <Skeleton className="h-10 w-full" />
-          <Skeleton className="h-10 w-full" />
-          <Skeleton className="h-10 w-full" />
-          <Skeleton className="h-10 w-full" />
-        </CardContent>
+        <CardContent>{skeletons}</CardContent>
       </Card>
     );
   }
 
-  return (
-    <Card>
-      <CardHeader>
-        <div>
-          <CardTitle className="text-2xl">Edit your profile</CardTitle>
-          <CardDescription>Tell us about yourself</CardDescription>
-        </div>
-      </CardHeader>
-      <CardContent>
+  const headerTitle = title ?? "Edit your profile";
+  const headerDescription = description ?? "Tell us about yourself";
+  const submitText = isExistingUser
+    ? submitLabel?.update ?? "Update"
+    : submitLabel?.create ?? "Save";
+
+  const formContent = (
         <Form {...form}>
           <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
             <div className="grid grid-cols-2 gap-3">
@@ -309,12 +335,32 @@ export function PersonalInfoForm() {
                 {loading && (
                   <Loader2 className="mr-2 h-4 w-4 animate-spin" />
                 )}
-                {isExistingUser ? "Update" : "Save"}
+                {submitText}
               </Button>
             </div>
           </form>
         </Form>
-      </CardContent>
+  );
+
+  if (chromeless) {
+    return (
+      <div className="space-y-6">
+        <div>
+          <h2 className="text-2xl font-bold">{headerTitle}</h2>
+          <p className="mt-1 text-sm text-muted-foreground">{headerDescription}</p>
+        </div>
+        {formContent}
+      </div>
+    );
+  }
+
+  return (
+    <Card>
+      <CardHeader>
+        <CardTitle className="text-2xl">{headerTitle}</CardTitle>
+        <CardDescription>{headerDescription}</CardDescription>
+      </CardHeader>
+      <CardContent>{formContent}</CardContent>
     </Card>
   );
 }

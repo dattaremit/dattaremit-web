@@ -5,12 +5,13 @@ import { useAuth } from "@clerk/nextjs";
 import { useRouter, usePathname } from "next/navigation";
 import Link from "next/link";
 import Image from "next/image";
-import { Home, Clock3, CircleUser, Send, Users, Bell } from "lucide-react";
+import { Home, Clock3, CircleUser, Send, Users, Bell, Loader2 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { SidebarAccountDropdown } from "@/components/sidebar-account-dropdown";
 import { NotificationBell } from "@/components/notifications/notification-bell";
 import { useAccount } from "@/hooks/api";
 import { ApiError } from "@/services/api";
+import { computeOnboardingState, ONBOARDING_STEPS } from "@/lib/onboarding-progress";
 
 const tabs = [
   { href: "/", label: "Home", icon: Home },
@@ -25,8 +26,6 @@ function isTabActive(tabHref: string, pathname: string) {
   return tabHref === "/" ? pathname === "/" : pathname.startsWith(tabHref);
 }
 
-const onboardingPages = ["/referral", "/edit-profile", "/edit-addresses", "/kyc"];
-
 export default function DashboardLayout({
   children,
 }: {
@@ -37,112 +36,68 @@ export default function DashboardLayout({
   const pathname = usePathname();
   const { data: account, isLoading: accountLoading, error } = useAccount();
 
+  // Auth gate
   useEffect(() => {
-    if (!isLoaded) return;
-
-    if (!isSignedIn) {
+    if (isLoaded && !isSignedIn) {
       router.replace("/welcome");
     }
   }, [isLoaded, isSignedIn, router]);
 
-  useEffect(() => {
-    if (!isLoaded || !isSignedIn || accountLoading) return;
-
-    const noProfile = error instanceof ApiError && error.status === 404;
-    const needsProfileInfo =
-      account?.user &&
-      (!account.user.firstName ||
-        !account.user.lastName ||
-        !account.user.phoneNumber ||
-        !account.user.dateOfBirth);
-
-    // No user in DB → redirect to referral
-    if (noProfile) {
-      if (pathname !== "/referral" && pathname !== "/edit-profile") {
-        router.replace("/referral");
-      }
-      return;
-    }
-
-    // User exists but missing required profile fields → redirect to edit-profile
-    if (needsProfileInfo) {
-      if (pathname !== "/edit-profile") {
-        router.replace("/edit-profile");
-      }
-      return;
-    }
-
-    // Block edit-addresses if user has no profile
-    if (pathname === "/edit-addresses" && !account?.user) {
-      router.replace("/edit-profile");
-      return;
-    }
-
-    // User complete, no addresses → redirect to edit-addresses
-    const hasAddresses = (account?.addresses?.length ?? 0) > 0;
-    if (account?.user && !hasAddresses && !onboardingPages.includes(pathname)) {
-      router.replace("/edit-addresses");
-      return;
-    }
-
-    // User + addresses, status INITIAL or REJECTED → redirect to KYC
-    const status = account?.accountStatus;
-    if (
-      account?.user &&
-      hasAddresses &&
-      (status === "INITIAL" || status === "REJECTED") &&
-      !onboardingPages.includes(pathname)
-    ) {
-      router.replace("/kyc");
-      return;
-    }
-  }, [isLoaded, isSignedIn, accountLoading, error, account, pathname, router]);
-
-  if (!isLoaded || !isSignedIn) {
-    return null;
-  }
-
-  if (accountLoading) {
-    return null;
-  }
-
+  // Onboarding gate: any incomplete step → bounce to /onboarding/*
   const noProfile = error instanceof ApiError && error.status === 404;
-  const needsProfileInfo =
-    account?.user &&
-    (!account.user.firstName ||
-      !account.user.lastName ||
-      !account.user.phoneNumber ||
-      !account.user.dateOfBirth);
+  const onboardingState = computeOnboardingState(noProfile ? null : account);
+  const needsOnboarding = onboardingState.nextStep !== null;
 
-  if (noProfile && pathname !== "/referral" && pathname !== "/edit-profile") {
-    return null;
+  useEffect(() => {
+    if (!isLoaded || !isSignedIn) return;
+    if (accountLoading) return;
+    if (error && !noProfile) return;
+    if (needsOnboarding) {
+      const target = ONBOARDING_STEPS.find(
+        (s) => s.key === onboardingState.nextStep,
+      )!.href;
+      router.replace(target);
+    }
+  }, [
+    isLoaded,
+    isSignedIn,
+    accountLoading,
+    error,
+    noProfile,
+    needsOnboarding,
+    onboardingState.nextStep,
+    router,
+  ]);
+
+  if (!isLoaded || !isSignedIn || accountLoading) {
+    return (
+      <div className="flex min-h-screen items-center justify-center">
+        <Loader2 className="h-6 w-6 animate-spin text-muted-foreground" />
+      </div>
+    );
   }
 
-  if (needsProfileInfo && pathname !== "/edit-profile") {
-    return null;
+  if (error && !noProfile) {
+    return (
+      <div className="flex min-h-screen items-center justify-center px-4">
+        <div className="max-w-md text-center">
+          <h2 className="text-lg font-semibold">Something went wrong</h2>
+          <p className="mt-1 text-sm text-muted-foreground">
+            {error instanceof Error
+              ? error.message
+              : "We couldn't load your account."}
+          </p>
+        </div>
+      </div>
+    );
   }
 
-  if (pathname === "/edit-addresses" && !account?.user) {
-    return null;
-  }
-
-  const hasAddresses = (account?.addresses?.length ?? 0) > 0;
-  if (
-    account?.user &&
-    !hasAddresses &&
-    !onboardingPages.includes(pathname)
-  ) {
-    return null;
-  }
-
-  const status = account?.accountStatus;
-  if (
-    account?.user &&
-    hasAddresses &&
-    (status === "INITIAL" || status === "REJECTED") &&
-    !onboardingPages.includes(pathname)
-  ) {
-    return null;
+  if (needsOnboarding) {
+    return (
+      <div className="flex min-h-screen items-center justify-center">
+        <Loader2 className="h-6 w-6 animate-spin text-muted-foreground" />
+      </div>
+    );
   }
 
   return (
@@ -166,7 +121,7 @@ export default function DashboardLayout({
                   "flex items-center gap-3 px-6 py-2.5 text-sm font-medium transition-colors",
                   active
                     ? "bg-sidebar-accent text-sidebar-accent-foreground"
-                    : "text-sidebar-foreground/70 hover:bg-sidebar-accent hover:text-sidebar-accent-foreground"
+                    : "text-sidebar-foreground/70 hover:bg-sidebar-accent hover:text-sidebar-accent-foreground",
                 )}
               >
                 <Icon className="h-5 w-5" />
@@ -208,7 +163,7 @@ export default function DashboardLayout({
                   "flex flex-1 flex-col items-center gap-1 py-3 text-xs transition-colors",
                   active
                     ? "text-primary"
-                    : "text-muted-foreground hover:text-foreground"
+                    : "text-muted-foreground hover:text-foreground",
                 )}
               >
                 <Icon className="h-5 w-5" />
