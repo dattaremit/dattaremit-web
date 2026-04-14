@@ -1,6 +1,9 @@
+"use client";
+
 import { Suspense } from "react";
 import { AddressForm } from "@/components/address-form";
 import { Skeleton } from "@/components/ui/skeleton";
+import { useOnboardingRouter } from "@/hooks/use-onboarding-router";
 
 function Fallback() {
   return (
@@ -14,15 +17,15 @@ function Fallback() {
 }
 
 export default function OnboardingAddressPage() {
+  const { goToNext } = useOnboardingRouter();
   return (
     <Suspense fallback={<Fallback />}>
       <AddressForm
         chromeless
         title="Where do you live?"
         description="We need your address to comply with regulations."
-        nextHrefOnCreate="/onboarding/kyc"
-        nextHrefOnUpdate="/onboarding/kyc"
-        submitLabel={{ create: "Continue", update: "Continue" }}
+        submitLabel={{ create: "Continue", update: "Save & continue" }}
+        onAfterSubmit={() => goToNext()}
       />
     </Suspense>
   );

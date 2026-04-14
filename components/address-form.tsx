@@ -36,6 +36,9 @@ export interface AddressFormProps {
   nextHrefOnCreate?: string;
   /** Where to navigate after a successful update. Defaults to "/". */
   nextHrefOnUpdate?: string;
+  /** Optional callback fired after a successful save. Takes precedence over
+   *  static nextHref props when provided. */
+  onAfterSubmit?: (mode: "create" | "update") => void | Promise<void>;
   /** When true, skip the surrounding Card chrome. */
   chromeless?: boolean;
   title?: string;
@@ -46,6 +49,7 @@ export interface AddressFormProps {
 export function AddressForm({
   nextHrefOnCreate = "/kyc",
   nextHrefOnUpdate = "/",
+  onAfterSubmit,
   chromeless = false,
   title,
   description,
@@ -109,7 +113,9 @@ export function AddressForm({
 
       toast.success("Address saved successfully");
 
-      if (existingAddress) {
+      if (onAfterSubmit) {
+        await onAfterSubmit(existingAddress ? "update" : "create");
+      } else if (existingAddress) {
         router.replace(nextHrefOnUpdate);
       } else {
         router.replace(nextHrefOnCreate);

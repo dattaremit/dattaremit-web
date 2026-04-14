@@ -46,21 +46,23 @@ import { cn } from "@/lib/utils";
 export interface PersonalInfoFormProps {
   /** Where to navigate after a successful create. Defaults to "/edit-addresses". */
   nextHrefOnCreate?: string;
-  /** Where to navigate after a successful update. Defaults to staying put (undefined → no redirect). */
+  /** Where to navigate after a successful update. Defaults to staying put. */
   nextHrefOnUpdate?: string;
-  /** When true, skip the surrounding Card chrome (the layout already provides one). */
+  /** Optional callback fired after a successful save. Takes precedence over
+   *  the static next-href props. Used by onboarding to compute the destination
+   *  from fresh server state. */
+  onAfterSubmit?: (mode: "create" | "update") => void | Promise<void>;
+  /** When true, skip the surrounding Card chrome. */
   chromeless?: boolean;
-  /** Override the title shown above the form. */
   title?: string;
-  /** Override the subtitle. */
   description?: string;
-  /** Override submit button label. */
   submitLabel?: { create?: string; update?: string };
 }
 
 export function PersonalInfoForm({
   nextHrefOnCreate = "/edit-addresses",
   nextHrefOnUpdate,
+  onAfterSubmit,
   chromeless = false,
   title,
   description,
@@ -150,7 +152,9 @@ export function PersonalInfoForm({
           : "Profile created successfully"
       );
 
-      if (!isExistingUser) {
+      if (onAfterSubmit) {
+        await onAfterSubmit(isExistingUser ? "update" : "create");
+      } else if (!isExistingUser) {
         router.push(nextHrefOnCreate);
       } else if (nextHrefOnUpdate) {
         router.push(nextHrefOnUpdate);

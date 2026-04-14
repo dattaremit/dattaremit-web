@@ -8,6 +8,16 @@ export const ONBOARDING_STEPS: { key: OnboardingStepKey; label: string; href: st
   { key: "kyc", label: "Verify identity", href: "/onboarding/kyc" },
 ];
 
+export function stepIndex(key: OnboardingStepKey): number {
+  return ONBOARDING_STEPS.findIndex((s) => s.key === key);
+}
+
+/** Resolve where to send the user after a step is saved. */
+export function nextHref(state: OnboardingState): string {
+  if (!state.nextStep) return "/";
+  return ONBOARDING_STEPS.find((s) => s.key === state.nextStep)!.href;
+}
+
 export interface OnboardingState {
   /** The first incomplete step (or null if everything is done). */
   nextStep: OnboardingStepKey | null;

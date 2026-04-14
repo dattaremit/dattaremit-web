@@ -10,6 +10,7 @@ import { ApiError } from "@/services/api";
 import {
   computeOnboardingState,
   ONBOARDING_STEPS,
+  stepIndex,
   type OnboardingStepKey,
 } from "@/lib/onboarding-progress";
 import { StepIndicator } from "@/components/onboarding/step-indicator";
@@ -40,20 +41,33 @@ export default function OnboardingLayout({
     }
   }, [isLoaded, isSignedIn, router]);
 
-  // Step routing: keep the user on whichever step is currently required.
+  // Step routing.
+  //   - All steps done + URL doesn't match a step → bounce to dashboard.
+  //   - Incomplete step → block jumping AHEAD of nextStep, but allow user to
+  //     revisit any earlier step they have already completed (to update data).
   useEffect(() => {
     if (!isLoaded || !isSignedIn) return;
     if (isLoading) return;
     if (error && !noProfile) return;
 
+    const currentStep = STEP_FROM_PATH[pathname];
+
     if (!state.nextStep) {
-      router.replace("/");
+      if (!currentStep) router.replace("/");
       return;
     }
 
-    const wanted = ONBOARDING_STEPS.find((s) => s.key === state.nextStep)!.href;
-    if (pathname !== wanted) {
-      router.replace(wanted);
+    if (!currentStep) {
+      router.replace(
+        ONBOARDING_STEPS.find((s) => s.key === state.nextStep)!.href,
+      );
+      return;
+    }
+
+    if (stepIndex(currentStep) > stepIndex(state.nextStep)) {
+      router.replace(
+        ONBOARDING_STEPS.find((s) => s.key === state.nextStep)!.href,
+      );
     }
   }, [
     isLoaded,

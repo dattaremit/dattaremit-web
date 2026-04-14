@@ -1,6 +1,9 @@
+"use client";
+
 import { Suspense } from "react";
 import { PersonalInfoForm } from "@/components/personal-info-form";
 import { Skeleton } from "@/components/ui/skeleton";
+import { useOnboardingRouter } from "@/hooks/use-onboarding-router";
 
 function Fallback() {
   return (
@@ -14,15 +17,15 @@ function Fallback() {
 }
 
 export default function OnboardingProfilePage() {
+  const { goToNext } = useOnboardingRouter();
   return (
     <Suspense fallback={<Fallback />}>
       <PersonalInfoForm
         chromeless
         title="Tell us about yourself"
         description="We'll use this to set up your account."
-        nextHrefOnCreate="/onboarding/address"
-        nextHrefOnUpdate="/onboarding/address"
-        submitLabel={{ create: "Continue", update: "Continue" }}
+        submitLabel={{ create: "Continue", update: "Save & continue" }}
+        onAfterSubmit={() => goToNext()}
       />
     </Suspense>
   );
