@@ -6,6 +6,7 @@ import { STORAGE_KEYS } from "@/constants/storage-keys";
 export type OnboardingStep =
   | "welcome"
   | "auth"
+  | "blocked"
   | "waitlist"
   | "referral"
   | "profile"
@@ -16,6 +17,7 @@ export type OnboardingStep =
 const STEP_ORDER: OnboardingStep[] = [
   "welcome",
   "auth",
+  "blocked",
   "waitlist",
   "referral",
   "profile",

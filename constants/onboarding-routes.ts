@@ -5,6 +5,7 @@ import type { OnboardingStep } from "@/store/onboarding-store";
 export const ONBOARDING_STEP_ROUTES: Record<OnboardingStep, string> = {
   welcome: "/welcome",
   auth: "/sign-in",
+  blocked: "/onboarding/blocked",
   waitlist: "/onboarding/waitlist",
   referral: "/onboarding/referral",
   profile: "/onboarding/profile",

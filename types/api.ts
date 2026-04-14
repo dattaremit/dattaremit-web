@@ -118,6 +118,7 @@ export interface Account {
    *  step is not actually complete (entity creation failed or is pending). */
   hasZynkEntity?: boolean;
   isOnWaitlist?: boolean;
+  isBlocked?: boolean;
   balance?: number;
 }
 

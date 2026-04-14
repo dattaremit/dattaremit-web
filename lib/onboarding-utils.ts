@@ -10,6 +10,7 @@ export const delay = (ms: number) =>
  */
 export function resolveOnboardingStep(account: Account | null | undefined): OnboardingStep {
   if (!account) return "referral";
+  if (account.isBlocked) return "blocked";
   if (account.isOnWaitlist) return "waitlist";
   if (!account.user) return "referral";
   if (!account.addresses || account.addresses.length === 0) return "address";

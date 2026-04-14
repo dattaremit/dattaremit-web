@@ -25,6 +25,9 @@ const STEP_FROM_PATH: Record<string, OnboardingStepKey> = {
   "/onboarding/kyc": "kyc",
 };
 
+const WAITLIST_PATH = "/onboarding/waitlist";
+const BLOCKED_PATH = "/onboarding/blocked";
+
 function FullScreenLoader() {
   return (
     <div className="flex min-h-screen items-center justify-center bg-background">
@@ -48,6 +51,8 @@ export default function OnboardingLayout({
 
   const noProfile = error instanceof ApiError && error.status === 404;
   const state = computeOnboardingState(noProfile ? null : account);
+  const isBlocked = !!account?.isBlocked;
+  const isOnWaitlist = !!account?.isOnWaitlist;
 
   useEffect(() => {
     if (isLoaded && !isSignedIn) {
@@ -59,6 +64,27 @@ export default function OnboardingLayout({
     if (!isLoaded || !isSignedIn) return;
     if (isLoading) return;
     if (error && !noProfile) return;
+
+    // Gate users before step-based routing: blocklist wins, then waitlist.
+    if (isBlocked) {
+      if (pathname !== BLOCKED_PATH) router.replace(BLOCKED_PATH);
+      return;
+    }
+    if (isOnWaitlist) {
+      if (pathname !== WAITLIST_PATH) router.replace(WAITLIST_PATH);
+      return;
+    }
+
+    // Off the gated paths — if we were on waitlist/blocked but the flag
+    // cleared (e.g. admin removed the block), bounce back to the normal flow.
+    if (pathname === WAITLIST_PATH || pathname === BLOCKED_PATH) {
+      router.replace(
+        state.nextStep
+          ? ONBOARDING_STEPS.find((s) => s.key === state.nextStep)!.href
+          : "/",
+      );
+      return;
+    }
 
     const currentStep = STEP_FROM_PATH[pathname];
 
@@ -88,11 +114,45 @@ export default function OnboardingLayout({
     state.nextStep,
     pathname,
     router,
+    isBlocked,
+    isOnWaitlist,
   ]);
 
   const stepKey = STEP_FROM_PATH[pathname];
+  const isGatedPath = pathname === WAITLIST_PATH || pathname === BLOCKED_PATH;
 
-  if (!isLoaded || !isSignedIn || isLoading || !stepKey) {
+  if (!isLoaded || !isSignedIn || isLoading) {
+    return <FullScreenLoader />;
+  }
+
+  // Gated pages render inside the same shell but without the step indicator.
+  if (isGatedPath) {
+    return (
+      <div className="relative flex min-h-screen flex-col bg-background">
+        <AuroraBackground variant="dashboard" />
+
+        <header className="relative z-10 flex h-16 items-center justify-between border-b border-border/60 bg-background/70 px-5 backdrop-blur-xl sm:px-8">
+          <Link href="/" className="flex items-center gap-2.5">
+            <Image src="/logo.png" alt="Dattapay" width={26} height={22} />
+            <span className="font-semibold text-lg text-foreground">
+              Dattapay
+            </span>
+          </Link>
+          <AccountMenu />
+        </header>
+
+        <main className="relative z-10 flex flex-1 items-center justify-center px-5 py-10 sm:px-8 sm:py-16">
+          <div className="w-full max-w-xl">
+            <div className="rounded-3xl border border-border bg-card/80 p-8 shadow-lift backdrop-blur-xl sm:p-12">
+              {children}
+            </div>
+          </div>
+        </main>
+      </div>
+    );
+  }
+
+  if (!stepKey) {
     return <FullScreenLoader />;
   }
 
