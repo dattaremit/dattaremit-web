@@ -43,6 +43,7 @@ export default function ReceiveBankPage() {
   const queryClient = useQueryClient();
   const { data: account } = useAccount();
   const accountStatus = account?.accountStatus;
+  const indianKycStatus = account?.indianKycStatus ?? "NONE";
   const addDeposit = useAddDepositAccount();
 
   const form = useForm<DepositAccountFormData>({
@@ -99,6 +100,36 @@ export default function ReceiveBankPage() {
             <CardContent className="flex justify-center">
               <Button onClick={() => router.push("/kyc")}>
                 Complete KYC
+                <ArrowRight />
+              </Button>
+            </CardContent>
+          )}
+        </Card>
+      </div>
+    );
+  }
+
+  if (indianKycStatus !== "APPROVED") {
+    return (
+      <div className="flex flex-1 flex-col items-center justify-center">
+        <Card className="w-full max-w-md">
+          <CardHeader className="text-center">
+            <div className="mx-auto mb-2 flex h-12 w-12 items-center justify-center rounded-full bg-primary/10">
+              <ShieldCheck className="h-6 w-6 text-primary" />
+            </div>
+            <CardTitle className="text-lg">Indian KYC Required</CardTitle>
+            <CardDescription>
+              {indianKycStatus === "PENDING"
+                ? "Your Indian KYC is being reviewed. You can add an Indian bank account once it's approved."
+                : "Complete Indian KYC verification before adding an Indian bank account."}
+            </CardDescription>
+          </CardHeader>
+          {indianKycStatus !== "PENDING" && (
+            <CardContent className="flex justify-center">
+              <Button onClick={() => router.push("/kyc/indian")}>
+                {indianKycStatus === "REJECTED" || indianKycStatus === "FAILED"
+                  ? "Resubmit Indian KYC"
+                  : "Start Indian KYC"}
                 <ArrowRight />
               </Button>
             </CardContent>

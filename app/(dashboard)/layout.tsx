@@ -5,15 +5,19 @@ import { useAuth } from "@clerk/nextjs";
 import { useRouter, usePathname } from "next/navigation";
 import Link from "next/link";
 import Image from "next/image";
-import { Home, Clock3, CircleUser } from "lucide-react";
+import { Home, Clock3, CircleUser, Send, Users, Bell } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { SidebarAccountDropdown } from "@/components/sidebar-account-dropdown";
+import { NotificationBell } from "@/components/notifications/notification-bell";
 import { useAccount } from "@/hooks/api";
 import { ApiError } from "@/services/api";
 
 const tabs = [
   { href: "/", label: "Home", icon: Home },
+  { href: "/send", label: "Send", icon: Send },
+  { href: "/recipients", label: "Recipients", icon: Users },
   { href: "/activity", label: "Activity", icon: Clock3 },
+  { href: "/notifications", label: "Alerts", icon: Bell },
   { href: "/account", label: "Account", icon: CircleUser },
 ];
 
@@ -178,6 +182,12 @@ export default function DashboardLayout({
       </aside>
 
       <main className="min-w-0 flex-1 flex flex-col">
+        <header className="sticky top-0 z-10 flex h-14 items-center justify-end gap-2 border-b bg-background/80 px-4 backdrop-blur lg:hidden">
+          <NotificationBell />
+        </header>
+        <div className="hidden lg:flex items-center justify-end px-6 pt-4">
+          <NotificationBell />
+        </div>
         <div className="mx-auto flex flex-1 flex-col max-w-3xl lg:max-w-5xl w-full px-4 py-8">
           {children}
         </div>

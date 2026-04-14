@@ -10,6 +10,8 @@ import {
 } from "@tanstack/react-query";
 import { setTokenGetter } from "@/services/api";
 import { Toaster } from "@/components/ui/sonner";
+import { InAppBanner } from "@/components/notifications/in-app-banner";
+import { PushListener } from "@/components/notifications/push-listener";
 
 function AuthTokenBridge({ children }: { children: React.ReactNode }) {
   const { getToken, isSignedIn } = useAuth();
@@ -57,6 +59,8 @@ export function Providers({ children }: { children: React.ReactNode }) {
         <QueryClientProvider client={queryClient}>
           <AuthTokenBridge>
             {children}
+            <PushListener />
+            <InAppBanner />
             <Toaster />
           </AuthTokenBridge>
         </QueryClientProvider>

@@ -103,10 +103,18 @@ export interface ZynkKycData {
 
 export type AccountUser = Omit<User, "addresses">;
 
+export type AccountStatus = "INITIAL" | "PENDING" | "ACTIVE" | "REJECTED";
+export type IndianKycStatus = "NONE" | "PENDING" | "APPROVED" | "REJECTED" | "FAILED";
+
 export interface Account {
   user: AccountUser | null;
   addresses: Address[];
-  accountStatus: string;
+  accountStatus: AccountStatus | string;
+  indianKycStatus?: IndianKycStatus;
+  hasBankAccount?: boolean;
+  hasDepositAccount?: boolean;
+  isOnWaitlist?: boolean;
+  balance?: number;
 }
 
 // ── Plaid ──

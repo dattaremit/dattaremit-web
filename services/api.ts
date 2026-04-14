@@ -17,6 +17,31 @@ import type {
   ActivityListResponse,
   ActivityQueryParams,
 } from "@/types/api";
+import type {
+  Recipient,
+  CreateRecipientPayload,
+  AddRecipientBankPayload,
+} from "@/types/recipient";
+import type {
+  SendMoneyPayload,
+  SendToSelfPayload,
+  SendMoneyResponse,
+} from "@/types/transfer";
+import type {
+  Notification,
+  NotificationFilters,
+  PaginatedNotifications,
+} from "@/types/notification";
+import type {
+  IndianKycPayload,
+  IndianKycEncryptedPayload,
+  IndianKycResponse,
+  PublicKeyResponse,
+} from "@/types/indian-kyc";
+import type {
+  WebPushRegistrationPayload,
+  WebPushDevice,
+} from "@/types/web-push";
 
 const API_BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL;
 
@@ -147,3 +172,87 @@ export const getActivities = (
 
 export const getActivity = (id: string): Promise<Activity> =>
   api.get(`/activity/${id}`);
+
+// ── Recipients ──
+export const getRecipients = (): Promise<Recipient[]> => api.get("/recipients");
+
+export const getRecipient = (id: string): Promise<Recipient> =>
+  api.get(`/recipients/${id}`);
+
+export const createRecipient = (
+  data: CreateRecipientPayload
+): Promise<Recipient> => api.post("/recipients", data);
+
+export const updateRecipient = (
+  id: string,
+  data: CreateRecipientPayload
+): Promise<Recipient> => api.patch(`/recipients/${id}`, data);
+
+export const addRecipientBank = (
+  id: string,
+  data: AddRecipientBankPayload
+): Promise<Recipient> => api.post(`/recipients/${id}/bank`, data);
+
+export const resendRecipientKyc = (id: string): Promise<void> =>
+  api.post(`/recipients/${id}/resend-kyc`);
+
+// ── Transfers ──
+export const sendMoney = (
+  data: SendMoneyPayload,
+  idempotencyKey?: string
+): Promise<SendMoneyResponse> =>
+  api.post("/transfers/send", data, {
+    headers: idempotencyKey ? { "idempotency-key": idempotencyKey } : {},
+  });
+
+export const sendToSelf = (
+  data: SendToSelfPayload,
+  idempotencyKey?: string
+): Promise<SendMoneyResponse> =>
+  api.post("/transfers/send-to-self", data, {
+    headers: idempotencyKey ? { "idempotency-key": idempotencyKey } : {},
+  });
+
+// ── Notifications ──
+export const getNotifications = (
+  params: NotificationFilters = {}
+): Promise<PaginatedNotifications> => api.get("/notifications", { params });
+
+export const getUnreadCount = (): Promise<{ count: number }> =>
+  api.get("/notifications/unread-count");
+
+export const markNotificationAsRead = (id: string): Promise<Notification> =>
+  api.patch(`/notifications/${id}/read`);
+
+export const markAllNotificationsAsRead = (): Promise<void> =>
+  api.patch("/notifications/read-all");
+
+export const deleteNotification = (id: string): Promise<void> =>
+  api.delete(`/notifications/${id}`);
+
+// ── Crypto ──
+export const getPublicKey = (): Promise<PublicKeyResponse> =>
+  api.get("/crypto/public-key");
+
+// ── Zynk (Indian KYC) ──
+// Plaintext variant — kept for dev/testing against plaintext endpoint. Prefer
+// submitIndianKycEncrypted in production. Server accepts either shape.
+export const submitIndianKyc = (
+  data: IndianKycPayload
+): Promise<IndianKycResponse> => api.post("/zynk/indian-kyc", data);
+
+export const submitIndianKycEncrypted = (
+  data: IndianKycEncryptedPayload
+): Promise<IndianKycResponse> => api.post("/zynk/indian-kyc", data);
+
+// ── Web Push Devices ──
+// NOTE: the server must expose POST /devices/register-web-push and
+// DELETE /devices/:id accepting the payload shapes defined in
+// types/web-push.ts. Until that lands, these calls will 404.
+export const registerWebPushDevice = (
+  data: WebPushRegistrationPayload
+): Promise<WebPushDevice> =>
+  api.post("/devices/register-web-push", data);
+
+export const unregisterDevice = (id: string): Promise<void> =>
+  api.delete(`/devices/${id}`);
