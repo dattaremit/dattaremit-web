@@ -119,6 +119,8 @@ export default function SignUpPage() {
                 </FormItem>
               )}
             />
+            {/* Clerk auto-mounts the Turnstile CAPTCHA into this div. */}
+            <div id="clerk-captcha" />
             <Button type="submit" className="w-full" size="lg" disabled={loading}>
               {loading && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
               Sign Up
