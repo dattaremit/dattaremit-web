@@ -16,13 +16,15 @@ export function StepIndicator({
   completed: Record<OnboardingStepKey, boolean>;
 }) {
   const currentIndex = ONBOARDING_STEPS.findIndex((s) => s.key === current);
-  // Highest index the user is allowed to navigate to: any completed step
-  // plus the first incomplete one (so they can always reach the live step).
-  const reachableIndex = ONBOARDING_STEPS.reduce((acc, s, i) => {
-    if (completed[s.key]) return Math.max(acc, i);
-    return acc === i - 1 ? i : acc; // first incomplete after a run of completed
-  }, -1);
-  const maxReachable = Math.max(reachableIndex, currentIndex);
+  // Highest reachable index: every completed step plus the first incomplete
+  // one (the live step). Steps beyond that stay locked.
+  const firstIncompleteIndex = ONBOARDING_STEPS.findIndex(
+    (s) => !completed[s.key],
+  );
+  const maxReachable =
+    firstIncompleteIndex === -1
+      ? ONBOARDING_STEPS.length - 1
+      : firstIncompleteIndex;
 
   return (
     <div className="space-y-3">
@@ -43,8 +45,9 @@ export function StepIndicator({
               ? "border-primary bg-primary text-primary-foreground"
               : isCurrent
                 ? "border-primary text-primary"
-                : "border-muted-foreground/30 text-muted-foreground",
+                : "border-muted-foreground/30 text-muted-foreground/60",
             isReachable && !isCurrent && "cursor-pointer hover:opacity-80",
+            !isReachable && "cursor-not-allowed opacity-60",
           );
           const dot = isComplete ? <Check className="h-3.5 w-3.5" /> : i + 1;
 
