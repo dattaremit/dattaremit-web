@@ -3,12 +3,13 @@
 import { use } from "react";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
-import { useAddRecipientBank, useRecipient } from "@/hooks/api";
+import { useAccount, useAddRecipientBank, useRecipient } from "@/hooks/api";
 import { Card } from "@/components/ui/card";
 import { Skeleton } from "@/components/ui/skeleton";
 import { PageHeader } from "@/components/ui/page-header";
 import { BackLink } from "@/components/ui/back-link";
 import { RecipientBankForm } from "@/components/recipients/recipient-bank-form";
+import { KycGate } from "@/components/kyc-gate";
 
 export default function RecipientBankPage({
   params,
@@ -18,9 +19,22 @@ export default function RecipientBankPage({
   const { id } = use(params);
   const router = useRouter();
   const { data: recipient, isLoading } = useRecipient(id);
+  const { data: account } = useAccount();
   const addBank = useAddRecipientBank();
 
   const existing = recipient?.hasBankAccount;
+
+  if (account && account.accountStatus !== "ACTIVE") {
+    return (
+      <div className="space-y-7">
+        <BackLink href={`/recipients/${id}`} />
+        <KycGate
+          accountStatus={account.accountStatus}
+          feature="adding recipient banks"
+        />
+      </div>
+    );
+  }
 
   return (
     <div className="space-y-7">

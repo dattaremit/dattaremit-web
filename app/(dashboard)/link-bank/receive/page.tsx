@@ -14,6 +14,7 @@ import {
 } from "@/schemas/deposit-account.schema";
 import { useAccount, useAddDepositAccount } from "@/hooks/api";
 import { ApiError } from "@/services/api";
+import { KycGate } from "@/components/kyc-gate";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import {
@@ -69,34 +70,17 @@ export default function ReceiveBankPage() {
         phoneNumber: `+91${data.phoneNumber}`,
       });
       await queryClient.invalidateQueries({ queryKey: queryKeys.account });
-      toast.success("Beneficiary added successfully!");
+      toast.success("Indian bank added successfully!");
       router.push("/link-bank");
     } catch (err) {
       toast.error(
-        err instanceof ApiError ? err.message : "Failed to add beneficiary",
+        err instanceof ApiError ? err.message : "Failed to add Indian bank",
       );
     }
   };
 
   if (accountStatus !== "ACTIVE") {
-    return (
-      <Gate
-        title="Verify your identity first"
-        description={
-          accountStatus === "PENDING"
-            ? "Your KYC is under review. You can add a beneficiary once it's approved."
-            : "Complete KYC to add a beneficiary."
-        }
-        cta={
-          accountStatus !== "PENDING" ? (
-            <Button variant="brand" onClick={() => router.push("/kyc")}>
-              Complete KYC
-              <ArrowRight />
-            </Button>
-          ) : null
-        }
-      />
-    );
+    return <KycGate accountStatus={accountStatus} feature="adding an Indian bank" />;
   }
 
   if (indianKycStatus !== "APPROVED") {
@@ -127,17 +111,17 @@ export default function ReceiveBankPage() {
       <div className="flex flex-col gap-3">
         <BackLink href="/link-bank" />
         <PageHeader
-          eyebrow="Beneficiary"
+          eyebrow="Your Indian bank"
           title={
             <>
-              Where should it{" "}
+              Add your{" "}
               <span className="text-brand">
-                land
+                Indian bank
               </span>
-              ?
+              .
             </>
           }
-          subtitle="Enter the recipient bank details. Money will deposit here."
+          subtitle="Enter your own Indian bank details. This is where money will land when you send to yourself."
         />
       </div>
 
@@ -217,7 +201,7 @@ export default function ReceiveBankPage() {
               className="w-full"
               loading={addDeposit.isPending}
             >
-              Add beneficiary
+              Add Indian bank
             </Button>
           </form>
         </Form>

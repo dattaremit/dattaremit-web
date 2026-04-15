@@ -2,15 +2,18 @@
 
 import Link from "next/link";
 import { Plus, Users } from "lucide-react";
-import { useRecipients } from "@/hooks/api";
+import { useAccount, useRecipients } from "@/hooks/api";
 import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
 import { PageHeader } from "@/components/ui/page-header";
 import { EmptyState } from "@/components/ui/empty-state";
 import { RecipientCard } from "@/components/recipients/recipient-card";
+import { KycGate } from "@/components/kyc-gate";
 
 export default function RecipientsPage() {
   const { data: recipients, isLoading, error, refetch } = useRecipients();
+  const { data: account } = useAccount();
+  const isActive = account?.accountStatus === "ACTIVE";
 
   return (
     <div className="space-y-8">
@@ -27,14 +30,23 @@ export default function RecipientsPage() {
         }
         subtitle="People you can send money to."
         action={
-          <Button asChild variant="brand">
-            <Link href="/recipients/new">
-              <Plus />
-              Add recipient
-            </Link>
-          </Button>
+          isActive ? (
+            <Button asChild variant="brand">
+              <Link href="/recipients/new">
+                <Plus />
+                Add recipient
+              </Link>
+            </Button>
+          ) : null
         }
       />
+
+      {!isActive && (
+        <KycGate
+          accountStatus={account?.accountStatus}
+          feature="adding recipients"
+        />
+      )}
 
       {isLoading && (
         <div className="space-y-3">
@@ -62,7 +74,7 @@ export default function RecipientsPage() {
         </div>
       )}
 
-      {!isLoading && !error && recipients?.length === 0 && (
+      {isActive && !isLoading && !error && recipients?.length === 0 && (
         <EmptyState
           icon={<Users className="size-5" />}
           title="No recipients yet"
@@ -78,7 +90,7 @@ export default function RecipientsPage() {
         />
       )}
 
-      {recipients && recipients.length > 0 && (
+      {isActive && recipients && recipients.length > 0 && (
         <div className="space-y-3">
           {recipients.map((r) => (
             <RecipientCard key={r.id} recipient={r} />

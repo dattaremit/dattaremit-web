@@ -2,15 +2,29 @@
 
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
-import { useCreateRecipient } from "@/hooks/api";
+import { useAccount, useCreateRecipient } from "@/hooks/api";
 import { Card } from "@/components/ui/card";
 import { PageHeader } from "@/components/ui/page-header";
 import { BackLink } from "@/components/ui/back-link";
 import { RecipientForm } from "@/components/recipients/recipient-form";
+import { KycGate } from "@/components/kyc-gate";
 
 export default function NewRecipientPage() {
   const router = useRouter();
   const createRecipient = useCreateRecipient();
+  const { data: account } = useAccount();
+
+  if (account && account.accountStatus !== "ACTIVE") {
+    return (
+      <div className="space-y-7">
+        <BackLink href="/recipients" />
+        <KycGate
+          accountStatus={account.accountStatus}
+          feature="adding recipients"
+        />
+      </div>
+    );
+  }
 
   return (
     <div className="space-y-7">

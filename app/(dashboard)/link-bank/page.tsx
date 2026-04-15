@@ -8,7 +8,6 @@ import {
   ArrowRight,
   Landmark,
   Zap,
-  ShieldCheck,
 } from "lucide-react";
 import { toast } from "sonner";
 import { useQueryClient } from "@tanstack/react-query";
@@ -20,6 +19,7 @@ import { Switch } from "@/components/ui/switch";
 import { Label } from "@/components/ui/label";
 import { PageHeader } from "@/components/ui/page-header";
 import { PlaidLinkButton } from "@/components/plaid-link-button";
+import { KycGate } from "@/components/kyc-gate";
 import { useAccount, useAddExternalAccount } from "@/hooks/api";
 import { ApiError } from "@/services/api";
 import { cn } from "@/lib/utils";
@@ -89,33 +89,11 @@ export default function LinkBankPage() {
             .
           </>
         }
-        subtitle="Connect a US account to fund transfers and add a beneficiary on the receiving end."
+        subtitle="Connect a US account to fund transfers, and add your Indian bank to receive money to yourself."
       />
 
       {accountStatus !== "ACTIVE" ? (
-        <Card variant="elevated" className="mx-auto max-w-lg p-8 text-center">
-          <div className="mx-auto mb-3 flex size-12 items-center justify-center rounded-2xl bg-brand/15 text-brand">
-            <ShieldCheck className="size-6" />
-          </div>
-          <h2 className="font-semibold text-2xl text-foreground">
-            Verify your identity first
-          </h2>
-          <p className="mt-1 text-sm text-muted-foreground">
-            {accountStatus === "PENDING"
-              ? "Your KYC is under review. You can link a bank once it's approved."
-              : "Complete KYC to unlock bank linking."}
-          </p>
-          {accountStatus !== "PENDING" && (
-            <Button
-              variant="brand"
-              className="mt-5"
-              onClick={() => router.push("/kyc")}
-            >
-              Complete KYC
-              <ArrowRight />
-            </Button>
-          )}
-        </Card>
+        <KycGate accountStatus={accountStatus} feature="bank linking" />
       ) : (
         <>
           <div className="grid gap-4 sm:grid-cols-2">
@@ -188,8 +166,8 @@ export default function LinkBankPage() {
                 )
               }
               done={!!user?.zynkDepositAccountId}
-              title="Receive account"
-              description="Add your recipient's Indian bank details."
+              title="Your Indian bank"
+              description="Add your own Indian bank account so you can send money to yourself."
               step="02"
             >
               {user?.zynkDepositAccountId ? (
@@ -201,7 +179,7 @@ export default function LinkBankPage() {
                   variant="brand"
                   onClick={() => router.push("/link-bank/receive")}
                 >
-                  Add beneficiary
+                  Add Indian bank
                   <ArrowRight />
                 </Button>
               )}
