@@ -19,10 +19,7 @@ import { SidebarAccountDropdown } from "@/components/sidebar-account-dropdown";
 import { NotificationBell } from "@/components/notifications/notification-bell";
 import { useAccount } from "@/hooks/api";
 import { ApiError } from "@/services/api";
-import {
-  computeOnboardingState,
-  ONBOARDING_STEPS,
-} from "@/lib/onboarding-progress";
+import { computeOnboardingState, stepHref } from "@/lib/onboarding-progress";
 
 const tabs = [
   { href: "/", label: "Home", icon: Home },
@@ -72,11 +69,8 @@ export default function DashboardLayout({
     if (!isLoaded || !isSignedIn) return;
     if (accountLoading) return;
     if (error && !noProfile) return;
-    if (needsOnboarding) {
-      const target = ONBOARDING_STEPS.find(
-        (s) => s.key === onboardingState.nextStep,
-      )!.href;
-      router.replace(target);
+    if (needsOnboarding && onboardingState.nextStep) {
+      router.replace(stepHref(onboardingState.nextStep));
     }
   }, [
     isLoaded,

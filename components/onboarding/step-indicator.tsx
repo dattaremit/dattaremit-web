@@ -4,7 +4,7 @@ import Link from "next/link";
 import { Check } from "lucide-react";
 import {
   ONBOARDING_STEPS,
-  type OnboardingStepKey,
+  type IndicatorStepKey,
 } from "@/lib/onboarding-progress";
 import { cn } from "@/lib/utils";
 
@@ -12,8 +12,8 @@ export function StepIndicator({
   current,
   completed,
 }: {
-  current: OnboardingStepKey;
-  completed: Record<OnboardingStepKey, boolean>;
+  current: IndicatorStepKey;
+  completed: Record<IndicatorStepKey, boolean>;
 }) {
   const currentIndex = ONBOARDING_STEPS.findIndex((s) => s.key === current);
   const firstIncompleteIndex = ONBOARDING_STEPS.findIndex(

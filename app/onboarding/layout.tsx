@@ -11,22 +11,27 @@ import { useAccount } from "@/hooks/api";
 import { ApiError } from "@/services/api";
 import {
   computeOnboardingState,
-  ONBOARDING_STEPS,
+  stepHref,
   stepIndex,
   type OnboardingStepKey,
+  type IndicatorStepKey,
 } from "@/lib/onboarding-progress";
 import { StepIndicator } from "@/components/onboarding/step-indicator";
 import { AuroraBackground } from "@/components/ui/aurora-background";
 import { AccountMenu } from "@/components/account-menu";
 
 const STEP_FROM_PATH: Record<string, OnboardingStepKey> = {
+  "/onboarding/referral": "referral",
   "/onboarding/profile": "profile",
   "/onboarding/address": "address",
   "/onboarding/kyc": "kyc",
 };
 
+const INDICATOR_STEPS: IndicatorStepKey[] = ["profile", "address", "kyc"];
+
 const WAITLIST_PATH = "/onboarding/waitlist";
 const BLOCKED_PATH = "/onboarding/blocked";
+const REFERRAL_PATH = "/onboarding/referral";
 
 function FullScreenLoader() {
   return (
@@ -78,11 +83,7 @@ export default function OnboardingLayout({
     // Off the gated paths — if we were on waitlist/blocked but the flag
     // cleared (e.g. admin removed the block), bounce back to the normal flow.
     if (pathname === WAITLIST_PATH || pathname === BLOCKED_PATH) {
-      router.replace(
-        state.nextStep
-          ? ONBOARDING_STEPS.find((s) => s.key === state.nextStep)!.href
-          : "/",
-      );
+      router.replace(state.nextStep ? stepHref(state.nextStep) : "/");
       return;
     }
 
@@ -94,16 +95,12 @@ export default function OnboardingLayout({
     }
 
     if (!currentStep) {
-      router.replace(
-        ONBOARDING_STEPS.find((s) => s.key === state.nextStep)!.href,
-      );
+      router.replace(stepHref(state.nextStep));
       return;
     }
 
     if (stepIndex(currentStep) > stepIndex(state.nextStep)) {
-      router.replace(
-        ONBOARDING_STEPS.find((s) => s.key === state.nextStep)!.href,
-      );
+      router.replace(stepHref(state.nextStep));
     }
   }, [
     isLoaded,
@@ -119,7 +116,12 @@ export default function OnboardingLayout({
   ]);
 
   const stepKey = STEP_FROM_PATH[pathname];
-  const isGatedPath = pathname === WAITLIST_PATH || pathname === BLOCKED_PATH;
+  const isIndicatorStep =
+    !!stepKey && (INDICATOR_STEPS as OnboardingStepKey[]).includes(stepKey);
+  const isGatedPath =
+    pathname === WAITLIST_PATH ||
+    pathname === BLOCKED_PATH ||
+    pathname === REFERRAL_PATH;
 
   if (!isLoaded || !isSignedIn || isLoading) {
     return <FullScreenLoader />;
@@ -152,9 +154,11 @@ export default function OnboardingLayout({
     );
   }
 
-  if (!stepKey) {
+  if (!stepKey || !isIndicatorStep) {
     return <FullScreenLoader />;
   }
+
+  const indicatorStep = stepKey as IndicatorStepKey;
 
   return (
     <div className="relative flex min-h-screen flex-col bg-background">
@@ -170,7 +174,7 @@ export default function OnboardingLayout({
 
       <main className="relative z-10 flex flex-1 items-start justify-center px-5 py-10 sm:px-8 sm:py-16">
         <div className="w-full max-w-xl space-y-7">
-          <StepIndicator current={stepKey} completed={state.completion} />
+          <StepIndicator current={indicatorStep} completed={state.completion} />
           <AnimatePresence mode="wait">
             <motion.div
               key={pathname}

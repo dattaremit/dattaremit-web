@@ -27,9 +27,7 @@ export function WelcomeContent() {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    const apiBase = process.env.NEXT_PUBLIC_API_BASE_URL;
-
-    fetch(`${apiBase}/exchange-rate`)
+    fetch("/api/exchange-rate")
       .then((res) => res.json())
       .then((json) => {
         if (json.success && json.data) {

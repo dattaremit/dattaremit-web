@@ -10,8 +10,8 @@ export const ONBOARDING_STEP_ROUTES: Record<OnboardingStep, string> = {
   referral: "/onboarding/referral",
   profile: "/onboarding/profile",
   address: "/onboarding/address",
-  kyc: "/dashboard/kyc",
-  completed: "/dashboard",
+  kyc: "/onboarding/kyc",
+  completed: "/",
 };
 
 export const GUARD_STEP_ROUTES: Record<string, string> = {
@@ -19,5 +19,5 @@ export const GUARD_STEP_ROUTES: Record<string, string> = {
   auth: "/onboarding/profile",
   profile: "/onboarding/profile",
   address: "/onboarding/address",
-  kyc: "/dashboard/kyc",
+  kyc: "/onboarding/kyc",
 };
