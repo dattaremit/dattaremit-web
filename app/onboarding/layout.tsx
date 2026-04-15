@@ -99,6 +99,11 @@ export default function OnboardingLayout({
       return;
     }
 
+    // Referral is optional — allow advancing past it without being sent back.
+    if (state.nextStep === "referral" && currentStep === "profile") {
+      return;
+    }
+
     if (stepIndex(currentStep) > stepIndex(state.nextStep)) {
       router.replace(stepHref(state.nextStep));
     }
