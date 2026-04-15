@@ -148,9 +148,9 @@ export default function DashboardLayout({
                     )}
                   >
                     {active && (
-                      <span className="absolute left-0 top-1/2 h-5 w-[3px] -translate-y-1/2 rounded-r-full bg-brand" />
+                      <span className="absolute left-0 top-1/2 h-5 w-0.75 -translate-y-1/2 rounded-r-full bg-brand" />
                     )}
-                    <Icon className="size-[18px] shrink-0" />
+                    <Icon className="size-4.5 shrink-0" />
                     <span className="truncate">{tab.label}</span>
                   </Link>
                 </li>
@@ -202,7 +202,7 @@ export default function DashboardLayout({
                 )}
               >
                 {active && (
-                  <span className="absolute top-0 left-1/2 h-[2px] w-8 -translate-x-1/2 rounded-b-full bg-brand" />
+                  <span className="absolute top-0 left-1/2 h-0.5 w-8 -translate-x-1/2 rounded-b-full bg-brand" />
                 )}
                 <Icon
                   className={cn(
