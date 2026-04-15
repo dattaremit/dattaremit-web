@@ -89,7 +89,7 @@ export default function OnboardingLayout({
     const currentStep = STEP_FROM_PATH[pathname];
 
     if (!state.nextStep) {
-      if (!currentStep) router.replace("/");
+      router.replace("/");
       return;
     }
 

@@ -1,15 +1,22 @@
 "use client";
 
-import { useMutation } from "@tanstack/react-query";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { Clock, Mail, RefreshCw, ShieldCheck } from "lucide-react";
 import { useAccount } from "@/hooks/api";
 import { requestOnboardingKyc } from "@/services/api";
+import { queryKeys } from "@/constants/query-keys";
 import { Button } from "@/components/ui/button";
 import { PageHeader } from "@/components/ui/page-header";
 
 export default function OnboardingKycPage() {
   const { data: account, isLoading } = useAccount();
-  const requestLink = useMutation({ mutationFn: requestOnboardingKyc });
+  const queryClient = useQueryClient();
+  const requestLink = useMutation({
+    mutationFn: requestOnboardingKyc,
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: queryKeys.account });
+    },
+  });
 
   const status = account?.accountStatus;
   const inReview = status === "PENDING";
