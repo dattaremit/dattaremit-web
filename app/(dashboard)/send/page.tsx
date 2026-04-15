@@ -5,14 +5,14 @@ import Link from "next/link";
 import { useSearchParams } from "next/navigation";
 import { useForm, type Resolver } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
-import { ArrowLeft, Send, UserPlus } from "lucide-react";
+import { ArrowLeft, ArrowRight, Landmark, Send, UserPlus } from "lucide-react";
 import { motion, AnimatePresence } from "motion/react";
 
 import {
   transferAmountSchema,
   type TransferAmountFormData,
 } from "@/schemas/transfer.schema";
-import { useRecipients, useSendMoney } from "@/hooks/api";
+import { useAccount, useRecipients, useSendMoney } from "@/hooks/api";
 import { generateIdempotencyKey } from "@/lib/idempotency";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
@@ -23,6 +23,7 @@ import { PageHeader } from "@/components/ui/page-header";
 import { EmptyState } from "@/components/ui/empty-state";
 import { RecipientCard } from "@/components/recipients/recipient-card";
 import { TransferResult } from "@/components/transfer/transfer-result";
+import { KycGate } from "@/components/kyc-gate";
 import { useStepUp } from "@/hooks/use-step-up";
 import type { Recipient } from "@/types/recipient";
 
@@ -33,6 +34,7 @@ const STEP_ORDER: Step[] = ["select", "amount", "review", "result"];
 export default function SendPage() {
   const search = useSearchParams();
   const preselectedId = search.get("recipient");
+  const { data: account } = useAccount();
   const { data: recipients, isLoading } = useRecipients();
   const sendMoney = useSendMoney();
   const { gate, stepUpElement } = useStepUp({
@@ -85,6 +87,39 @@ export default function SendPage() {
             setStep("review");
           }}
         />
+      </div>
+    );
+  }
+
+  if (account && account.accountStatus !== "ACTIVE") {
+    return (
+      <div className="mx-auto w-full max-w-lg">
+        <KycGate accountStatus={account.accountStatus} feature="sending money" />
+      </div>
+    );
+  }
+
+  if (account && !account.user?.zynkExternalAccountId) {
+    return (
+      <div className="mx-auto w-full max-w-lg">
+        <Card variant="elevated" className="p-8 text-center">
+          <div className="mx-auto mb-3 flex size-12 items-center justify-center rounded-2xl bg-brand/15 text-brand">
+            <Landmark className="size-6" />
+          </div>
+          <h2 className="font-semibold text-2xl text-foreground">
+            Link a bank to send money
+          </h2>
+          <p className="mt-1 text-sm text-muted-foreground">
+            Connect your US bank via Plaid so we know where to pull the funds
+            from. Takes about a minute.
+          </p>
+          <Button asChild variant="brand" className="mt-5">
+            <Link href="/link-bank">
+              Connect bank
+              <ArrowRight />
+            </Link>
+          </Button>
+        </Card>
       </div>
     );
   }
