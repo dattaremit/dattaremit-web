@@ -1,5 +1,6 @@
 "use client";
 
+import { useEffect, useState } from "react";
 import Link from "next/link";
 import {
   Building2,
@@ -8,6 +9,7 @@ import {
   Send,
   Users,
   Sparkles,
+  Landmark,
 } from "lucide-react";
 import { useAccount } from "@/hooks/api";
 import { ApiError } from "@/services/api";
@@ -20,6 +22,18 @@ import { Reveal, Stagger, StaggerItem } from "@/components/motion/reveal";
 export default function HomePage() {
   const { data: account, isLoading, error, refetch } = useAccount();
   const user = account?.user;
+  const [rate, setRate] = useState<number | null>(null);
+
+  useEffect(() => {
+    fetch("/api/exchange-rate")
+      .then((res) => res.json())
+      .then((json) => {
+        if (json?.success && typeof json.data?.rate === "number") {
+          setRate(json.data.rate);
+        }
+      })
+      .catch(() => {});
+  }, []);
 
   const needsProfile = error instanceof ApiError && error.status === 404;
   const realError =
@@ -94,10 +108,13 @@ export default function HomePage() {
             label="Live rate"
             value={
               <>
-                ₹<span className="text-brand">83.42</span>
+                ₹
+                <span className="text-brand">
+                  {rate ? rate.toFixed(2) : "—"}
+                </span>
               </>
             }
-            hint="USD → INR · updated just now"
+            hint="USD → INR · live from Yahoo Finance"
             accent
             icon={<Sparkles className="size-4" />}
           />
@@ -120,6 +137,31 @@ export default function HomePage() {
         </StaggerItem>
       </Stagger>
 
+      {!bothLinked && (
+        <Reveal direction="up" delay={0.05}>
+          <div className="grid gap-3 sm:grid-cols-2">
+            <QuickAction
+              icon={<Send className="size-5" />}
+              label="Send money"
+              href="/send"
+              tint="brand"
+            />
+            <QuickAction
+              icon={
+                hasSendAccount ? (
+                  <CheckCircle2 className="size-5" />
+                ) : (
+                  <Landmark className="size-5" />
+                )
+              }
+              label={hasSendAccount ? "Bank connected" : "Connect bank"}
+              href="/link-bank"
+              tint={hasSendAccount ? "success" : "warning"}
+            />
+          </div>
+        </Reveal>
+      )}
+
       {account?.accountStatus === "ACTIVE" && !bothLinked && (
         <Reveal direction="up" delay={0.1}>
           <Card
@@ -140,8 +182,8 @@ export default function HomePage() {
                     Link your bank
                   </h2>
                   <p className="max-w-md text-sm text-muted-foreground">
-                    Connect a US account and add a beneficiary. Two minutes,
-                    then you&apos;re sending.
+                    Connect a US account and add your Indian bank to receive
+                    funds. Two minutes, then you&apos;re sending.
                   </p>
                 </div>
               </div>
@@ -207,6 +249,41 @@ export default function HomePage() {
         </Reveal>
       )}
     </div>
+  );
+}
+
+function QuickAction({
+  icon,
+  label,
+  href,
+  tint,
+}: {
+  icon: React.ReactNode;
+  label: string;
+  href: string;
+  tint: "brand" | "success" | "warning";
+}) {
+  const tintClass = {
+    brand: "bg-brand/15 text-brand ring-brand/20",
+    success: "bg-success/15 text-success ring-success/20",
+    warning: "bg-warning/15 text-warning ring-warning/20",
+  }[tint];
+
+  return (
+    <Link
+      href={href}
+      className="group flex items-center gap-4 rounded-2xl border border-border bg-card p-4 shadow-soft transition-all hover:border-foreground/20 hover:shadow-lift"
+    >
+      <div
+        className={`flex size-11 items-center justify-center rounded-xl ring-1 ${tintClass}`}
+      >
+        {icon}
+      </div>
+      <span className="flex-1 text-left font-semibold text-foreground">
+        {label}
+      </span>
+      <ArrowRight className="size-4 text-muted-foreground transition-transform group-hover:translate-x-0.5 group-hover:text-foreground" />
+    </Link>
   );
 }
 
