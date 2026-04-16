@@ -116,10 +116,19 @@ export default function KycPage() {
               Click below to send a secure verification link to your email.
             </p>
           ) : status === "PENDING" ? (
-            <p className="text-sm text-muted-foreground">
-              Your KYC is under review. We&apos;ll email you when a decision
-              is made.
-            </p>
+            <>
+              <p className="text-sm text-muted-foreground">
+                Your KYC is under review. We&apos;ll email you when a decision
+                is made.
+              </p>
+              <Button
+                variant="outline"
+                onClick={() => requestLink.mutate()}
+                loading={requestLink.isPending}
+              >
+                Resend verification link
+              </Button>
+            </>
           ) : (
             <p className="text-sm text-muted-foreground">
               Your primary KYC is verified.
