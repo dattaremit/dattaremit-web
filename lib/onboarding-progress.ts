@@ -60,10 +60,9 @@ export function computeOnboardingState(
   const addressDone =
     (account?.addresses?.length ?? 0) > 0 && !!account?.hasZynkEntity;
   const status = account?.accountStatus;
-  // Only consider KYC done when status is ACTIVE (verified).
-  // PENDING means address was submitted but KYC verification not yet completed.
-  // User should still see the KYC onboarding screen to request/track verification.
-  const kycDone = status === "ACTIVE";
+  // KYC is satisfied once the user has requested verification (PENDING) or is
+  // fully verified (ACTIVE). Only INITIAL means they haven't started yet.
+  const kycDone = status === "ACTIVE" || status === "PENDING";
 
   let nextStep: OnboardingStepKey | null = null;
   if (!u) nextStep = "referral";
