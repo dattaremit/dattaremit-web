@@ -2,6 +2,7 @@
 
 import { Suspense } from "react";
 import { AddressForm } from "@/components/address-form";
+import { COUNTRIES } from "@/constants/countries";
 import { Skeleton } from "@/components/ui/skeleton";
 import { useOnboardingRouter } from "@/hooks/use-onboarding-router";
 
@@ -26,6 +27,7 @@ export default function OnboardingAddressPage() {
         description="We need your address to comply with money-transmission regulations."
         submitLabel={{ create: "Continue", update: "Save & continue" }}
         onAfterSubmit={() => goToNext()}
+        countries={COUNTRIES.filter((c) => c.code === "US")}
       />
     </Suspense>
   );

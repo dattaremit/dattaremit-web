@@ -18,6 +18,7 @@ import { Skeleton } from "@/components/ui/skeleton";
 import { TextField } from "@/components/ui/text-field";
 import { PageHeader } from "@/components/ui/page-header";
 import { CountrySelector } from "@/components/country-selector";
+import type { Country } from "@/constants/countries";
 
 export interface AddressFormProps {
   nextHrefOnCreate?: string;
@@ -27,6 +28,7 @@ export interface AddressFormProps {
   title?: string;
   description?: string;
   submitLabel?: { create?: string; update?: string };
+  countries?: Country[];
 }
 
 export function AddressForm({
@@ -37,6 +39,7 @@ export function AddressForm({
   title,
   description,
   submitLabel,
+  countries,
 }: AddressFormProps = {}) {
   const router = useRouter();
   const queryClient = useQueryClient();
@@ -149,6 +152,7 @@ export function AddressForm({
                 onSelect={field.onChange}
                 placeholder="Select country"
                 error={form.formState.errors.country?.message}
+                countries={countries}
               />
             </FormItem>
           )}

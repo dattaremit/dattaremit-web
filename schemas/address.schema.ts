@@ -8,7 +8,7 @@ export const addressSchema = yup.object({
     .string()
     .trim()
     .required("Country is required")
-    .test("valid-country", "Country must be US or IN", (v) => v === "US" || v === "IN"),
+    .oneOf(["US", "IN"], "Invalid country"),
   postalCode: yup.string().trim().required("Postal code is required"),
 });
 

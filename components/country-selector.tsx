@@ -8,7 +8,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { COUNTRIES, getFlagEmoji } from "@/constants/countries";
+import { COUNTRIES, type Country, getFlagEmoji } from "@/constants/countries";
 
 interface CountrySelectorProps {
   label?: string;
@@ -16,6 +16,7 @@ interface CountrySelectorProps {
   onSelect: (value: string) => void;
   placeholder?: string;
   error?: string;
+  countries?: Country[];
 }
 
 export function CountrySelector({
@@ -24,6 +25,7 @@ export function CountrySelector({
   onSelect,
   placeholder = "Select country",
   error,
+  countries = COUNTRIES,
 }: CountrySelectorProps) {
   return (
     <div className="space-y-2">
@@ -33,7 +35,7 @@ export function CountrySelector({
           <SelectValue placeholder={placeholder} />
         </SelectTrigger>
         <SelectContent>
-          {COUNTRIES.map((country) => (
+          {countries.map((country) => (
             <SelectItem key={country.code} value={country.code}>
               <span className="text-lg leading-none">
                 {getFlagEmoji(country.code)}
