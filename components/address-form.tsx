@@ -6,7 +6,7 @@ import { useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { addressSchema, type AddressFormData } from "@/schemas/address.schema";
 import { useAccount } from "@/hooks/api";
-import { submitOnboardingAddress } from "@/services/api";
+import { submitOnboardingAddress, createZynkEntity } from "@/services/api";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { queryKeys } from "@/constants/query-keys";
 import { toast } from "sonner";
@@ -98,6 +98,8 @@ export function AddressForm({
         country: data.country,
         postalCode: data.postalCode,
       });
+
+      await createZynkEntity();
 
       toast.success("Address saved successfully");
 
