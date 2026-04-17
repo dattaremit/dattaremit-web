@@ -14,6 +14,7 @@ import {
 } from "lucide-react";
 
 import { useAccount } from "@/hooks/api";
+import { signOutWithCleanup } from "@/lib/auth/sign-out";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import {
   DropdownMenu,
@@ -112,7 +113,7 @@ export function AccountMenuItems({
         variant="destructive"
         onClick={async () => {
           try {
-            await signOut();
+            await signOutWithCleanup(signOut);
           } catch {
             toast.error("Failed to sign out. Please try again.");
           }

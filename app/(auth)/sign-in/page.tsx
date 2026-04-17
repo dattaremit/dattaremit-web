@@ -18,11 +18,15 @@ import { OtpForm } from "@/components/ui/otp-form";
 import { OAuthButtons } from "@/components/oauth-buttons";
 import { OrDivider } from "@/components/or-divider";
 
+const EMAIL_CODE_STRATEGY = "email_code" as const;
+
 export default function SignInPage() {
   const { signIn, setActive, isLoaded } = useSignIn();
   const router = useRouter();
   const [loading, setLoading] = useState(false);
-  const [pendingSecondFactor, setPendingSecondFactor] = useState(false);
+  const [pendingEmailCode, setPendingEmailCode] = useState(false);
+  const [emailAddressId, setEmailAddressId] = useState<string | null>(null);
+  const [verificationEmail, setVerificationEmail] = useState("");
   const [code, setCode] = useState("");
   const [otpError, setOtpError] = useState<string | undefined>();
 
@@ -36,79 +40,109 @@ export default function SignInPage() {
     setLoading(true);
 
     try {
-      const signInAttempt = await signIn.create({ identifier: data.email });
+      const result = await signIn.create({
+        identifier: data.email,
+        password: data.password,
+      });
 
-      if (signInAttempt.status === "complete") {
-        await setActive({ session: signInAttempt.createdSessionId });
+      if (result.status === "complete" && result.createdSessionId) {
+        await setActive({ session: result.createdSessionId });
         router.replace("/");
         return;
       }
 
-      if (signInAttempt.status === "needs_first_factor") {
-        const result = await signIn.attemptFirstFactor({
-          strategy: "password",
-          password: data.password,
+      const emailFactor = result.supportedFirstFactors?.find(
+        (f): f is Extract<typeof f, { strategy: "email_code" }> =>
+          f.strategy === EMAIL_CODE_STRATEGY,
+      );
+      if (emailFactor) {
+        await signIn.prepareFirstFactor({
+          strategy: EMAIL_CODE_STRATEGY,
+          emailAddressId: emailFactor.emailAddressId,
         });
-
-        if (result.status === "complete") {
-          await setActive({ session: result.createdSessionId });
-          router.replace("/");
-          return;
-        }
-
-        if (result.status === "needs_second_factor") {
-          await signIn.prepareSecondFactor({ strategy: "email_code" });
-          setPendingSecondFactor(true);
-          return;
-        }
+        setEmailAddressId(emailFactor.emailAddressId);
+        setVerificationEmail(data.email);
+        setPendingEmailCode(true);
+        return;
       }
 
       toast.error("Sign in could not be completed.");
     } catch (err: unknown) {
       toast.error(
-        getClerkErrorMessage(err, "Sign in failed. Please try again."),
+        getClerkErrorMessage(
+          err,
+          "Invalid email or password. Please try again.",
+        ),
       );
     } finally {
       setLoading(false);
     }
   };
 
-  const onVerifySecondFactor = async () => {
+  const onVerifyEmailCode = async () => {
     if (!isLoaded) return;
     setOtpError(undefined);
     setLoading(true);
 
     try {
-      const result = await signIn.attemptSecondFactor({
-        strategy: "email_code",
+      const result = await signIn.attemptFirstFactor({
+        strategy: EMAIL_CODE_STRATEGY,
         code,
       });
 
-      if (result.status === "complete") {
-        await setActive({ session: result.createdSessionId });
+      const sessionId = result.createdSessionId ?? signIn.createdSessionId;
+      if (result.status === "complete" && sessionId) {
+        await setActive({ session: sessionId });
         router.replace("/");
+      } else {
+        setOtpError(
+          `Verification incomplete (status: ${result.status}). Please try again.`,
+        );
       }
     } catch (err: unknown) {
       setOtpError(
-        getClerkErrorMessage(err, "Verification failed. Please try again."),
+        getClerkErrorMessage(err, "Invalid code. Please try again."),
       );
     } finally {
       setLoading(false);
     }
   };
 
-  if (pendingSecondFactor) {
+  const onResendCode = async () => {
+    if (!isLoaded || !emailAddressId) return;
+    try {
+      await signIn.prepareFirstFactor({
+        strategy: EMAIL_CODE_STRATEGY,
+        emailAddressId,
+      });
+      setCode("");
+      setOtpError(undefined);
+      toast.success("Code sent. Check your inbox.");
+    } catch (err: unknown) {
+      toast.error(getClerkErrorMessage(err, "Couldn't resend the code."));
+    }
+  };
+
+  if (pendingEmailCode) {
     return (
       <AuthShell
-        eyebrow="Two-step"
+        eyebrow="Verify"
         title={
           <>
-            One more
+            Check your
             <br />
-            <span className="text-brand">step</span>.
+            <span className="text-brand">inbox</span>.
           </>
         }
-        subtitle="Enter the 6-digit code we just emailed you."
+        subtitle={
+          <>
+            We sent a 6-digit code to{" "}
+            <span className="font-medium text-foreground">
+              {verificationEmail}
+            </span>
+            .
+          </>
+        }
       >
         <OtpForm
           value={code}
@@ -116,10 +150,11 @@ export default function SignInPage() {
             setCode(v);
             if (otpError) setOtpError(undefined);
           }}
-          onSubmit={onVerifySecondFactor}
+          onSubmit={onVerifyEmailCode}
           loading={loading}
           error={otpError}
           submitLabel="Verify and sign in"
+          onResend={onResendCode}
         />
       </AuthShell>
     );

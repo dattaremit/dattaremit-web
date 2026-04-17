@@ -20,6 +20,7 @@ import {
 } from "lucide-react";
 import { ThemeToggle } from "@/components/theme-toggle";
 import { cn } from "@/lib/utils";
+import { signOutWithCleanup } from "@/lib/auth/sign-out";
 
 export default function AccountPage() {
   const { user: clerkUser } = useUser();
@@ -31,7 +32,7 @@ export default function AccountPage() {
 
   const handleSignOut = async () => {
     try {
-      await signOut();
+      await signOutWithCleanup(signOut);
     } catch {
       toast.error("Failed to sign out. Please try again.");
     }
