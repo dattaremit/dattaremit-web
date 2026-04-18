@@ -48,8 +48,8 @@ export default function ReceiveBankPage() {
     resolver: yupResolver(depositAccountSchema),
     defaultValues: {
       accountNumber: "",
-      ifscCode: "",
-      accountHolderName: "",
+      ifsc: "",
+      accountName: "",
       bankName: "",
       branchName: "",
       bankAccountType: undefined,
@@ -61,11 +61,10 @@ export default function ReceiveBankPage() {
     try {
       await addDeposit.mutateAsync({
         accountNumber: data.accountNumber,
-        ifscCode: data.ifscCode,
-        accountHolderName: data.accountHolderName,
+        ifsc: data.ifsc,
+        accountName: data.accountName,
         bankName: data.bankName,
         branchName: data.branchName,
-        bankCountry: "IN",
         bankAccountType: data.bankAccountType,
         phoneNumber: `+91${data.phoneNumber}`,
       });
@@ -130,7 +129,7 @@ export default function ReceiveBankPage() {
           <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-5">
             <TextField
               control={form.control}
-              name="accountHolderName"
+              name="accountName"
               label="Account holder name"
               placeholder="As per bank records"
             />
@@ -142,7 +141,7 @@ export default function ReceiveBankPage() {
             />
             <TextField
               control={form.control}
-              name="ifscCode"
+              name="ifsc"
               label="IFSC code"
               placeholder="e.g. SBIN0001234"
               transform={(v) => v.toUpperCase()}
