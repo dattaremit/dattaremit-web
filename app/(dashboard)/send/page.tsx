@@ -6,7 +6,7 @@ import { useRouter, useSearchParams } from "next/navigation";
 import { useForm, type Resolver } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { ArrowLeft, ArrowRight, Landmark, Send, UserPlus } from "lucide-react";
-import { motion, AnimatePresence } from "motion/react";
+import { AnimatePresence } from "motion/react";
 
 import {
   transferAmountSchema,
@@ -28,7 +28,7 @@ import { AddRecipientWarningModal } from "@/components/transfer/add-recipient-wa
 import { KycGate } from "@/components/kyc-gate";
 import { useStepUp } from "@/hooks/use-step-up";
 import { ROUTES } from "@/constants/routes";
-import { EASE_OUT_SMOOTH } from "@/constants/motion";
+import { StepTransition } from "@/components/motion/step-transition";
 import type { Recipient } from "@/types/recipient";
 
 type Step = "select" | "amount" | "review" | "result";
@@ -186,14 +186,7 @@ export default function SendPage() {
 
       <AnimatePresence mode="wait">
         {step === "select" && (
-          <motion.div
-            key="select"
-            initial={{ opacity: 0, x: -12 }}
-            animate={{ opacity: 1, x: 0 }}
-            exit={{ opacity: 0, x: 12 }}
-            transition={{ duration: 0.3, ease: EASE_OUT_SMOOTH }}
-            className="space-y-6"
-          >
+          <StepTransition key="select">
             <PageHeader
               eyebrow="Step 1"
               title={
@@ -265,18 +258,11 @@ export default function SendPage() {
                 router.push(ROUTES.RECIPIENTS_NEW);
               }}
             />
-          </motion.div>
+          </StepTransition>
         )}
 
         {step === "amount" && selected && (
-          <motion.div
-            key="amount"
-            initial={{ opacity: 0, x: -12 }}
-            animate={{ opacity: 1, x: 0 }}
-            exit={{ opacity: 0, x: 12 }}
-            transition={{ duration: 0.3, ease: EASE_OUT_SMOOTH }}
-            className="space-y-6"
-          >
+          <StepTransition key="amount">
             <PageHeader
               eyebrow="Step 2"
               title={
@@ -332,18 +318,11 @@ export default function SendPage() {
                 </form>
               </Form>
             </Card>
-          </motion.div>
+          </StepTransition>
         )}
 
         {step === "review" && selected && (
-          <motion.div
-            key="review"
-            initial={{ opacity: 0, x: -12 }}
-            animate={{ opacity: 1, x: 0 }}
-            exit={{ opacity: 0, x: 12 }}
-            transition={{ duration: 0.3, ease: EASE_OUT_SMOOTH }}
-            className="space-y-6"
-          >
+          <StepTransition key="review">
             <PageHeader
               eyebrow="Step 3"
               title={
@@ -430,7 +409,7 @@ export default function SendPage() {
                 </Button>
               </div>
             </Card>
-          </motion.div>
+          </StepTransition>
         )}
       </AnimatePresence>
     </div>

@@ -15,9 +15,9 @@ import { toast } from "sonner";
 import { Card } from "@/components/ui/card";
 import { Form, FormField, FormItem } from "@/components/ui/form";
 import { Button } from "@/components/ui/button";
-import { Skeleton } from "@/components/ui/skeleton";
 import { TextField } from "@/components/ui/text-field";
 import { PageHeader } from "@/components/ui/page-header";
+import { FormSkeletonLoader } from "@/components/ui/form-skeleton-loader";
 import { CountrySelector } from "@/components/country-selector";
 import type { Country } from "@/constants/countries";
 
@@ -120,22 +120,7 @@ export function AddressForm({
   };
 
   if (isLoading) {
-    const skeletons = (
-      <div className="space-y-4">
-        {Array.from({ length: 5 }).map((_, i) => (
-          <Skeleton key={i} className="h-11 w-full" />
-        ))}
-      </div>
-    );
-    if (chromeless) return skeletons;
-    return (
-      <div className="space-y-6">
-        <Skeleton className="h-12 w-72" />
-        <Card variant="elevated" className="p-6 sm:p-8">
-          {skeletons}
-        </Card>
-      </div>
-    );
+    return <FormSkeletonLoader fieldCount={5} chromeless={chromeless} />;
   }
 
   const headerTitle = title ?? "Your address";

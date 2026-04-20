@@ -5,7 +5,7 @@ import Link from "next/link";
 import { useForm, type Resolver } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { Send } from "lucide-react";
-import { motion, AnimatePresence } from "motion/react";
+import { AnimatePresence } from "motion/react";
 
 import {
   transferAmountSchema,
@@ -22,7 +22,7 @@ import { BackLink } from "@/components/ui/back-link";
 import { TransferResult } from "@/components/transfer/transfer-result";
 import { useStepUp } from "@/hooks/use-step-up";
 import { ROUTES } from "@/constants/routes";
-import { EASE_OUT_SMOOTH } from "@/constants/motion";
+import { StepTransition } from "@/components/motion/step-transition";
 
 type Step = "amount" | "review" | "result";
 
@@ -109,14 +109,7 @@ export default function SendToSelfPage() {
 
       <AnimatePresence mode="wait">
         {step === "amount" && (
-          <motion.div
-            key="amount"
-            initial={{ opacity: 0, x: -12 }}
-            animate={{ opacity: 1, x: 0 }}
-            exit={{ opacity: 0, x: 12 }}
-            transition={{ duration: 0.3, ease: EASE_OUT_SMOOTH }}
-            className="space-y-6"
-          >
+          <StepTransition key="amount">
             <PageHeader
               eyebrow="Self-send"
               title={
@@ -171,18 +164,11 @@ export default function SendToSelfPage() {
                 </form>
               </Form>
             </Card>
-          </motion.div>
+          </StepTransition>
         )}
 
         {step === "review" && (
-          <motion.div
-            key="review"
-            initial={{ opacity: 0, x: -12 }}
-            animate={{ opacity: 1, x: 0 }}
-            exit={{ opacity: 0, x: 12 }}
-            transition={{ duration: 0.3, ease: EASE_OUT_SMOOTH }}
-            className="space-y-6"
-          >
+          <StepTransition key="review">
             <PageHeader
               eyebrow="Confirm"
               title={
@@ -261,7 +247,7 @@ export default function SendToSelfPage() {
                 </Button>
               </div>
             </Card>
-          </motion.div>
+          </StepTransition>
         )}
       </AnimatePresence>
     </div>

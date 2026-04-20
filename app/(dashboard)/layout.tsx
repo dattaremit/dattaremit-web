@@ -21,6 +21,7 @@ import { useAccount } from "@/hooks/api";
 import { ApiError } from "@/services/api";
 import { computeOnboardingState, stepHref } from "@/lib/onboarding-progress";
 import { ROUTES } from "@/constants/routes";
+import { FullScreenLoader } from "@/components/ui/full-screen-loader";
 
 const tabs = [
   { href: ROUTES.ROOT, label: "Home", icon: Home },
@@ -35,17 +36,6 @@ function isTabActive(tabHref: string, pathname: string) {
   return tabHref === ROUTES.ROOT
     ? pathname === ROUTES.ROOT
     : pathname.startsWith(tabHref);
-}
-
-function FullScreenLoader() {
-  return (
-    <div className="flex min-h-screen items-center justify-center bg-background">
-      <div className="relative flex size-12 items-center justify-center">
-        <span className="absolute inset-0 animate-ping rounded-full bg-brand/30" />
-        <span className="relative size-2 rounded-full bg-brand" />
-      </div>
-    </div>
-  );
 }
 
 export default function DashboardLayout({

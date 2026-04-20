@@ -18,6 +18,7 @@ import {
 } from "@/lib/onboarding-progress";
 import { ROUTES } from "@/constants/routes";
 import { EASE_OUT_SMOOTH } from "@/constants/motion";
+import { FullScreenLoader } from "@/components/ui/full-screen-loader";
 import { StepIndicator } from "@/components/onboarding/step-indicator";
 import { AuroraBackground } from "@/components/ui/aurora-background";
 import { AccountMenu } from "@/components/account-menu";
@@ -30,17 +31,6 @@ const STEP_FROM_PATH: Record<string, OnboardingStepKey> = {
 };
 
 const INDICATOR_STEPS: IndicatorStepKey[] = ["profile", "address", "kyc"];
-
-function FullScreenLoader() {
-  return (
-    <div className="flex min-h-screen items-center justify-center bg-background">
-      <div className="relative flex size-12 items-center justify-center">
-        <span className="absolute inset-0 animate-ping rounded-full bg-brand/30" />
-        <span className="relative size-2 rounded-full bg-brand" />
-      </div>
-    </div>
-  );
-}
 
 export default function OnboardingLayout({
   children,

@@ -29,9 +29,9 @@ import {
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { DateSelect } from "@/components/ui/date-select";
-import { Skeleton } from "@/components/ui/skeleton";
 import { TextField } from "@/components/ui/text-field";
 import { PageHeader } from "@/components/ui/page-header";
+import { FormSkeletonLoader } from "@/components/ui/form-skeleton-loader";
 import { PhoneInput } from "@/components/phone-input";
 
 export interface PersonalInfoFormProps {
@@ -148,23 +148,7 @@ export function PersonalInfoForm({
   };
 
   if (isLoading) {
-    const skeletons = (
-      <div className="space-y-4">
-        <Skeleton className="h-11 w-full" />
-        <Skeleton className="h-11 w-full" />
-        <Skeleton className="h-11 w-full" />
-        <Skeleton className="h-11 w-full" />
-      </div>
-    );
-    if (chromeless) return skeletons;
-    return (
-      <div className="space-y-6">
-        <Skeleton className="h-12 w-72" />
-        <Card variant="elevated" className="p-6 sm:p-8">
-          {skeletons}
-        </Card>
-      </div>
-    );
+    return <FormSkeletonLoader fieldCount={4} chromeless={chromeless} />;
   }
 
   const headerTitle = title ?? "Edit your profile";
