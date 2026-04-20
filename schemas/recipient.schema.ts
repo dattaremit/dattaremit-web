@@ -10,9 +10,7 @@ export const recipientSchema = yup.object({
     .trim()
     .required("Phone number is required")
     .matches(/^\d+$/, "Phone number must contain only digits"),
-  dateOfBirth: yup.string().required("Date of birth is required"),
   addressLine1: yup.string().trim().required("Address line 1 is required"),
-  addressLine2: yup.string().trim().optional(),
   city: yup.string().trim().required("City is required"),
   state: yup.string().trim().required("State is required"),
   postalCode: yup.string().trim().required("Postal code is required"),

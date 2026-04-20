@@ -9,14 +9,10 @@ import {
 } from "@/schemas/recipient.schema";
 import {
   Form,
-  FormControl,
   FormField,
   FormItem,
-  FormLabel,
-  FormMessage,
 } from "@/components/ui/form";
 import { Button } from "@/components/ui/button";
-import { DateSelect } from "@/components/ui/date-select";
 import { TextField } from "@/components/ui/text-field";
 import { PhoneInput } from "@/components/phone-input";
 import { useCheckEmailAvailability } from "@/hooks/api";
@@ -52,9 +48,7 @@ export function RecipientForm({
       email: "",
       phoneNumberPrefix: "+91",
       phoneNumber: "",
-      dateOfBirth: "",
       addressLine1: "",
-      addressLine2: "",
       city: "",
       state: "",
       postalCode: "",
@@ -136,34 +130,10 @@ export function RecipientForm({
           )}
         />
 
-        <FormField
-          control={form.control}
-          name="dateOfBirth"
-          render={({ field, fieldState }) => (
-            <FormItem className="flex flex-col">
-              <FormLabel>Date of birth</FormLabel>
-              <FormControl>
-                <DateSelect
-                  value={field.value}
-                  onChange={field.onChange}
-                  invalid={!!fieldState.error}
-                />
-              </FormControl>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
-
         <TextField
           control={form.control}
           name="addressLine1"
           label="Address line 1"
-        />
-        <TextField
-          control={form.control}
-          name="addressLine2"
-          label="Address line 2"
-          placeholder="Optional"
         />
 
         <div className="grid gap-3 sm:grid-cols-3">

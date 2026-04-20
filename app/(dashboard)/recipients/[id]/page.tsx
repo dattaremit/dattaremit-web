@@ -107,7 +107,6 @@ export default function RecipientDetailPage({
           <Detail label="Phone">
             {recipient.phoneNumberPrefix} {recipient.phoneNumber}
           </Detail>
-          <Detail label="Date of birth">{recipient.dateOfBirth}</Detail>
           <Detail label="Nationality">{recipient.nationality}</Detail>
         </div>
 
@@ -115,7 +114,6 @@ export default function RecipientDetailPage({
 
         <Detail label="Address">
           {recipient.addressLine1}
-          {recipient.addressLine2 ? `, ${recipient.addressLine2}` : ""}
           <br />
           {recipient.city}, {recipient.state} {recipient.postalCode}
           <br />
