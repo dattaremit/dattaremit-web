@@ -1,4 +1,5 @@
 import type { Account } from "@/types/api";
+import { ROUTES } from "@/constants/routes";
 
 export type OnboardingStepKey = "referral" | "profile" | "address" | "kyc";
 export type IndicatorStepKey = Exclude<OnboardingStepKey, "referral">;
@@ -8,16 +9,16 @@ export const ONBOARDING_STEPS: {
   label: string;
   href: string;
 }[] = [
-  { key: "profile", label: "Your profile", href: "/onboarding/profile" },
-  { key: "address", label: "Your address", href: "/onboarding/address" },
-  { key: "kyc", label: "Verify identity", href: "/onboarding/kyc" },
+  { key: "profile", label: "Your profile", href: ROUTES.ONBOARDING.PROFILE },
+  { key: "address", label: "Your address", href: ROUTES.ONBOARDING.ADDRESS },
+  { key: "kyc", label: "Verify identity", href: ROUTES.ONBOARDING.KYC },
 ];
 
 const ALL_STEP_HREFS: Record<OnboardingStepKey, string> = {
-  referral: "/onboarding/referral",
-  profile: "/onboarding/profile",
-  address: "/onboarding/address",
-  kyc: "/onboarding/kyc",
+  referral: ROUTES.ONBOARDING.REFERRAL,
+  profile: ROUTES.ONBOARDING.PROFILE,
+  address: ROUTES.ONBOARDING.ADDRESS,
+  kyc: ROUTES.ONBOARDING.KYC,
 };
 
 const ALL_STEP_ORDER: OnboardingStepKey[] = [
@@ -37,7 +38,7 @@ export function stepHref(key: OnboardingStepKey): string {
 
 /** Resolve where to send the user after a step is saved. */
 export function nextHref(state: OnboardingState): string {
-  if (!state.nextStep) return "/";
+  if (!state.nextStep) return ROUTES.ROOT;
   return stepHref(state.nextStep);
 }
 

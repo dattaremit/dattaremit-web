@@ -2,6 +2,7 @@
 
 import { useEffect, useRef } from "react";
 import { useClerk } from "@clerk/nextjs";
+import { ROUTES } from "@/constants/routes";
 
 const DEFAULT_IDLE_MS = 15 * 60 * 1000;
 const ACTIVITY_EVENTS = ["mousemove", "keydown", "pointerdown", "touchstart", "scroll"] as const;
@@ -19,7 +20,7 @@ export function useIdleLogout(idleMs: number = DEFAULT_IDLE_MS) {
     const reset = () => {
       if (timerRef.current) clearTimeout(timerRef.current);
       timerRef.current = setTimeout(() => {
-        signOut({ redirectUrl: "/sign-in" });
+        signOut({ redirectUrl: ROUTES.SIGN_IN });
       }, idleMs);
     };
 

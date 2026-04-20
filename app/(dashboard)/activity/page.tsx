@@ -19,6 +19,12 @@ import { PageHeader } from "@/components/ui/page-header";
 import { EmptyState } from "@/components/ui/empty-state";
 import { useActivities } from "@/hooks/api";
 import { cn } from "@/lib/utils";
+import {
+  TRANSFER_TYPES,
+  KYC_TYPES,
+  ACCOUNT_TYPES,
+} from "@/constants/activity-types";
+import { getActivityStatusVariant } from "@/constants/status-meta";
 import type { ActivityType, ActivityQueryParams } from "@/types/api";
 
 const PAGE_SIZE = 20;
@@ -31,25 +37,6 @@ const FILTER_TABS: { key: FilterTab; label: string }[] = [
   { key: "kyc", label: "KYC" },
   { key: "account", label: "Account" },
 ];
-
-const TRANSFER_TYPES: ActivityType[] = [
-  "DEPOSIT",
-  "WITHDRAWAL",
-  "TRANSFER",
-  "PAYMENT",
-  "REFUND",
-];
-
-const KYC_TYPES: ActivityType[] = [
-  "KYC_SUBMITTED",
-  "KYC_APPROVED",
-  "KYC_REJECTED",
-  "KYC_PENDING",
-  "KYC_VERIFIED",
-  "KYC_FAILED",
-];
-
-const ACCOUNT_TYPES: ActivityType[] = ["ACCOUNT_APPROVED", "ACCOUNT_ACTIVATED"];
 
 function getActivityIcon(type: ActivityType) {
   if (["DEPOSIT", "REFUND"].includes(type)) return ArrowDownLeft;
@@ -67,21 +54,6 @@ function getIconAccent(type: ActivityType) {
     return "bg-brand/15 text-brand";
   if (type.startsWith("KYC_")) return "bg-accent text-foreground";
   return "bg-muted text-muted-foreground";
-}
-
-function getStatusVariant(
-  status: string,
-): "default" | "secondary" | "destructive" | "outline" {
-  switch (status) {
-    case "COMPLETE":
-      return "default";
-    case "PENDING":
-      return "secondary";
-    case "FAILED":
-      return "destructive";
-    default:
-      return "outline";
-  }
 }
 
 function formatType(type: string) {
@@ -195,7 +167,7 @@ export default function ActivityPage() {
                       {activity.description || formatType(activity.type)}
                     </p>
                     <Badge
-                      variant={getStatusVariant(activity.status)}
+                      variant={getActivityStatusVariant(activity.status)}
                       className="text-[10px]"
                     >
                       {activity.status.toLowerCase()}

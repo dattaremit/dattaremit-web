@@ -27,6 +27,8 @@ import { SelfTransferCard } from "@/components/transfer/self-transfer-card";
 import { AddRecipientWarningModal } from "@/components/transfer/add-recipient-warning-modal";
 import { KycGate } from "@/components/kyc-gate";
 import { useStepUp } from "@/hooks/use-step-up";
+import { ROUTES } from "@/constants/routes";
+import { EASE_OUT_SMOOTH } from "@/constants/motion";
 import type { Recipient } from "@/types/recipient";
 
 type Step = "select" | "amount" | "review" | "result";
@@ -118,7 +120,7 @@ export default function SendPage() {
             from. Takes about a minute.
           </p>
           <Button asChild variant="brand" className="mt-5">
-            <Link href="/link-bank">
+            <Link href={ROUTES.LINK_BANK}>
               Connect bank
               <ArrowRight />
             </Link>
@@ -189,7 +191,7 @@ export default function SendPage() {
             initial={{ opacity: 0, x: -12 }}
             animate={{ opacity: 1, x: 0 }}
             exit={{ opacity: 0, x: 12 }}
-            transition={{ duration: 0.3, ease: [0.2, 0.8, 0.2, 1] }}
+            transition={{ duration: 0.3, ease: EASE_OUT_SMOOTH }}
             className="space-y-6"
           >
             <PageHeader
@@ -260,7 +262,7 @@ export default function SendPage() {
               onOpenChange={setWarningOpen}
               onConfirm={() => {
                 setWarningOpen(false);
-                router.push("/recipients/new");
+                router.push(ROUTES.RECIPIENTS_NEW);
               }}
             />
           </motion.div>
@@ -272,7 +274,7 @@ export default function SendPage() {
             initial={{ opacity: 0, x: -12 }}
             animate={{ opacity: 1, x: 0 }}
             exit={{ opacity: 0, x: 12 }}
-            transition={{ duration: 0.3, ease: [0.2, 0.8, 0.2, 1] }}
+            transition={{ duration: 0.3, ease: EASE_OUT_SMOOTH }}
             className="space-y-6"
           >
             <PageHeader
@@ -339,7 +341,7 @@ export default function SendPage() {
             initial={{ opacity: 0, x: -12 }}
             animate={{ opacity: 1, x: 0 }}
             exit={{ opacity: 0, x: 12 }}
-            transition={{ duration: 0.3, ease: [0.2, 0.8, 0.2, 1] }}
+            transition={{ duration: 0.3, ease: EASE_OUT_SMOOTH }}
             className="space-y-6"
           >
             <PageHeader

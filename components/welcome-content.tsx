@@ -14,6 +14,7 @@ import {
   COMPETITOR_SPREADS,
   DISCLAIMER_TEXT,
 } from "@/constants/welcome";
+import { ROUTES } from "@/constants/routes";
 import { cn } from "@/lib/utils";
 
 interface ExchangeRateData {
@@ -80,13 +81,13 @@ export function WelcomeContent() {
             </p>
             <div className="flex flex-col gap-3 sm:flex-row">
               <Button asChild variant="brand" size="xl">
-                <Link href="/sign-up">
+                <Link href={ROUTES.SIGN_UP}>
                   Open free account
                   <ArrowRight />
                 </Link>
               </Button>
               <Button asChild variant="outline" size="xl">
-                <Link href="/sign-in">Sign in</Link>
+                <Link href={ROUTES.SIGN_IN}>Sign in</Link>
               </Button>
             </div>
             <div className="flex flex-wrap items-center gap-x-6 gap-y-2 pt-2 text-xs text-muted-foreground">
@@ -251,7 +252,7 @@ export function WelcomeContent() {
           No paperwork. No hidden fees. Send your first transfer the same day.
         </p>
         <Button asChild variant="brand" size="xl" className="mt-2">
-          <Link href="/sign-up">
+          <Link href={ROUTES.SIGN_UP}>
             Get started
             <ArrowRight />
           </Link>

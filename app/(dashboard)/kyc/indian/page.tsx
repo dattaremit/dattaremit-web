@@ -17,6 +17,7 @@ import { Form } from "@/components/ui/form";
 import { TextField } from "@/components/ui/text-field";
 import { PageHeader } from "@/components/ui/page-header";
 import { BackLink } from "@/components/ui/back-link";
+import { ROUTES } from "@/constants/routes";
 
 export default function IndianKycPage() {
   const router = useRouter();
@@ -30,7 +31,7 @@ export default function IndianKycPage() {
   return (
     <div className="mx-auto w-full max-w-lg space-y-7">
       <div className="flex flex-col gap-3">
-        <BackLink href="/kyc" />
+        <BackLink href={ROUTES.KYC} />
         <PageHeader
           eyebrow="Indian KYC"
           title={
@@ -59,7 +60,7 @@ export default function IndianKycPage() {
                 toast.success(
                   "Indian KYC submitted — verification in progress.",
                 );
-                router.replace("/kyc");
+                router.replace(ROUTES.KYC);
               } catch (err) {
                 toast.error(
                   err instanceof Error

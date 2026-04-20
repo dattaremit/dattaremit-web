@@ -9,6 +9,7 @@ import {
   Shield,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { ROUTES } from "@/constants/routes";
 import type { IndianKycStatus } from "@/types/api";
 
 interface SelfTransferCardProps {
@@ -27,23 +28,23 @@ export function SelfTransferCard({
   let StatusIcon = Shield;
   let statusLabel = "Complete Indian KYC to unlock";
   let statusClass = "text-muted-foreground";
-  let href = "/kyc/indian";
+  let href: string = ROUTES.KYC_INDIAN;
 
   if (isReady) {
     StatusIcon = CheckCircle;
     statusLabel = "Ready to send";
     statusClass = "text-success";
-    href = "/send/self";
+    href = ROUTES.SEND_SELF;
   } else if (isApproved && !hasDepositAccount) {
     StatusIcon = Landmark;
     statusLabel = "Add bank account";
     statusClass = "text-warning";
-    href = "/link-bank/receive";
+    href = ROUTES.LINK_BANK_RECEIVE;
   } else if (isPending) {
     StatusIcon = Clock;
     statusLabel = "Indian KYC pending…";
     statusClass = "text-warning";
-    href = "/kyc/indian";
+    href = ROUTES.KYC_INDIAN;
   }
 
   return (

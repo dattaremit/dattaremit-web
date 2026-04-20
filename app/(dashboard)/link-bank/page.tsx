@@ -22,6 +22,7 @@ import { PlaidLinkButton } from "@/components/plaid-link-button";
 import { KycGate } from "@/components/kyc-gate";
 import { useAccount, useAddExternalAccount } from "@/hooks/api";
 import { ApiError } from "@/services/api";
+import { ROUTES } from "@/constants/routes";
 import { cn } from "@/lib/utils";
 
 export default function LinkBankPage() {
@@ -185,7 +186,7 @@ export default function LinkBankPage() {
                 <Button
                   variant="brand"
                   size="lg"
-                  onClick={() => router.push("/link-bank/receive")}
+                  onClick={() => router.push(ROUTES.LINK_BANK_RECEIVE)}
                 >
                   Add Indian bank
                   <ArrowRight />

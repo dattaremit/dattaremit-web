@@ -12,6 +12,9 @@ import {
 import { useQueryClient } from "@tanstack/react-query";
 import { useAccount, useCreateUser, useUpdateUser } from "@/hooks/api";
 import { queryKeys } from "@/constants/query-keys";
+import { STORAGE_KEYS } from "@/constants/storage-keys";
+import { ROUTES } from "@/constants/routes";
+import { stripPhonePrefix } from "@/lib/phone-utils";
 import { toast } from "sonner";
 
 import { Card } from "@/components/ui/card";
@@ -42,7 +45,7 @@ export interface PersonalInfoFormProps {
 }
 
 export function PersonalInfoForm({
-  nextHrefOnCreate = "/edit-addresses",
+  nextHrefOnCreate = ROUTES.EDIT_ADDRESSES,
   nextHrefOnUpdate,
   onAfterSubmit,
   chromeless = false,
@@ -101,7 +104,8 @@ export function PersonalInfoForm({
           nationality: "US",
         });
       } else {
-        const referralCode = localStorage.getItem("referral_code") || undefined;
+        const referralCode =
+          localStorage.getItem(STORAGE_KEYS.REFERRAL_CODE) || undefined;
 
         await createUserMutation.mutateAsync({
           clerkUserId: clerkUser?.id || "",
@@ -116,7 +120,7 @@ export function PersonalInfoForm({
           referredByCode: referralCode,
         });
 
-        localStorage.removeItem("referral_code");
+        localStorage.removeItem(STORAGE_KEYS.REFERRAL_CODE);
       }
 
       if (!isExistingUser) {
@@ -211,12 +215,12 @@ export function PersonalInfoForm({
                 label="Phone number"
                 value={form.getValues("phoneNumberPrefix") + field.value}
                 onChangePhone={(fullPhone) => {
-                  const prefix = form.getValues("phoneNumberPrefix");
-                  if (fullPhone.startsWith(prefix)) {
-                    field.onChange(fullPhone.substring(prefix.length));
-                  } else {
-                    field.onChange(fullPhone.replace(/^\+\d{1,4}/, ""));
-                  }
+                  field.onChange(
+                    stripPhonePrefix(
+                      fullPhone,
+                      form.getValues("phoneNumberPrefix"),
+                    ),
+                  );
                 }}
                 onChangeCountry={(dialCode) => {
                   form.setValue("phoneNumberPrefix", dialCode);

@@ -4,6 +4,7 @@ import { useRouter } from "next/navigation";
 import { useQueryClient } from "@tanstack/react-query";
 import { ArrowRight, Clock, RefreshCw, ShieldCheck } from "lucide-react";
 import { queryKeys } from "@/constants/query-keys";
+import { ROUTES } from "@/constants/routes";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import type { AccountStatus } from "@/types/api";
@@ -59,7 +60,7 @@ export function KycGate({ accountStatus, feature = "this feature" }: KycGateProp
       <Button
         variant="brand"
         className="mt-5"
-        onClick={() => router.push("/kyc")}
+        onClick={() => router.push(ROUTES.KYC)}
       >
         Complete KYC
         <ArrowRight />

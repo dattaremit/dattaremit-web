@@ -17,6 +17,7 @@ import { Card } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
 import { Skeleton } from "@/components/ui/skeleton";
 import { BackLink } from "@/components/ui/back-link";
+import { ROUTES } from "@/constants/routes";
 
 export default function RecipientDetailPage({
   params,
@@ -51,7 +52,7 @@ export default function RecipientDetailPage({
   if (error || !recipient) {
     return (
       <div className="space-y-4">
-        <BackLink href="/recipients" />
+        <BackLink href={ROUTES.RECIPIENTS} />
         <p className="text-destructive">
           {error instanceof Error ? error.message : "Recipient not found."}
         </p>
@@ -65,7 +66,7 @@ export default function RecipientDetailPage({
 
   return (
     <div className="space-y-7">
-      <BackLink href="/recipients" />
+      <BackLink href={ROUTES.RECIPIENTS} />
 
       <Card
         variant="elevated"

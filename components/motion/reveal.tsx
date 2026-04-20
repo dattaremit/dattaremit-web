@@ -1,6 +1,7 @@
 "use client";
 
 import { motion, type HTMLMotionProps, type Transition } from "motion/react";
+import { EASE_OUT_SMOOTH } from "@/constants/motion";
 import { cn } from "@/lib/utils";
 
 type Direction = "up" | "down" | "left" | "right" | "none";
@@ -15,7 +16,7 @@ const offsets: Record<Direction, { x: number; y: number }> = {
 
 const baseTransition: Transition = {
   duration: 0.55,
-  ease: [0.2, 0.8, 0.2, 1],
+  ease: EASE_OUT_SMOOTH,
 };
 
 export type RevealProps = HTMLMotionProps<"div"> & {

@@ -20,6 +20,7 @@ import { DateSelect } from "@/components/ui/date-select";
 import { TextField } from "@/components/ui/text-field";
 import { PhoneInput } from "@/components/phone-input";
 import { useCheckEmailAvailability } from "@/hooks/api";
+import { stripPhonePrefix } from "@/lib/phone-utils";
 
 export interface RecipientFormProps {
   defaultValues?: Partial<RecipientFormData>;
@@ -118,12 +119,12 @@ export function RecipientForm({
                 label="Phone"
                 value={form.getValues("phoneNumberPrefix") + field.value}
                 onChangePhone={(fullPhone) => {
-                  const prefix = form.getValues("phoneNumberPrefix");
-                  if (fullPhone.startsWith(prefix)) {
-                    field.onChange(fullPhone.substring(prefix.length));
-                  } else {
-                    field.onChange(fullPhone.replace(/^\+\d{1,4}/, ""));
-                  }
+                  field.onChange(
+                    stripPhonePrefix(
+                      fullPhone,
+                      form.getValues("phoneNumberPrefix"),
+                    ),
+                  );
                 }}
                 onChangeCountry={(dialCode) =>
                   form.setValue("phoneNumberPrefix", dialCode)

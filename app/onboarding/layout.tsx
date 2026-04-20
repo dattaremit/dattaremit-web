@@ -16,22 +16,20 @@ import {
   type OnboardingStepKey,
   type IndicatorStepKey,
 } from "@/lib/onboarding-progress";
+import { ROUTES } from "@/constants/routes";
+import { EASE_OUT_SMOOTH } from "@/constants/motion";
 import { StepIndicator } from "@/components/onboarding/step-indicator";
 import { AuroraBackground } from "@/components/ui/aurora-background";
 import { AccountMenu } from "@/components/account-menu";
 
 const STEP_FROM_PATH: Record<string, OnboardingStepKey> = {
-  "/onboarding/referral": "referral",
-  "/onboarding/profile": "profile",
-  "/onboarding/address": "address",
-  "/onboarding/kyc": "kyc",
+  [ROUTES.ONBOARDING.REFERRAL]: "referral",
+  [ROUTES.ONBOARDING.PROFILE]: "profile",
+  [ROUTES.ONBOARDING.ADDRESS]: "address",
+  [ROUTES.ONBOARDING.KYC]: "kyc",
 };
 
 const INDICATOR_STEPS: IndicatorStepKey[] = ["profile", "address", "kyc"];
-
-const WAITLIST_PATH = "/onboarding/waitlist";
-const BLOCKED_PATH = "/onboarding/blocked";
-const REFERRAL_PATH = "/onboarding/referral";
 
 function FullScreenLoader() {
   return (
@@ -61,7 +59,7 @@ export default function OnboardingLayout({
 
   useEffect(() => {
     if (isLoaded && !isSignedIn) {
-      router.replace("/sign-in");
+      router.replace(ROUTES.SIGN_IN);
     }
   }, [isLoaded, isSignedIn, router]);
 
@@ -72,25 +70,25 @@ export default function OnboardingLayout({
 
     // Gate users before step-based routing: blocklist wins, then waitlist.
     if (isBlocked) {
-      if (pathname !== BLOCKED_PATH) router.replace(BLOCKED_PATH);
+      if (pathname !== ROUTES.ONBOARDING.BLOCKED) router.replace(ROUTES.ONBOARDING.BLOCKED);
       return;
     }
     if (isOnWaitlist) {
-      if (pathname !== WAITLIST_PATH) router.replace(WAITLIST_PATH);
+      if (pathname !== ROUTES.ONBOARDING.WAITLIST) router.replace(ROUTES.ONBOARDING.WAITLIST);
       return;
     }
 
     // Off the gated paths — if we were on waitlist/blocked but the flag
     // cleared (e.g. admin removed the block), bounce back to the normal flow.
-    if (pathname === WAITLIST_PATH || pathname === BLOCKED_PATH) {
-      router.replace(state.nextStep ? stepHref(state.nextStep) : "/");
+    if (pathname === ROUTES.ONBOARDING.WAITLIST || pathname === ROUTES.ONBOARDING.BLOCKED) {
+      router.replace(state.nextStep ? stepHref(state.nextStep) : ROUTES.ROOT);
       return;
     }
 
     const currentStep = STEP_FROM_PATH[pathname];
 
     if (!state.nextStep) {
-      router.replace("/");
+      router.replace(ROUTES.ROOT);
       return;
     }
 
@@ -124,9 +122,9 @@ export default function OnboardingLayout({
   const isIndicatorStep =
     !!stepKey && (INDICATOR_STEPS as OnboardingStepKey[]).includes(stepKey);
   const isGatedPath =
-    pathname === WAITLIST_PATH ||
-    pathname === BLOCKED_PATH ||
-    pathname === REFERRAL_PATH;
+    pathname === ROUTES.ONBOARDING.WAITLIST ||
+    pathname === ROUTES.ONBOARDING.BLOCKED ||
+    pathname === ROUTES.ONBOARDING.REFERRAL;
 
   if (!isLoaded || !isSignedIn || isLoading) {
     return <FullScreenLoader />;
@@ -186,7 +184,7 @@ export default function OnboardingLayout({
               initial={{ opacity: 0, y: 12 }}
               animate={{ opacity: 1, y: 0 }}
               exit={{ opacity: 0, y: -12 }}
-              transition={{ duration: 0.35, ease: [0.2, 0.8, 0.2, 1] }}
+              transition={{ duration: 0.35, ease: EASE_OUT_SMOOTH }}
               className="rounded-3xl border border-border bg-card/80 p-6 shadow-lift backdrop-blur-xl sm:p-8"
             >
               {children}

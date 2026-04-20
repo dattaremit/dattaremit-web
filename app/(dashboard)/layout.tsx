@@ -20,18 +20,21 @@ import { NotificationBell } from "@/components/notifications/notification-bell";
 import { useAccount } from "@/hooks/api";
 import { ApiError } from "@/services/api";
 import { computeOnboardingState, stepHref } from "@/lib/onboarding-progress";
+import { ROUTES } from "@/constants/routes";
 
 const tabs = [
-  { href: "/", label: "Home", icon: Home },
-  { href: "/send", label: "Send", icon: Send },
-  { href: "/recipients", label: "Recipients", icon: Users },
-  { href: "/activity", label: "Activity", icon: Clock3 },
-  { href: "/notifications", label: "Alerts", icon: Bell },
-  { href: "/account", label: "Account", icon: CircleUser },
+  { href: ROUTES.ROOT, label: "Home", icon: Home },
+  { href: ROUTES.SEND, label: "Send", icon: Send },
+  { href: ROUTES.RECIPIENTS, label: "Recipients", icon: Users },
+  { href: ROUTES.ACTIVITY, label: "Activity", icon: Clock3 },
+  { href: ROUTES.NOTIFICATIONS, label: "Alerts", icon: Bell },
+  { href: ROUTES.ACCOUNT, label: "Account", icon: CircleUser },
 ];
 
 function isTabActive(tabHref: string, pathname: string) {
-  return tabHref === "/" ? pathname === "/" : pathname.startsWith(tabHref);
+  return tabHref === ROUTES.ROOT
+    ? pathname === ROUTES.ROOT
+    : pathname.startsWith(tabHref);
 }
 
 function FullScreenLoader() {
@@ -57,7 +60,7 @@ export default function DashboardLayout({
 
   useEffect(() => {
     if (isLoaded && !isSignedIn) {
-      router.replace("/welcome");
+      router.replace(ROUTES.WELCOME);
     }
   }, [isLoaded, isSignedIn, router]);
 

@@ -6,6 +6,8 @@ import { Gift } from "lucide-react";
 import { toast } from "sonner";
 
 import { useValidateReferral } from "@/hooks/api";
+import { STORAGE_KEYS } from "@/constants/storage-keys";
+import { ROUTES } from "@/constants/routes";
 import { Card } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
@@ -25,9 +27,9 @@ export default function ReferralPage() {
 
     try {
       await validateMutation.mutateAsync(trimmed);
-      localStorage.setItem("referral_code", trimmed);
+      localStorage.setItem(STORAGE_KEYS.REFERRAL_CODE, trimmed);
       toast.success("Referral code applied!");
-      router.push("/edit-profile");
+      router.push(ROUTES.EDIT_PROFILE);
     } catch (err: unknown) {
       const message =
         err instanceof Error ? err.message : "Invalid referral code";
@@ -36,7 +38,7 @@ export default function ReferralPage() {
   };
 
   const handleSkip = () => {
-    localStorage.removeItem("referral_code");
+    localStorage.removeItem(STORAGE_KEYS.REFERRAL_CODE);
     router.push("/edit-profile");
   };
 

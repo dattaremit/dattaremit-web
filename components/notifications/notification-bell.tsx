@@ -4,11 +4,12 @@ import Link from "next/link";
 import { Bell } from "lucide-react";
 import { useUnreadCount } from "@/hooks/api";
 import { MAX_BADGE_COUNT } from "@/constants/limits";
+import { ROUTES } from "@/constants/routes";
 import { cn } from "@/lib/utils";
 
 export function NotificationBell({
   className,
-  href = "/notifications",
+  href = ROUTES.NOTIFICATIONS,
 }: {
   className?: string;
   href?: string;

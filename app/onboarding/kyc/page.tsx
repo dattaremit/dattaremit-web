@@ -7,6 +7,7 @@ import { Mail, ShieldCheck } from "lucide-react";
 import { motion } from "motion/react";
 
 import { queryKeys } from "@/constants/query-keys";
+import { EASE_OUT_SMOOTH } from "@/constants/motion";
 import { requestOnboardingKyc, ApiError } from "@/services/api";
 import { Button } from "@/components/ui/button";
 import {
@@ -41,7 +42,7 @@ export default function OnboardingKycPage() {
       <motion.div
         initial={{ opacity: 0, y: 12 }}
         animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.6, delay: 0.2, ease: [0.2, 0.8, 0.2, 1] }}
+        transition={{ duration: 0.6, delay: 0.2, ease: EASE_OUT_SMOOTH }}
         className="flex flex-col items-center gap-6"
       >
         <div className="flex size-20 items-center justify-center rounded-full bg-brand/15 text-brand">

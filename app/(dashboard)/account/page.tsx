@@ -20,6 +20,7 @@ import {
 } from "lucide-react";
 import { ThemeToggle } from "@/components/theme-toggle";
 import { cn } from "@/lib/utils";
+import { ROUTES } from "@/constants/routes";
 
 export default function AccountPage() {
   const { user: clerkUser } = useUser();
@@ -110,18 +111,18 @@ export default function AccountPage() {
           <NavRow
             icon={<UserPen className="size-4" />}
             label="Edit profile"
-            onClick={() => router.push("/edit-profile")}
+            onClick={() => router.push(ROUTES.EDIT_PROFILE)}
           />
           <NavRow
             icon={<MapPin className="size-4" />}
             label="Edit addresses"
-            onClick={() => router.push("/edit-addresses")}
+            onClick={() => router.push(ROUTES.EDIT_ADDRESSES)}
           />
           {account?.accountStatus && account.accountStatus !== "ACTIVE" && (
             <NavRow
               icon={<ShieldCheck className="size-4" />}
               label="Complete KYC"
-              onClick={() => router.push("/kyc")}
+              onClick={() => router.push(ROUTES.KYC)}
               accent
             />
           )}

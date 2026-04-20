@@ -6,6 +6,7 @@ import { useOnboardingStore } from "@/store/onboarding-store";
 import { getAccount } from "@/services/api";
 import { resolveOnboardingStep } from "@/lib/onboarding-utils";
 import { ONBOARDING_STEP_ROUTES } from "@/constants/onboarding-routes";
+import { ROUTES } from "@/constants/routes";
 
 /**
  * Fetches account status, resolves the onboarding step, updates the store,
@@ -20,11 +21,11 @@ export function usePostAuthRouting() {
       const account = await getAccount();
       const step = resolveOnboardingStep(account);
       setStep(step);
-      const route = ONBOARDING_STEP_ROUTES[step] ?? "/onboarding/profile";
+      const route = ONBOARDING_STEP_ROUTES[step] ?? ROUTES.ONBOARDING.PROFILE;
       router.replace(route);
     } catch {
       setStep("profile");
-      router.replace("/onboarding/profile");
+      router.replace(ROUTES.ONBOARDING.PROFILE);
     }
   }, [router, setStep]);
 

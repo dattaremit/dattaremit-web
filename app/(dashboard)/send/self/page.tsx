@@ -21,6 +21,8 @@ import { PageHeader } from "@/components/ui/page-header";
 import { BackLink } from "@/components/ui/back-link";
 import { TransferResult } from "@/components/transfer/transfer-result";
 import { useStepUp } from "@/hooks/use-step-up";
+import { ROUTES } from "@/constants/routes";
+import { EASE_OUT_SMOOTH } from "@/constants/motion";
 
 type Step = "amount" | "review" | "result";
 
@@ -63,7 +65,7 @@ export default function SendToSelfPage() {
             money to yourself.
           </p>
           <Button asChild variant="brand" className="mt-5">
-            <Link href="/link-bank/receive">Link deposit account</Link>
+            <Link href={ROUTES.LINK_BANK_RECEIVE}>Link deposit account</Link>
           </Button>
         </Card>
       </div>
@@ -112,7 +114,7 @@ export default function SendToSelfPage() {
             initial={{ opacity: 0, x: -12 }}
             animate={{ opacity: 1, x: 0 }}
             exit={{ opacity: 0, x: 12 }}
-            transition={{ duration: 0.3, ease: [0.2, 0.8, 0.2, 1] }}
+            transition={{ duration: 0.3, ease: EASE_OUT_SMOOTH }}
             className="space-y-6"
           >
             <PageHeader
@@ -178,7 +180,7 @@ export default function SendToSelfPage() {
             initial={{ opacity: 0, x: -12 }}
             animate={{ opacity: 1, x: 0 }}
             exit={{ opacity: 0, x: 12 }}
-            transition={{ duration: 0.3, ease: [0.2, 0.8, 0.2, 1] }}
+            transition={{ duration: 0.3, ease: EASE_OUT_SMOOTH }}
             className="space-y-6"
           >
             <PageHeader

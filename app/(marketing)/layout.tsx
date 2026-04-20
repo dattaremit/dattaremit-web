@@ -3,6 +3,7 @@ import Link from "next/link";
 
 import { Button } from "@/components/ui/button";
 import { AuroraBackground } from "@/components/ui/aurora-background";
+import { ROUTES } from "@/constants/routes";
 
 export default function MarketingLayout({
   children,
@@ -20,10 +21,10 @@ export default function MarketingLayout({
         </Link>
         <div className="flex items-center gap-2">
           <Button asChild variant="ghost" size="sm">
-            <Link href="/sign-in">Sign in</Link>
+            <Link href={ROUTES.SIGN_IN}>Sign in</Link>
           </Button>
           <Button asChild variant="brand" size="sm">
-            <Link href="/sign-up">Get started</Link>
+            <Link href={ROUTES.SIGN_UP}>Get started</Link>
           </Button>
         </div>
       </header>

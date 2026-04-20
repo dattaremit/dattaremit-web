@@ -9,6 +9,7 @@ import { useAccount } from "@/hooks/api";
 import { submitOnboardingAddress, getAccount } from "@/services/api";
 import { useQueryClient } from "@tanstack/react-query";
 import { queryKeys } from "@/constants/query-keys";
+import { ROUTES } from "@/constants/routes";
 import { toast } from "sonner";
 
 import { Card } from "@/components/ui/card";
@@ -33,8 +34,8 @@ export interface AddressFormProps {
 }
 
 export function AddressForm({
-  nextHrefOnCreate = "/kyc",
-  nextHrefOnUpdate = "/",
+  nextHrefOnCreate = ROUTES.KYC,
+  nextHrefOnUpdate = ROUTES.ROOT,
   onAfterSubmit,
   chromeless = false,
   title,

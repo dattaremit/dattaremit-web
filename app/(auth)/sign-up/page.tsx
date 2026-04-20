@@ -17,6 +17,7 @@ import { TextField } from "@/components/ui/text-field";
 import { Button } from "@/components/ui/button";
 import { OAuthButtons } from "@/components/oauth-buttons";
 import { useCheckEmailAvailability } from "@/hooks/api";
+import { ROUTES } from "@/constants/routes";
 
 export default function SignUpPage() {
   const { isLoaded, signUp } = useSignUp();
@@ -81,7 +82,7 @@ export default function SignUpPage() {
         <span>
           Already a customer?{" "}
           <Link
-            href="/sign-in"
+            href={ROUTES.SIGN_IN}
             className="font-semibold text-foreground underline decoration-brand decoration-2 underline-offset-4 hover:decoration-foreground"
           >
             Sign in
@@ -104,7 +105,7 @@ export default function SignUpPage() {
               <p className="mt-1.5 text-sm text-destructive">
                 An account with this email already exists.{" "}
                 <Link
-                  href="/sign-in"
+                  href={ROUTES.SIGN_IN}
                   className="font-medium underline underline-offset-2 hover:no-underline"
                 >
                   Sign in instead?

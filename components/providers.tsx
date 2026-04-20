@@ -10,6 +10,7 @@ import {
 } from "@tanstack/react-query";
 import { setTokenGetter } from "@/services/api";
 import { clearClientData } from "@/lib/clear-client-data";
+import { ROUTES } from "@/constants/routes";
 import { Toaster } from "@/components/ui/sonner";
 import { InAppBanner } from "@/components/notifications/in-app-banner";
 import { PushListener } from "@/components/notifications/push-listener";
@@ -50,11 +51,11 @@ export function Providers({ children }: { children: React.ReactNode }) {
 
   return (
     <ClerkProvider
-      signInUrl="/sign-in"
-      signUpUrl="/sign-up"
-      afterSignOutUrl="/sign-in"
-      signInForceRedirectUrl="/"
-      signUpForceRedirectUrl="/onboarding/profile"
+      signInUrl={ROUTES.SIGN_IN}
+      signUpUrl={ROUTES.SIGN_UP}
+      afterSignOutUrl={ROUTES.SIGN_IN}
+      signInForceRedirectUrl={ROUTES.ROOT}
+      signUpForceRedirectUrl={ROUTES.ONBOARDING.PROFILE}
     >
       <ThemeProvider
         attribute="class"

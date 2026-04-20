@@ -13,10 +13,11 @@ import {
   registerWebPushDevice,
   unregisterDevice,
 } from "@/services/api";
+import { STORAGE_KEYS } from "@/constants/storage-keys";
 
 type Status = "unsupported" | "blocked" | "disabled" | "enabled";
 
-const DEVICE_ID_KEY = "dattaremit.web-push.device-id";
+const DEVICE_ID_KEY = STORAGE_KEYS.WEB_PUSH_DEVICE_ID;
 
 function subscriptionToPayload(sub: PushSubscription) {
   const json = sub.toJSON();

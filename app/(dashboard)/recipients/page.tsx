@@ -9,6 +9,7 @@ import { PageHeader } from "@/components/ui/page-header";
 import { EmptyState } from "@/components/ui/empty-state";
 import { RecipientCard } from "@/components/recipients/recipient-card";
 import { KycGate } from "@/components/kyc-gate";
+import { ROUTES } from "@/constants/routes";
 
 export default function RecipientsPage() {
   const { data: recipients, isLoading, error, refetch } = useRecipients();
@@ -32,7 +33,7 @@ export default function RecipientsPage() {
         action={
           isActive ? (
             <Button asChild variant="brand">
-              <Link href="/recipients/new">
+              <Link href={ROUTES.RECIPIENTS_NEW}>
                 <Plus />
                 Add recipient
               </Link>
@@ -81,7 +82,7 @@ export default function RecipientsPage() {
           description="Add your first recipient to start sending money across borders."
           action={
             <Button asChild variant="brand">
-              <Link href="/recipients/new">
+              <Link href={ROUTES.RECIPIENTS_NEW}>
                 <Plus />
                 Add recipient
               </Link>

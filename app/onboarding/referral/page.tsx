@@ -7,8 +7,10 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { PageHeader } from "@/components/ui/page-header";
 import { validateReferralCode, ApiError } from "@/services/api";
+import { STORAGE_KEYS } from "@/constants/storage-keys";
+import { ROUTES } from "@/constants/routes";
 
-const STORAGE_KEY = "referral_code";
+const STORAGE_KEY = STORAGE_KEYS.REFERRAL_CODE;
 
 export default function OnboardingReferralPage() {
   const router = useRouter();
@@ -16,7 +18,7 @@ export default function OnboardingReferralPage() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
-  const goToProfile = () => router.replace("/onboarding/profile");
+  const goToProfile = () => router.replace(ROUTES.ONBOARDING.PROFILE);
 
   const handleApply = async () => {
     const trimmed = code.trim().toUpperCase();

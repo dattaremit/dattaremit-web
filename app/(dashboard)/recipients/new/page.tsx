@@ -8,6 +8,7 @@ import { PageHeader } from "@/components/ui/page-header";
 import { BackLink } from "@/components/ui/back-link";
 import { RecipientForm } from "@/components/recipients/recipient-form";
 import { KycGate } from "@/components/kyc-gate";
+import { ROUTES } from "@/constants/routes";
 
 export default function NewRecipientPage() {
   const router = useRouter();
@@ -17,7 +18,7 @@ export default function NewRecipientPage() {
   if (account && account.accountStatus !== "ACTIVE") {
     return (
       <div className="space-y-7">
-        <BackLink href="/recipients" />
+        <BackLink href={ROUTES.RECIPIENTS} />
         <KycGate
           accountStatus={account.accountStatus}
           feature="adding recipients"
@@ -29,7 +30,7 @@ export default function NewRecipientPage() {
   return (
     <div className="space-y-7">
       <div className="flex flex-col gap-3">
-        <BackLink href="/recipients" />
+        <BackLink href={ROUTES.RECIPIENTS} />
         <PageHeader
           eyebrow="New recipient"
           title={

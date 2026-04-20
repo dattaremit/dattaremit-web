@@ -5,6 +5,7 @@ import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { toast } from "sonner";
 import { getClerkErrorMessage } from "@/utils/clerk-error";
+import { ROUTES } from "@/constants/routes";
 
 interface OAuthButtonsProps {
   mode: "sign-in" | "sign-up";
@@ -42,8 +43,8 @@ export function OAuthButtons({ mode }: OAuthButtonsProps) {
       const signInOrUp = mode === "sign-in" ? signIn : signUp;
       await signInOrUp?.authenticateWithRedirect({
         strategy: "oauth_google",
-        redirectUrl: "/sso-callback",
-        redirectUrlComplete: "/",
+        redirectUrl: ROUTES.SSO_CALLBACK,
+        redirectUrlComplete: ROUTES.ROOT,
       });
     } catch (err: unknown) {
       toast.error(getClerkErrorMessage(err, "OAuth sign in failed."));

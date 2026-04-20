@@ -4,6 +4,7 @@ import * as React from "react";
 import Link from "next/link";
 import { motion } from "motion/react";
 
+import { EASE_OUT_SMOOTH } from "@/constants/motion";
 import { cn } from "@/lib/utils";
 
 type AuthShellProps = {
@@ -29,7 +30,7 @@ export function AuthShell({
     <motion.div
       initial={{ opacity: 0, y: 8 }}
       animate={{ opacity: 1, y: 0 }}
-      transition={{ duration: 0.45, ease: [0.2, 0.8, 0.2, 1] }}
+      transition={{ duration: 0.45, ease: EASE_OUT_SMOOTH }}
       className={cn("flex w-full flex-col gap-7", className)}
     >
       <header className="flex flex-col gap-3">

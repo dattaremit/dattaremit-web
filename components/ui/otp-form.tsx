@@ -9,6 +9,7 @@ import {
   InputOTPSlot,
 } from "@/components/ui/input-otp";
 import { Button } from "@/components/ui/button";
+import { EASE_OUT_SMOOTH } from "@/constants/motion";
 import { cn } from "@/lib/utils";
 
 type OtpFormProps = {
@@ -82,7 +83,7 @@ export function OtpForm({
                 transition={{
                   delay: 0.05 + i * 0.06,
                   duration: 0.4,
-                  ease: [0.2, 0.8, 0.2, 1],
+                  ease: EASE_OUT_SMOOTH,
                 }}
               >
                 <InputOTPSlot index={i} aria-invalid={!!error} />

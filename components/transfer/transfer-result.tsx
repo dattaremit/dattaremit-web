@@ -4,6 +4,8 @@ import Link from "next/link";
 import { motion } from "motion/react";
 import { CheckCircle2, XCircle } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { ROUTES } from "@/constants/routes";
+import { EASE_OUT_SMOOTH } from "@/constants/motion";
 
 export interface TransferResultProps {
   status: "success" | "error";
@@ -20,7 +22,7 @@ export function TransferResult({
   title,
   description,
   transactionId,
-  primaryHref = "/activity",
+  primaryHref = ROUTES.ACTIVITY,
   primaryLabel = "View activity",
   onRetry,
 }: TransferResultProps) {
@@ -31,7 +33,7 @@ export function TransferResult({
     <motion.div
       initial={{ opacity: 0, y: 16 }}
       animate={{ opacity: 1, y: 0 }}
-      transition={{ duration: 0.5, ease: [0.2, 0.8, 0.2, 1] }}
+      transition={{ duration: 0.5, ease: EASE_OUT_SMOOTH }}
       className="relative overflow-hidden rounded-3xl border border-border bg-card p-8 shadow-lift"
     >
       <div

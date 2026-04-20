@@ -11,6 +11,7 @@ import {
 } from "lucide-react";
 import { useAccount } from "@/hooks/api";
 import { ApiError } from "@/services/api";
+import { ROUTES } from "@/constants/routes";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
@@ -124,7 +125,7 @@ export default function HomePage() {
           <QuickAction
             icon={<Send className="size-5" />}
             label="Send"
-            href="/send"
+            href={ROUTES.SEND}
             tint="brand"
           />
           <QuickAction
@@ -136,7 +137,7 @@ export default function HomePage() {
               )
             }
             label={hasSendAccount ? "Bank Connected" : "Connect Bank"}
-            href="/link-bank"
+            href={ROUTES.LINK_BANK}
             tint={hasSendAccount ? "success" : "warning"}
           />
         </div>
@@ -182,7 +183,7 @@ export default function HomePage() {
                   </p>
                 </div>
                 <Button asChild variant="brand" className="w-fit">
-                  <Link href="/send">
+                  <Link href={ROUTES.SEND}>
                     Send money
                     <ArrowRight />
                   </Link>

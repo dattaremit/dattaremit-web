@@ -1,23 +1,22 @@
 import type { OnboardingStep } from "@/store/onboarding-store";
+import { ROUTES } from "@/constants/routes";
 
-// Web route paths. Routes prefixed with /onboarding are placeholders that will
-// be created in Phase 2/3 — until then these redirect targets may 404.
 export const ONBOARDING_STEP_ROUTES: Record<OnboardingStep, string> = {
-  welcome: "/welcome",
-  auth: "/sign-in",
-  blocked: "/onboarding/blocked",
-  waitlist: "/onboarding/waitlist",
-  referral: "/onboarding/referral",
-  profile: "/onboarding/profile",
-  address: "/onboarding/address",
-  kyc: "/onboarding/kyc",
-  completed: "/",
+  welcome: ROUTES.WELCOME,
+  auth: ROUTES.SIGN_IN,
+  blocked: ROUTES.ONBOARDING.BLOCKED,
+  waitlist: ROUTES.ONBOARDING.WAITLIST,
+  referral: ROUTES.ONBOARDING.REFERRAL,
+  profile: ROUTES.ONBOARDING.PROFILE,
+  address: ROUTES.ONBOARDING.ADDRESS,
+  kyc: ROUTES.ONBOARDING.KYC,
+  completed: ROUTES.ROOT,
 };
 
 export const GUARD_STEP_ROUTES: Record<string, string> = {
-  welcome: "/onboarding/profile",
-  auth: "/onboarding/profile",
-  profile: "/onboarding/profile",
-  address: "/onboarding/address",
-  kyc: "/onboarding/kyc",
+  welcome: ROUTES.ONBOARDING.PROFILE,
+  auth: ROUTES.ONBOARDING.PROFILE,
+  profile: ROUTES.ONBOARDING.PROFILE,
+  address: ROUTES.ONBOARDING.ADDRESS,
+  kyc: ROUTES.ONBOARDING.KYC,
 };

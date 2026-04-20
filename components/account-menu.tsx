@@ -14,6 +14,7 @@ import {
 } from "lucide-react";
 
 import { useAccount } from "@/hooks/api";
+import { ROUTES } from "@/constants/routes";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import {
   DropdownMenu,
@@ -73,16 +74,16 @@ export function AccountMenuItems({
       </DropdownMenuLabel>
       <DropdownMenuSeparator />
       <DropdownMenuGroup>
-        <DropdownMenuItem onClick={() => router.push("/edit-profile")}>
+        <DropdownMenuItem onClick={() => router.push(ROUTES.EDIT_PROFILE)}>
           <UserPen />
           Edit profile
         </DropdownMenuItem>
-        <DropdownMenuItem onClick={() => router.push("/edit-addresses")}>
+        <DropdownMenuItem onClick={() => router.push(ROUTES.EDIT_ADDRESSES)}>
           <MapPin />
           Edit addresses
         </DropdownMenuItem>
         {account?.accountStatus && account.accountStatus !== "ACTIVE" && (
-          <DropdownMenuItem onClick={() => router.push("/kyc")}>
+          <DropdownMenuItem onClick={() => router.push(ROUTES.KYC)}>
             <ShieldCheck />
             Complete KYC
           </DropdownMenuItem>

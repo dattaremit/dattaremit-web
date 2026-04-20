@@ -4,15 +4,15 @@ import { useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-import {
-  CheckCircle2,
-  Clock,
-  Mail,
-  ShieldCheck,
-  XCircle,
-} from "lucide-react";
+import { Mail, ShieldCheck } from "lucide-react";
 
 import { queryKeys } from "@/constants/query-keys";
+import { ROUTES } from "@/constants/routes";
+import {
+  ACCOUNT_STATUS_META,
+  INDIAN_KYC_STATUS_LABEL,
+  getIndianKycStatusVariant,
+} from "@/constants/status-meta";
 import { requestOnboardingKyc } from "@/services/api";
 import { useAccount } from "@/hooks/api";
 import { Badge } from "@/components/ui/badge";
@@ -28,28 +28,6 @@ import {
 } from "@/components/ui/dialog";
 import { Skeleton } from "@/components/ui/skeleton";
 import { PageHeader } from "@/components/ui/page-header";
-
-const STATUS_META: Record<
-  string,
-  {
-    label: string;
-    variant: "default" | "secondary" | "destructive";
-    icon: React.ComponentType<{ className?: string }>;
-  }
-> = {
-  INITIAL: { label: "Not started", variant: "secondary", icon: ShieldCheck },
-  PENDING: { label: "In review", variant: "secondary", icon: Clock },
-  ACTIVE: { label: "Verified", variant: "default", icon: CheckCircle2 },
-  REJECTED: { label: "Rejected", variant: "destructive", icon: XCircle },
-};
-
-const INDIAN_STATUS_LABEL: Record<string, string> = {
-  NONE: "Not started",
-  PENDING: "In review",
-  APPROVED: "Verified",
-  REJECTED: "Rejected",
-  FAILED: "Failed",
-};
 
 export default function KycPage() {
   const router = useRouter();
@@ -67,7 +45,7 @@ export default function KycPage() {
   const handleGotIt = async () => {
     setModalOpen(false);
     await queryClient.invalidateQueries({ queryKey: queryKeys.account });
-    router.replace("/");
+    router.replace(ROUTES.ROOT);
   };
 
   if (isLoading) {
@@ -79,11 +57,12 @@ export default function KycPage() {
     );
   }
 
-  const status = (account?.accountStatus ?? "INITIAL") as keyof typeof STATUS_META;
-  const meta = STATUS_META[status] ?? STATUS_META.INITIAL;
+  const status = account?.accountStatus ?? "INITIAL";
+  const meta = ACCOUNT_STATUS_META[status] ?? ACCOUNT_STATUS_META.INITIAL;
   const StatusIcon = meta.icon;
   const indianStatus = account?.indianKycStatus ?? "NONE";
-  const indianStatusLabel = INDIAN_STATUS_LABEL[indianStatus] ?? "Not started";
+  const indianStatusLabel =
+    INDIAN_KYC_STATUS_LABEL[indianStatus] ?? "Not started";
   const canStartPrimary = status === "INITIAL" || status === "REJECTED";
 
   return (
@@ -161,7 +140,7 @@ export default function KycPage() {
               </Button>
             )}
             {status === "ACTIVE" && (
-              <Button variant="brand" onClick={() => router.push("/")}>
+              <Button variant="brand" onClick={() => router.push(ROUTES.ROOT)}>
                 Go to home
               </Button>
             )}
@@ -184,17 +163,7 @@ export default function KycPage() {
               </p>
             </div>
           </div>
-          <Badge
-            variant={
-              indianStatus === "APPROVED"
-                ? "default"
-                : indianStatus === "PENDING"
-                  ? "secondary"
-                  : indianStatus === "REJECTED" || indianStatus === "FAILED"
-                    ? "destructive"
-                    : "outline"
-            }
-          >
+          <Badge variant={getIndianKycStatusVariant(indianStatus)}>
             {indianStatusLabel}
           </Badge>
         </div>
@@ -215,7 +184,7 @@ export default function KycPage() {
                 is encrypted in your browser before being sent.
               </p>
               <Button asChild variant="brand">
-                <Link href="/kyc/indian">
+                <Link href={ROUTES.KYC_INDIAN}>
                   {indianStatus === "REJECTED" || indianStatus === "FAILED"
                     ? "Resubmit Indian KYC"
                     : "Start Indian KYC"}

@@ -14,6 +14,7 @@ import {
 } from "@/schemas/deposit-account.schema";
 import { useAccount, useAddDepositAccount } from "@/hooks/api";
 import { ApiError } from "@/services/api";
+import { ROUTES } from "@/constants/routes";
 import { KycGate } from "@/components/kyc-gate";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
@@ -66,7 +67,7 @@ export default function ReceiveBankPage() {
       });
       await queryClient.invalidateQueries({ queryKey: queryKeys.account });
       toast.success("Indian bank added successfully!");
-      router.push("/link-bank");
+      router.push(ROUTES.LINK_BANK);
     } catch (err) {
       toast.error(
         err instanceof ApiError ? err.message : "Failed to add Indian bank",
@@ -89,7 +90,7 @@ export default function ReceiveBankPage() {
         }
         cta={
           indianKycStatus !== "PENDING" ? (
-            <Button variant="brand" onClick={() => router.push("/kyc/indian")}>
+            <Button variant="brand" onClick={() => router.push(ROUTES.KYC_INDIAN)}>
               {indianKycStatus === "REJECTED" || indianKycStatus === "FAILED"
                 ? "Resubmit Indian KYC"
                 : "Start Indian KYC"}
@@ -104,7 +105,7 @@ export default function ReceiveBankPage() {
   return (
     <div className="mx-auto w-full max-w-2xl space-y-7">
       <div className="flex flex-col gap-3">
-        <BackLink href="/link-bank" />
+        <BackLink href={ROUTES.LINK_BANK} />
         <PageHeader
           eyebrow="Your Indian bank"
           title={

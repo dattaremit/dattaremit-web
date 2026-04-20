@@ -17,6 +17,7 @@ import { Button } from "@/components/ui/button";
 import { OtpForm } from "@/components/ui/otp-form";
 import { OAuthButtons } from "@/components/oauth-buttons";
 import { OrDivider } from "@/components/or-divider";
+import { ROUTES } from "@/constants/routes";
 
 export default function SignInPage() {
   const { signIn, setActive, isLoaded } = useSignIn();
@@ -40,7 +41,7 @@ export default function SignInPage() {
 
       if (signInAttempt.status === "complete") {
         await setActive({ session: signInAttempt.createdSessionId });
-        router.replace("/");
+        router.replace(ROUTES.ROOT);
         return;
       }
 
@@ -52,7 +53,7 @@ export default function SignInPage() {
 
         if (result.status === "complete") {
           await setActive({ session: result.createdSessionId });
-          router.replace("/");
+          router.replace(ROUTES.ROOT);
           return;
         }
 
@@ -86,7 +87,7 @@ export default function SignInPage() {
 
       if (result.status === "complete") {
         await setActive({ session: result.createdSessionId });
-        router.replace("/");
+        router.replace(ROUTES.ROOT);
       }
     } catch (err: unknown) {
       setOtpError(
@@ -140,7 +141,7 @@ export default function SignInPage() {
         <span>
           New here?{" "}
           <Link
-            href="/sign-up"
+            href={ROUTES.SIGN_UP}
             className="font-semibold text-foreground underline decoration-brand decoration-2 underline-offset-4 hover:decoration-foreground"
           >
             Create an account
