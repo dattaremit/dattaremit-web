@@ -16,8 +16,13 @@ import {
   DialogTitle,
 } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
+import {
+  InputOTP,
+  InputOTPGroup,
+  InputOTPSlot,
+} from "@/components/ui/input-otp";
+
+const OTP_LENGTH = 6;
 
 export interface StepUpDialogProps {
   open: boolean;
@@ -50,6 +55,12 @@ export function StepUpDialog({
     onOpenChangeRef.current = onOpenChange;
   });
 
+  // Guards the send flow against React-strict-mode double mounts and Clerk
+  // session-reference churn (startVerification mutates the session, which
+  // would otherwise re-fire the effect mid-flight).
+  const hasStartedRef = useRef(false);
+  const lastSubmittedRef = useRef("");
+
   useEffect(() => {
     if (!open) {
       setCode("");
@@ -57,9 +68,13 @@ export function StepUpDialog({
       setSending(false);
       setVerifying(false);
       setFactor(null);
+      hasStartedRef.current = false;
+      lastSubmittedRef.current = "";
       return;
     }
     if (!session) return;
+    if (hasStartedRef.current) return;
+    hasStartedRef.current = true;
 
     let cancelled = false;
     setSending(true);
@@ -67,9 +82,8 @@ export function StepUpDialog({
 
     (async () => {
       try {
-        const res: SessionVerificationResource = await session.startVerification({
-          level: "first_factor",
-        });
+        const res: SessionVerificationResource =
+          await session.startVerification({ level: "first_factor" });
         if (cancelled) return;
         if (res.status !== "needs_first_factor") {
           onVerifiedRef.current();
@@ -94,8 +108,12 @@ export function StepUpDialog({
       } catch (err) {
         if (!cancelled) {
           setError(
-            err instanceof Error ? err.message : "Couldn't send verification code.",
+            err instanceof Error
+              ? err.message
+              : "Couldn't send verification code.",
           );
+          // Allow the user to close+reopen to retry if the first send failed.
+          hasStartedRef.current = false;
         }
       } finally {
         if (!cancelled) setSending(false);
@@ -107,9 +125,10 @@ export function StepUpDialog({
     };
   }, [open, session]);
 
-  const submit = async (e?: React.FormEvent) => {
-    e?.preventDefault();
-    if (!session || !factor) return;
+  const submit = async () => {
+    if (!session || !factor || code.length < OTP_LENGTH) return;
+    if (lastSubmittedRef.current === code) return;
+    lastSubmittedRef.current = code;
     setVerifying(true);
     setError(null);
     try {
@@ -120,18 +139,32 @@ export function StepUpDialog({
       onVerified();
       onOpenChange(false);
     } catch (err) {
-      const message =
-        err instanceof Error ? err.message : "Incorrect or expired code.";
-      setError(message);
+      setError(
+        err instanceof Error ? err.message : "Incorrect or expired code.",
+      );
+      // Let the user retype and try again.
+      lastSubmittedRef.current = "";
     } finally {
       setVerifying(false);
     }
   };
 
+  // Auto-submit once the full code is entered.
+  useEffect(() => {
+    if (!factor) return;
+    if (code.length !== OTP_LENGTH) return;
+    if (verifying) return;
+    if (lastSubmittedRef.current === code) return;
+    void submit();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [code, factor, verifying]);
+
   const resend = async () => {
     if (!session || !factor) return;
     setSending(true);
     setError(null);
+    setCode("");
+    lastSubmittedRef.current = "";
     try {
       await session.prepareFirstFactorVerification({
         strategy: "email_code",
@@ -146,6 +179,7 @@ export function StepUpDialog({
 
   const busy = sending || verifying;
   const target = factor?.safeIdentifier ?? "your email";
+  const slots = Array.from({ length: OTP_LENGTH }, (_, i) => i);
 
   return (
     <Dialog
@@ -166,23 +200,36 @@ export function StepUpDialog({
           </DialogDescription>
         </DialogHeader>
 
-        <form onSubmit={submit} className="space-y-3">
-          <div className="space-y-1.5">
-            <Label htmlFor="step-up-code">Verification code</Label>
-            <Input
-              id="step-up-code"
-              type="text"
-              inputMode="numeric"
-              autoComplete="one-time-code"
-              autoFocus
+        <form
+          onSubmit={(e) => {
+            e.preventDefault();
+            void submit();
+          }}
+          className="space-y-4"
+        >
+          <div className="flex justify-center py-2">
+            <InputOTP
+              maxLength={OTP_LENGTH}
               value={code}
-              onChange={(e) => setCode(e.target.value.replace(/\D/g, ""))}
+              onChange={setCode}
               disabled={busy || !factor}
-              maxLength={6}
-              placeholder={sending && !factor ? "Sending code…" : "123456"}
-            />
+              autoFocus
+            >
+              <InputOTPGroup>
+                {slots.map((i) => (
+                  <InputOTPSlot
+                    key={i}
+                    index={i}
+                    aria-invalid={!!error}
+                  />
+                ))}
+              </InputOTPGroup>
+            </InputOTP>
           </div>
-          {error && <p className="text-sm text-destructive">{error}</p>}
+
+          {error && (
+            <p className="text-center text-sm text-destructive">{error}</p>
+          )}
 
           <DialogFooter className="items-center gap-2 sm:justify-between sm:gap-2">
             <Button
@@ -208,7 +255,7 @@ export function StepUpDialog({
               </Button>
               <Button
                 type="submit"
-                disabled={busy || code.length < 6 || !factor}
+                disabled={busy || code.length < OTP_LENGTH || !factor}
               >
                 {verifying && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
                 Confirm
