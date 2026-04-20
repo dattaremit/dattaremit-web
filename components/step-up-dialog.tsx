@@ -207,24 +207,31 @@ export function StepUpDialog({
           }}
           className="space-y-4"
         >
-          <div className="flex justify-center py-2">
-            <InputOTP
-              maxLength={OTP_LENGTH}
-              value={code}
-              onChange={setCode}
-              disabled={busy || !factor}
-              autoFocus
-            >
-              <InputOTPGroup>
-                {slots.map((i) => (
-                  <InputOTPSlot
-                    key={i}
-                    index={i}
-                    aria-invalid={!!error}
-                  />
-                ))}
-              </InputOTPGroup>
-            </InputOTP>
+          <div className="flex min-h-20 items-center justify-center py-2">
+            {factor ? (
+              <InputOTP
+                maxLength={OTP_LENGTH}
+                value={code}
+                onChange={setCode}
+                disabled={verifying}
+                autoFocus
+              >
+                <InputOTPGroup>
+                  {slots.map((i) => (
+                    <InputOTPSlot
+                      key={i}
+                      index={i}
+                      aria-invalid={!!error}
+                    />
+                  ))}
+                </InputOTPGroup>
+              </InputOTP>
+            ) : (
+              <div className="flex items-center gap-2 text-sm text-muted-foreground">
+                <Loader2 className="h-4 w-4 animate-spin" />
+                Sending code to your email…
+              </div>
+            )}
           </div>
 
           {error && (
