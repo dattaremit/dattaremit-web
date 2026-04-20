@@ -357,7 +357,7 @@ export default function SendPage() {
             />
 
             <Card variant="elevated" className="overflow-hidden">
-              <div className="relative border-b border-border bg-gradient-to-br from-brand-soft/30 via-card to-card p-7 text-center">
+              <div className="relative border-b border-border bg-linear-to-br from-brand-soft/30 via-card to-card p-7 text-center">
                 <div
                   aria-hidden="true"
                   className="pointer-events-none absolute -top-12 left-1/2 size-48 -translate-x-1/2 rounded-full bg-brand/15 blur-3xl"
