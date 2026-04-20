@@ -55,9 +55,9 @@ export function StepUpDialog({
     onOpenChangeRef.current = onOpenChange;
   });
 
-  // Guards the send flow against React-strict-mode double mounts and Clerk
-  // session-reference churn (startVerification mutates the session, which
-  // would otherwise re-fire the effect mid-flight).
+  // Guards against React strict-mode double-mount in dev and Clerk session-
+  // reference churn (startVerification mutates the session, which would
+  // otherwise re-fire the effect mid-flight and resend the email).
   const hasStartedRef = useRef(false);
   const lastSubmittedRef = useRef("");
 
@@ -76,7 +76,9 @@ export function StepUpDialog({
     if (hasStartedRef.current) return;
     hasStartedRef.current = true;
 
-    let cancelled = false;
+    // No `cancelled` guard here: we want setFactor to run even if React
+    // simulates an unmount between effect fires in dev strict mode.
+    // Stale state updates after a real unmount are a noop in React 18+.
     setSending(true);
     setError(null);
 
@@ -84,7 +86,6 @@ export function StepUpDialog({
       try {
         const res: SessionVerificationResource =
           await session.startVerification({ level: "first_factor" });
-        if (cancelled) return;
         if (res.status !== "needs_first_factor") {
           onVerifiedRef.current();
           onOpenChangeRef.current(false);
@@ -103,26 +104,19 @@ export function StepUpDialog({
           strategy: "email_code",
           emailAddressId: emailFactor.emailAddressId,
         });
-        if (cancelled) return;
         setFactor(emailFactor);
       } catch (err) {
-        if (!cancelled) {
-          setError(
-            err instanceof Error
-              ? err.message
-              : "Couldn't send verification code.",
-          );
-          // Allow the user to close+reopen to retry if the first send failed.
-          hasStartedRef.current = false;
-        }
+        setError(
+          err instanceof Error
+            ? err.message
+            : "Couldn't send verification code.",
+        );
+        // Allow the user to close+reopen to retry if the first send failed.
+        hasStartedRef.current = false;
       } finally {
-        if (!cancelled) setSending(false);
+        setSending(false);
       }
     })();
-
-    return () => {
-      cancelled = true;
-    };
   }, [open, session]);
 
   const submit = async () => {
@@ -177,7 +171,6 @@ export function StepUpDialog({
     }
   };
 
-  const busy = sending || verifying;
   const target = factor?.safeIdentifier ?? "your email";
   const slots = Array.from({ length: OTP_LENGTH }, (_, i) => i);
 
@@ -185,7 +178,7 @@ export function StepUpDialog({
     <Dialog
       open={open}
       onOpenChange={(next) => {
-        if (!next && !busy) onCancel?.();
+        if (!next && !verifying) onCancel?.();
         onOpenChange(next);
       }}
     >
@@ -196,7 +189,9 @@ export function StepUpDialog({
           </div>
           <DialogTitle>{title}</DialogTitle>
           <DialogDescription>
-            {factor ? `Enter the 6-digit code we sent to ${target}.` : description}
+            {factor
+              ? `Enter the 6-digit code we sent to ${target}.`
+              : description}
           </DialogDescription>
         </DialogHeader>
 
@@ -207,32 +202,28 @@ export function StepUpDialog({
           }}
           className="space-y-4"
         >
-          <div className="flex min-h-20 items-center justify-center py-2">
-            {factor ? (
-              <InputOTP
-                maxLength={OTP_LENGTH}
-                value={code}
-                onChange={setCode}
-                disabled={verifying}
-                autoFocus
-              >
-                <InputOTPGroup>
-                  {slots.map((i) => (
-                    <InputOTPSlot
-                      key={i}
-                      index={i}
-                      aria-invalid={!!error}
-                    />
-                  ))}
-                </InputOTPGroup>
-              </InputOTP>
-            ) : (
-              <div className="flex items-center gap-2 text-sm text-muted-foreground">
-                <Loader2 className="h-4 w-4 animate-spin" />
-                Sending code to your email…
-              </div>
-            )}
+          <div className="flex justify-center py-2">
+            <InputOTP
+              maxLength={OTP_LENGTH}
+              value={code}
+              onChange={setCode}
+              disabled={verifying}
+              autoFocus
+            >
+              <InputOTPGroup>
+                {slots.map((i) => (
+                  <InputOTPSlot key={i} index={i} aria-invalid={!!error} />
+                ))}
+              </InputOTPGroup>
+            </InputOTP>
           </div>
+
+          {sending && !factor && (
+            <p className="flex items-center justify-center gap-2 text-xs text-muted-foreground">
+              <Loader2 className="h-3 w-3 animate-spin" />
+              Sending code to your email…
+            </p>
+          )}
 
           {error && (
             <p className="text-center text-sm text-destructive">{error}</p>
@@ -244,7 +235,7 @@ export function StepUpDialog({
               variant="ghost"
               size="sm"
               onClick={resend}
-              disabled={busy || !factor}
+              disabled={sending || verifying || !factor}
             >
               {sending && factor ? "Resending…" : "Resend code"}
             </Button>
@@ -262,7 +253,7 @@ export function StepUpDialog({
               </Button>
               <Button
                 type="submit"
-                disabled={busy || code.length < OTP_LENGTH || !factor}
+                disabled={verifying || code.length < OTP_LENGTH || !factor}
               >
                 {verifying && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
                 Confirm
