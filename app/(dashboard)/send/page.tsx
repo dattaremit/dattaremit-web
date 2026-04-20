@@ -42,7 +42,7 @@ export default function SendPage() {
   const sendMoney = useSendMoney();
   const { gate, stepUpElement } = useStepUp({
     title: "Confirm transfer",
-    description: "Re-enter your password to authorize this send.",
+    description: "We emailed you a 6-digit code. Enter it to authorize this send.",
   });
 
   const [step, setStep] = useState<Step>(preselectedId ? "amount" : "select");

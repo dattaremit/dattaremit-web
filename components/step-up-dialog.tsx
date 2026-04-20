@@ -1,7 +1,12 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { Loader2, ShieldCheck } from "lucide-react";
+import { useSession } from "@clerk/nextjs";
+import type {
+  EmailCodeFactor,
+  SessionVerificationResource,
+} from "@clerk/shared/types";
 import {
   Dialog,
   DialogContent,
@@ -23,64 +28,130 @@ export interface StepUpDialogProps {
   onCancel?: () => void;
 }
 
-/**
- * Confirms the signed-in user's identity by re-verifying their password.
- * Uses Clerk's `user.verifyPassword()` — purely a credential check, does not
- * mutate the session. Passkey-based step-up would additionally require a
- * server challenge/verify endpoint, which this client-only flow avoids.
- */
 export function StepUpDialog({
   open,
   onOpenChange,
   title = "Confirm it's you",
-  description = "Re-enter your password to authorize this action.",
+  description = "We emailed you a 6-digit code. Enter it to authorize this action.",
   onVerified,
   onCancel,
 }: StepUpDialogProps) {
-  const [password, setPassword] = useState("");
+  const { session } = useSession();
+  const [code, setCode] = useState("");
   const [error, setError] = useState<string | null>(null);
-  const [loading, setLoading] = useState(false);
+  const [sending, setSending] = useState(false);
+  const [verifying, setVerifying] = useState(false);
+  const [factor, setFactor] = useState<EmailCodeFactor | null>(null);
+
+  const onVerifiedRef = useRef(onVerified);
+  const onOpenChangeRef = useRef(onOpenChange);
+  useEffect(() => {
+    onVerifiedRef.current = onVerified;
+    onOpenChangeRef.current = onOpenChange;
+  });
 
   useEffect(() => {
     if (!open) {
-      setPassword("");
+      setCode("");
       setError(null);
-      setLoading(false);
+      setSending(false);
+      setVerifying(false);
+      setFactor(null);
+      return;
     }
-  }, [open]);
+    if (!session) return;
+
+    let cancelled = false;
+    setSending(true);
+    setError(null);
+
+    (async () => {
+      try {
+        const res: SessionVerificationResource = await session.startVerification({
+          level: "first_factor",
+        });
+        if (cancelled) return;
+        if (res.status !== "needs_first_factor") {
+          onVerifiedRef.current();
+          onOpenChangeRef.current(false);
+          return;
+        }
+        const emailFactor = res.supportedFirstFactors?.find(
+          (f): f is EmailCodeFactor => f.strategy === "email_code",
+        );
+        if (!emailFactor) {
+          setError(
+            "No email on file to send a verification code to. Add an email address in your account.",
+          );
+          return;
+        }
+        await session.prepareFirstFactorVerification({
+          strategy: "email_code",
+          emailAddressId: emailFactor.emailAddressId,
+        });
+        if (cancelled) return;
+        setFactor(emailFactor);
+      } catch (err) {
+        if (!cancelled) {
+          setError(
+            err instanceof Error ? err.message : "Couldn't send verification code.",
+          );
+        }
+      } finally {
+        if (!cancelled) setSending(false);
+      }
+    })();
+
+    return () => {
+      cancelled = true;
+    };
+  }, [open, session]);
 
   const submit = async (e?: React.FormEvent) => {
     e?.preventDefault();
-    setLoading(true);
+    if (!session || !factor) return;
+    setVerifying(true);
     setError(null);
     try {
-      const res = await fetch("/api/auth/verify-password", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ password }),
+      await session.attemptFirstFactorVerification({
+        strategy: "email_code",
+        code,
       });
-      const data = (await res.json().catch(() => ({}))) as {
-        verified?: boolean;
-        message?: string;
-      };
-      if (res.ok && data.verified) {
-        onVerified();
-        onOpenChange(false);
-      } else {
-        setError(data.message ?? "Password did not match.");
-      }
+      onVerified();
+      onOpenChange(false);
     } catch (err) {
-      setError(err instanceof Error ? err.message : "Verification failed.");
+      const message =
+        err instanceof Error ? err.message : "Incorrect or expired code.";
+      setError(message);
     } finally {
-      setLoading(false);
+      setVerifying(false);
     }
   };
+
+  const resend = async () => {
+    if (!session || !factor) return;
+    setSending(true);
+    setError(null);
+    try {
+      await session.prepareFirstFactorVerification({
+        strategy: "email_code",
+        emailAddressId: factor.emailAddressId,
+      });
+    } catch (err) {
+      setError(err instanceof Error ? err.message : "Couldn't resend code.");
+    } finally {
+      setSending(false);
+    }
+  };
+
+  const busy = sending || verifying;
+  const target = factor?.safeIdentifier ?? "your email";
 
   return (
     <Dialog
       open={open}
       onOpenChange={(next) => {
-        if (!next && !loading) onCancel?.();
+        if (!next && !busy) onCancel?.();
         onOpenChange(next);
       }}
     >
@@ -90,40 +161,59 @@ export function StepUpDialog({
             <ShieldCheck className="h-5 w-5 text-primary" />
           </div>
           <DialogTitle>{title}</DialogTitle>
-          <DialogDescription>{description}</DialogDescription>
+          <DialogDescription>
+            {factor ? `Enter the 6-digit code we sent to ${target}.` : description}
+          </DialogDescription>
         </DialogHeader>
 
         <form onSubmit={submit} className="space-y-3">
           <div className="space-y-1.5">
-            <Label htmlFor="step-up-password">Password</Label>
+            <Label htmlFor="step-up-code">Verification code</Label>
             <Input
-              id="step-up-password"
-              type="password"
+              id="step-up-code"
+              type="text"
+              inputMode="numeric"
+              autoComplete="one-time-code"
               autoFocus
-              autoComplete="current-password"
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-              disabled={loading}
+              value={code}
+              onChange={(e) => setCode(e.target.value.replace(/\D/g, ""))}
+              disabled={busy || !factor}
+              maxLength={6}
+              placeholder={sending && !factor ? "Sending code…" : "123456"}
             />
           </div>
           {error && <p className="text-sm text-destructive">{error}</p>}
 
-          <DialogFooter className="gap-2 sm:gap-2">
+          <DialogFooter className="items-center gap-2 sm:justify-between sm:gap-2">
             <Button
               type="button"
-              variant="outline"
-              onClick={() => {
-                onCancel?.();
-                onOpenChange(false);
-              }}
-              disabled={loading}
+              variant="ghost"
+              size="sm"
+              onClick={resend}
+              disabled={busy || !factor}
             >
-              Cancel
+              {sending && factor ? "Resending…" : "Resend code"}
             </Button>
-            <Button type="submit" disabled={loading || password.length === 0}>
-              {loading && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
-              Confirm
-            </Button>
+            <div className="flex gap-2">
+              <Button
+                type="button"
+                variant="outline"
+                onClick={() => {
+                  onCancel?.();
+                  onOpenChange(false);
+                }}
+                disabled={verifying}
+              >
+                Cancel
+              </Button>
+              <Button
+                type="submit"
+                disabled={busy || code.length < 6 || !factor}
+              >
+                {verifying && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
+                Confirm
+              </Button>
+            </div>
           </DialogFooter>
         </form>
       </DialogContent>

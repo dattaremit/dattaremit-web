@@ -29,7 +29,7 @@ export default function SendToSelfPage() {
   const sendToSelf = useSendToSelf();
   const { gate, stepUpElement } = useStepUp({
     title: "Confirm transfer",
-    description: "Re-enter your password to authorize moving funds.",
+    description: "We emailed you a 6-digit code. Enter it to authorize moving funds.",
   });
 
   const [step, setStep] = useState<Step>("amount");
