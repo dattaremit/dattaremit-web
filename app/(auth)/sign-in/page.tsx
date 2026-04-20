@@ -167,6 +167,14 @@ export default function SignInPage() {
             placeholder="Enter your password"
             autoComplete="current-password"
           />
+          <div className="-mt-1 text-right">
+            <Link
+              href={ROUTES.FORGOT_PASSWORD}
+              className="text-sm font-medium text-muted-foreground underline-offset-4 transition-colors hover:text-foreground hover:underline"
+            >
+              Forgot password?
+            </Link>
+          </div>
           <Button
             type="submit"
             variant="brand"

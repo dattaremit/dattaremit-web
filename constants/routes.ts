@@ -2,6 +2,7 @@ export const ROUTES = {
   ROOT: "/",
   SIGN_IN: "/sign-in",
   SIGN_UP: "/sign-up",
+  FORGOT_PASSWORD: "/forgot-password",
   SSO_CALLBACK: "/sso-callback",
   WELCOME: "/welcome",
   ACCOUNT: "/account",
