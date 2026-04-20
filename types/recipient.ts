@@ -7,10 +7,8 @@ export interface Recipient {
   email: string;
   phoneNumberPrefix: string;
   phoneNumber: string;
-  dateOfBirth: string;
   nationality: string;
   addressLine1: string;
-  addressLine2?: string;
   city: string;
   state: string;
   country: string;
@@ -29,9 +27,7 @@ export interface CreateRecipientPayload {
   email: string;
   phoneNumberPrefix: string;
   phoneNumber: string;
-  dateOfBirth: string;
   addressLine1: string;
-  addressLine2?: string;
   city: string;
   state: string;
   postalCode: string;
