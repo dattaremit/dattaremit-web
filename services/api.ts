@@ -159,6 +159,10 @@ export const validateReferralCode = (
   code: string
 ): Promise<{ valid: boolean }> => api.post("/referral/validate", { code });
 
+export const reserveReferralCode = (
+  code: string
+): Promise<{ reserved: boolean }> => api.post("/referral/reserve", { code });
+
 // ── Onboarding ──
 export const submitOnboardingAddress = (
   data: OnboardingAddressPayload

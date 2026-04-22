@@ -104,20 +104,15 @@ export function PersonalInfoForm({
           nationality: "US",
         });
       } else {
-        const referralCode =
-          localStorage.getItem(STORAGE_KEYS.REFERRAL_CODE) || undefined;
-
         await createUserMutation.mutateAsync({
           clerkUserId: clerkUser?.id || "",
           firstName: data.firstName,
           lastName: data.lastName,
           email: clerkUser?.emailAddresses[0]?.emailAddress || "",
-          publicKey: "",
           phoneNumberPrefix: data.phoneNumberPrefix,
           phoneNumber: data.phoneNumber,
           dateOfBirth: data.dateOfBirth,
           nationality: "US",
-          referredByCode: referralCode,
         });
 
         localStorage.removeItem(STORAGE_KEYS.REFERRAL_CODE);

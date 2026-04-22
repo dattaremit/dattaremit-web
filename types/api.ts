@@ -27,7 +27,6 @@ export interface User {
   firstName: string;
   lastName: string;
   email: string;
-  publicKey: string;
   phoneNumberPrefix: string;
   phoneNumber: string;
   dateOfBirth: string;
@@ -45,12 +44,10 @@ export interface CreateUserPayload {
   firstName: string;
   lastName: string;
   email: string;
-  publicKey: string;
   phoneNumberPrefix: string;
   phoneNumber: string;
   dateOfBirth: string;
   nationality?: string;
-  referredByCode?: string;
 }
 
 export interface UpdateUserPayload {

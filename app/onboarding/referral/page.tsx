@@ -6,7 +6,7 @@ import { Gift } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { PageHeader } from "@/components/ui/page-header";
-import { validateReferralCode, ApiError } from "@/services/api";
+import { reserveReferralCode, validateReferralCode, ApiError } from "@/services/api";
 import { STORAGE_KEYS } from "@/constants/storage-keys";
 import { ROUTES } from "@/constants/routes";
 import { isValidReferralCode } from "@/schemas/referral.schema";
@@ -38,7 +38,8 @@ export default function OnboardingReferralPage() {
     try {
       const result = await validateReferralCode(trimmed);
       if (result?.valid) {
-        localStorage.setItem(STORAGE_KEY, trimmed);
+        await reserveReferralCode(trimmed);
+        localStorage.removeItem(STORAGE_KEY);
         goToProfile();
       } else {
         setError("Invalid referral code. Please check and try again.");
