@@ -24,14 +24,6 @@ import type { BankDetails, Recipient } from "@/types/recipient";
 
 type Step = "select" | "selectBank" | "amount" | "review" | "result";
 
-const STEP_ORDER: Step[] = [
-  "select",
-  "selectBank",
-  "amount",
-  "review",
-  "result",
-];
-
 export default function SendPage() {
   const router = useRouter();
   const search = useSearchParams();

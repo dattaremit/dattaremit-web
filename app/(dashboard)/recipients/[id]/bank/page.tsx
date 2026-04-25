@@ -10,6 +10,7 @@ import { PageHeader } from "@/components/ui/page-header";
 import { BackLink } from "@/components/ui/back-link";
 import { RecipientBankForm } from "@/components/recipients/recipient-bank-form";
 import { KycGate } from "@/components/kyc-gate";
+import { ApiError } from "@/services/api";
 
 export default function RecipientBankPage({
   params,
@@ -76,6 +77,19 @@ export default function RecipientBankPage({
                 toast.success("Bank account added");
                 router.push(`/recipients/${id}`);
               } catch (err) {
+                // Server signals a same-account duplicate via code so we
+                // can route the user to the existing bank instead of
+                // showing an opaque error.
+                if (
+                  err instanceof ApiError &&
+                  err.code === "BANK_ALREADY_LINKED"
+                ) {
+                  toast.info(
+                    "This account is already on this recipient. Opening it now.",
+                  );
+                  router.push(`/recipients/${id}`);
+                  return;
+                }
                 toast.error(
                   err instanceof Error ? err.message : "Failed to save bank",
                 );

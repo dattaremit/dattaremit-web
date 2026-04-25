@@ -52,10 +52,18 @@ const API_BASE_URL =
 
 export class ApiError extends Error {
   status: number;
+  code?: string;
+  details?: unknown;
 
-  constructor(status: number, message: string) {
+  constructor(
+    status: number,
+    message: string,
+    extras?: { code?: string; details?: unknown },
+  ) {
     super(message);
     this.status = status;
+    this.code = extras?.code;
+    this.details = extras?.details;
     this.name = "ApiError";
   }
 }
@@ -115,16 +123,21 @@ api.interceptors.response.use(
   (response) => {
     const body: ApiResponse<unknown> = response.data;
     if (!body.success) {
-      throw new ApiError(response.status, safeErrorMessage(response.status));
+      throw new ApiError(response.status, safeErrorMessage(response.status), {
+        code: body.code,
+        details: body.data,
+      });
     }
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     return body.data as any;
   },
   (error) => {
     if (axios.isAxiosError(error) && error.response) {
+      const body = error.response.data as ApiResponse<unknown> | undefined;
       throw new ApiError(
         error.response.status,
-        safeErrorMessage(error.response.status)
+        safeErrorMessage(error.response.status),
+        { code: body?.code, details: body?.data },
       );
     }
     throw error;

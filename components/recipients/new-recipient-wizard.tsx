@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useRouter } from "next/navigation";
 import { AnimatePresence } from "motion/react";
 import { toast } from "sonner";
@@ -34,6 +34,38 @@ const STEPS: readonly StepperStep[] = [
   { id: "review", label: "Review" },
 ];
 
+const DRAFT_KEY = "dattaremit:new-recipient-draft";
+
+function readDraft(): Partial<RecipientFormData> | null {
+  if (typeof window === "undefined") return null;
+  try {
+    const raw = window.localStorage.getItem(DRAFT_KEY);
+    if (!raw) return null;
+    const parsed = JSON.parse(raw) as Partial<RecipientFormData>;
+    return typeof parsed === "object" && parsed ? parsed : null;
+  } catch {
+    return null;
+  }
+}
+
+function writeDraft(values: Partial<RecipientFormData>) {
+  if (typeof window === "undefined") return;
+  try {
+    window.localStorage.setItem(DRAFT_KEY, JSON.stringify(values));
+  } catch {
+    // Storage may be full or disabled — silently drop the draft.
+  }
+}
+
+function clearDraft() {
+  if (typeof window === "undefined") return;
+  try {
+    window.localStorage.removeItem(DRAFT_KEY);
+  } catch {
+    // ignore
+  }
+}
+
 type Match = Extract<CheckIdentityResult, { exists: true }>;
 
 export function NewRecipientWizard() {
@@ -47,6 +79,12 @@ export function NewRecipientWizard() {
   const [created, setCreated] = useState<{
     recipient: Recipient;
     wasShared: boolean;
+  } | null>(null);
+  // Cache the last identity-check tuple → result so the user can bounce
+  // back to the contact step without re-hitting the API on every Continue.
+  const identityCache = useRef<{
+    key: string;
+    result: CheckIdentityResult;
   } | null>(null);
 
   const form = useForm<RecipientFormData>({
@@ -63,9 +101,22 @@ export function NewRecipientWizard() {
       city: "",
       state: "",
       postalCode: "",
+      ...(readDraft() ?? {}),
     },
     mode: "onBlur",
   });
+
+  // Persist form state to localStorage so a user who accidentally navigates
+  // away (or reloads) doesn't lose what they typed. Cleared on success.
+  // React Compiler can't memoize watch — that's fine here, the wizard is
+  // already a leaf-ish component and writes are cheap.
+  useEffect(() => {
+    // eslint-disable-next-line react-hooks/incompatible-library
+    const sub = form.watch((values) => {
+      writeDraft(values as Partial<RecipientFormData>);
+    });
+    return () => sub.unsubscribe();
+  }, [form]);
 
   const activeIndex =
     step === "success" ? STEPS.length - 1 : STEPS.findIndex((s) => s.id === step);
@@ -81,12 +132,18 @@ export function NewRecipientWizard() {
     if (!ok) return;
 
     const { email, phoneNumberPrefix, phoneNumber } = form.getValues();
+    const cacheKey = `${email.trim().toLowerCase()}|${phoneNumberPrefix}|${phoneNumber.trim()}`;
     try {
-      const result = await checkIdentity.mutateAsync({
-        email,
-        phoneNumberPrefix,
-        phoneNumber,
-      });
+      const cached = identityCache.current;
+      const result =
+        cached && cached.key === cacheKey
+          ? cached.result
+          : await checkIdentity.mutateAsync({
+              email,
+              phoneNumberPrefix,
+              phoneNumber,
+            });
+      identityCache.current = { key: cacheKey, result };
       if (result.exists) {
         if (result.recipient.id === dismissedMatchId) {
           // The user already said "not them" — respect it.
@@ -118,6 +175,7 @@ export function NewRecipientWizard() {
     const data = form.getValues();
     try {
       const recipient = await createRecipient.mutateAsync(data);
+      clearDraft();
       setCreated({
         recipient,
         wasShared: Boolean(opts?.shared || recipient.shared),
@@ -133,6 +191,7 @@ export function NewRecipientWizard() {
   const handleMatchConfirm = async () => {
     if (!match) return;
     if (match.alreadyLinked) {
+      clearDraft();
       router.push(`/recipients/${match.recipient.id}`);
       return;
     }

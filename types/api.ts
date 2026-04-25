@@ -2,6 +2,7 @@ export interface ApiResponse<T = undefined> {
   success: boolean;
   message: string;
   data?: T;
+  code?: string;
 }
 
 export type AddressType = "PRESENT" | "PERMANENT";
