@@ -14,15 +14,5 @@ export function resolveOnboardingStep(account: Account | null | undefined): Onbo
   if (account.isOnWaitlist) return "waitlist";
   if (!account.user) return "referral";
   if (!account.addresses || account.addresses.length === 0) return "address";
-
-  switch (account.accountStatus) {
-    case "INITIAL":
-    case "REJECTED":
-      return "kyc";
-    case "PENDING":
-    case "ACTIVE":
-      return "completed";
-    default:
-      return "profile";
-  }
+  return "completed";
 }

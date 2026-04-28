@@ -17,6 +17,7 @@ import {
 import { cn } from "@/lib/utils";
 import { SidebarAccountDropdown } from "@/components/sidebar-account-dropdown";
 import { NotificationBell } from "@/components/notifications/notification-bell";
+import { KycBanner } from "@/components/kyc-banner";
 import { useAccount } from "@/hooks/api";
 import { ApiError } from "@/services/api";
 import { computeOnboardingState, stepHref } from "@/lib/onboarding-progress";
@@ -171,6 +172,7 @@ export default function DashboardLayout({
         </div>
 
         <div className="mx-auto flex w-full max-w-5xl flex-1 flex-col px-5 py-8 sm:px-8 lg:py-10">
+          <KycBanner />
           {children}
         </div>
       </main>

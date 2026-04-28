@@ -11,7 +11,6 @@ export type OnboardingStep =
   | "referral"
   | "profile"
   | "address"
-  | "kyc"
   | "completed";
 
 const STEP_ORDER: OnboardingStep[] = [
@@ -22,7 +21,6 @@ const STEP_ORDER: OnboardingStep[] = [
   "referral",
   "profile",
   "address",
-  "kyc",
   "completed",
 ];
 

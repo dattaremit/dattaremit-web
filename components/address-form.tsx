@@ -34,7 +34,7 @@ export interface AddressFormProps {
 }
 
 export function AddressForm({
-  nextHrefOnCreate = ROUTES.KYC,
+  nextHrefOnCreate = ROUTES.ROOT,
   nextHrefOnUpdate = ROUTES.ROOT,
   onAfterSubmit,
   chromeless = false,

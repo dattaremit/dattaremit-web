@@ -23,7 +23,6 @@ export const ROUTES = {
     PROFILE: "/onboarding/profile",
     REFERRAL: "/onboarding/referral",
     ADDRESS: "/onboarding/address",
-    KYC: "/onboarding/kyc",
     WAITLIST: "/onboarding/waitlist",
     BLOCKED: "/onboarding/blocked",
   },

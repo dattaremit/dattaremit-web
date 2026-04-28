@@ -1,7 +1,7 @@
 import type { Account } from "@/types/api";
 import { ROUTES } from "@/constants/routes";
 
-export type OnboardingStepKey = "referral" | "profile" | "address" | "kyc";
+export type OnboardingStepKey = "referral" | "profile" | "address";
 export type IndicatorStepKey = Exclude<OnboardingStepKey, "referral">;
 
 export const ONBOARDING_STEPS: {
@@ -11,21 +11,18 @@ export const ONBOARDING_STEPS: {
 }[] = [
   { key: "profile", label: "Your profile", href: ROUTES.ONBOARDING.PROFILE },
   { key: "address", label: "Your address", href: ROUTES.ONBOARDING.ADDRESS },
-  { key: "kyc", label: "Verify identity", href: ROUTES.ONBOARDING.KYC },
 ];
 
 const ALL_STEP_HREFS: Record<OnboardingStepKey, string> = {
   referral: ROUTES.ONBOARDING.REFERRAL,
   profile: ROUTES.ONBOARDING.PROFILE,
   address: ROUTES.ONBOARDING.ADDRESS,
-  kyc: ROUTES.ONBOARDING.KYC,
 };
 
 const ALL_STEP_ORDER: OnboardingStepKey[] = [
   "referral",
   "profile",
   "address",
-  "kyc",
 ];
 
 export function stepIndex(key: OnboardingStepKey): number {
@@ -60,23 +57,17 @@ export function computeOnboardingState(
   // address step did not really complete (e.g. entity creation failed).
   const addressDone =
     (account?.addresses?.length ?? 0) > 0 && !!account?.hasZynkEntity;
-  const status = account?.accountStatus;
-  // KYC is satisfied once the user has requested verification (PENDING) or is
-  // fully verified (ACTIVE). Only INITIAL means they haven't started yet.
-  const kycDone = status === "ACTIVE" || status === "PENDING";
 
   let nextStep: OnboardingStepKey | null = null;
   if (!u) nextStep = "referral";
   else if (!profileDone) nextStep = "profile";
   else if (!addressDone) nextStep = "address";
-  else if (!kycDone) nextStep = "kyc";
 
   return {
     nextStep,
     completion: {
       profile: profileDone,
       address: addressDone,
-      kyc: kycDone,
     },
   };
 }

@@ -9,7 +9,6 @@ export const ONBOARDING_STEP_ROUTES: Record<OnboardingStep, string> = {
   referral: ROUTES.ONBOARDING.REFERRAL,
   profile: ROUTES.ONBOARDING.PROFILE,
   address: ROUTES.ONBOARDING.ADDRESS,
-  kyc: ROUTES.ONBOARDING.KYC,
   completed: ROUTES.ROOT,
 };
 
@@ -18,5 +17,4 @@ export const GUARD_STEP_ROUTES: Record<string, string> = {
   auth: ROUTES.ONBOARDING.PROFILE,
   profile: ROUTES.ONBOARDING.PROFILE,
   address: ROUTES.ONBOARDING.ADDRESS,
-  kyc: ROUTES.ONBOARDING.KYC,
 };

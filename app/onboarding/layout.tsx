@@ -27,10 +27,9 @@ const STEP_FROM_PATH: Record<string, OnboardingStepKey> = {
   [ROUTES.ONBOARDING.REFERRAL]: "referral",
   [ROUTES.ONBOARDING.PROFILE]: "profile",
   [ROUTES.ONBOARDING.ADDRESS]: "address",
-  [ROUTES.ONBOARDING.KYC]: "kyc",
 };
 
-const INDICATOR_STEPS: IndicatorStepKey[] = ["profile", "address", "kyc"];
+const INDICATOR_STEPS: IndicatorStepKey[] = ["profile", "address"];
 
 export default function OnboardingLayout({
   children,
