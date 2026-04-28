@@ -30,7 +30,7 @@ export function CountrySelector({
   disabled,
 }: CountrySelectorProps) {
   return (
-    <div className="space-y-2">
+    <div className="relative space-y-2">
       {label && <Label>{label}</Label>}
       <Select value={value || undefined} onValueChange={onSelect} disabled={disabled}>
         <SelectTrigger aria-invalid={!!error || undefined}>
@@ -47,7 +47,7 @@ export function CountrySelector({
           ))}
         </SelectContent>
       </Select>
-      <p className="min-h-5 text-sm text-destructive">{error || " "}</p>
+      {error && (<p className="absolute top-full left-0 mt-0.5 text-xs leading-4 text-destructive">{error}</p>)}
     </div>
   );
 }

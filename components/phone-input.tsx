@@ -80,7 +80,7 @@ export function PhoneInput({
   };
 
   return (
-    <div className="space-y-2">
+    <div className="relative space-y-2">
       {label && <Label>{label}</Label>}
       <div
         className={cn(
@@ -153,7 +153,7 @@ export function PhoneInput({
           placeholder={placeholder}
         />
       </div>
-      <p className="min-h-5 text-sm text-destructive">{error || " "}</p>
+      {error && (<p className="absolute top-full left-0 mt-0.5 text-xs leading-4 text-destructive">{error}</p>)}
     </div>
   );
 }
