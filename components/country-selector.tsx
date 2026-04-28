@@ -47,7 +47,7 @@ export function CountrySelector({
           ))}
         </SelectContent>
       </Select>
-      {error && <p className="text-sm text-destructive">{error}</p>}
+      <p className="min-h-5 text-sm text-destructive">{error || " "}</p>
     </div>
   );
 }

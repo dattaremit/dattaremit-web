@@ -153,7 +153,7 @@ export function PhoneInput({
           placeholder={placeholder}
         />
       </div>
-      {error && <p className="text-sm text-destructive">{error}</p>}
+      <p className="min-h-5 text-sm text-destructive">{error || " "}</p>
     </div>
   );
 }
