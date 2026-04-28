@@ -209,7 +209,7 @@ export default function RecipientDetailPage({
         </Detail>
 
         <div className="mt-6 flex flex-wrap gap-2">
-          {canEditRecipient && (
+          {canEditRecipient && !kycApproved && (
             <Button variant="outline" size="sm" asChild>
               <a href={`/recipients/${recipient.id}/edit`}>
                 <Pencil />
