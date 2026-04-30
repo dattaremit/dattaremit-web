@@ -8,6 +8,7 @@ import { Input } from "@/components/ui/input";
 import { PageHeader } from "@/components/ui/page-header";
 import { reserveReferralCode, validateReferralCode, ApiError } from "@/services/api";
 import { STORAGE_KEYS } from "@/constants/storage-keys";
+import safeStorage from "@/lib/safe-storage";
 import { ROUTES } from "@/constants/routes";
 import { isValidReferralCode } from "@/schemas/referral.schema";
 
@@ -39,7 +40,7 @@ export default function OnboardingReferralPage() {
       const result = await validateReferralCode(trimmed);
       if (result?.valid) {
         await reserveReferralCode(trimmed);
-        localStorage.removeItem(STORAGE_KEY);
+        safeStorage.removeItem(STORAGE_KEY);
         goToProfile();
       } else {
         setError("Invalid referral code. Please check and try again.");
@@ -56,7 +57,7 @@ export default function OnboardingReferralPage() {
   };
 
   const handleSkip = () => {
-    localStorage.removeItem(STORAGE_KEY);
+    safeStorage.removeItem(STORAGE_KEY);
     goToProfile();
   };
 

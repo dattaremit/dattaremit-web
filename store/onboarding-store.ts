@@ -2,6 +2,7 @@
 
 import { useCallback, useEffect, useMemo, useSyncExternalStore } from "react";
 import { STORAGE_KEYS } from "@/constants/storage-keys";
+import safeStorage from "@/lib/safe-storage";
 
 export type OnboardingStep =
   | "welcome"
@@ -58,14 +59,9 @@ function getLoadedServerSnapshot() {
 }
 
 function loadStep() {
-  if (typeof window === "undefined") return;
-  try {
-    const stored = window.localStorage.getItem(STORAGE_KEY);
-    if (stored && STEP_ORDER.includes(stored as OnboardingStep)) {
-      currentStep = stored as OnboardingStep;
-    }
-  } catch {
-    // localStorage unavailable — continue with default step
+  const stored = safeStorage.getItem(STORAGE_KEY);
+  if (stored && STEP_ORDER.includes(stored as OnboardingStep)) {
+    currentStep = stored as OnboardingStep;
   }
   isLoaded = true;
   emitChange();
@@ -74,11 +70,7 @@ function loadStep() {
 function setStep(step: OnboardingStep) {
   currentStep = step;
   emitChange();
-  try {
-    window.localStorage.setItem(STORAGE_KEY, step);
-  } catch {
-    // write failed — in-memory state still updated
-  }
+  safeStorage.setItem(STORAGE_KEY, step);
 }
 
 function advanceStep() {
@@ -95,11 +87,7 @@ function resetOnboarding() {
 export function clearOnboardingStore() {
   currentStep = "welcome";
   isLoaded = false;
-  try {
-    window.localStorage.removeItem(STORAGE_KEY);
-  } catch {
-    // localStorage unavailable — in-memory state still reset
-  }
+  safeStorage.removeItem(STORAGE_KEY);
   emitChange();
 }
 

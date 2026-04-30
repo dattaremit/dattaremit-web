@@ -118,7 +118,7 @@ api.interceptors.response.use(
       });
     }
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    return body.data as any;
+    return body.data as any; // nosemgrep: github.no-explicit-any-cast — Axios interceptor return type requires `any`; caller-side Promise<T> types are the source of truth
   },
   (error) => {
     if (axios.isAxiosError(error) && error.response) {

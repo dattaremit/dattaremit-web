@@ -2,6 +2,7 @@ import type { QueryClient } from "@tanstack/react-query";
 import { STORAGE_KEYS } from "@/constants/storage-keys";
 import { clearOnboardingStore } from "@/store/onboarding-store";
 import { clearThemeStore } from "@/store/theme-store";
+import safeStorage from "@/lib/safe-storage";
 
 const NEXT_THEMES_KEY = "theme";
 
@@ -15,11 +16,11 @@ export function clearClientData(queryClient: QueryClient) {
   queryClient.clear();
   clearOnboardingStore();
   clearThemeStore();
+  for (const key of KEYS_TO_CLEAR) {
+    safeStorage.removeItem(key);
+  }
   if (typeof window === "undefined") return;
   try {
-    for (const key of KEYS_TO_CLEAR) {
-      window.localStorage.removeItem(key);
-    }
     window.sessionStorage.clear();
   } catch {
     // Storage unavailable — nothing more to do.

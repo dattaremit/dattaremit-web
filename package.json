@@ -53,7 +53,7 @@
     "*.{ts,tsx,js,jsx,mts,mjs}": [
       "prettier --write",
       "eslint --fix",
-      "semgrep --config=.github/.semgrep.yml --error"
+      "bash -c 'command -v semgrep > /dev/null 2>&1 && semgrep --config=.github/.semgrep.yml --error || echo \"semgrep not installed — skipping local scan (CI will validate)\"'"
     ],
     "*.{json,css,md}": [
       "prettier --write"

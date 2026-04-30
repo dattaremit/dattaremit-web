@@ -12,6 +12,7 @@ import { queryKeys } from "@/constants/query-keys";
 import { STORAGE_KEYS } from "@/constants/storage-keys";
 import { ROUTES } from "@/constants/routes";
 import { stripPhonePrefix } from "@/lib/phone-utils";
+import safeStorage from "@/lib/safe-storage";
 import { toast } from "sonner";
 
 import { Card } from "@/components/ui/card";
@@ -112,7 +113,7 @@ export function PersonalInfoForm({
           nationality: "US",
         });
 
-        localStorage.removeItem(STORAGE_KEYS.REFERRAL_CODE);
+        safeStorage.removeItem(STORAGE_KEYS.REFERRAL_CODE);
       }
 
       if (!isExistingUser) {

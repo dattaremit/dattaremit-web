@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useSyncExternalStore } from "react";
+import safeStorage from "@/lib/safe-storage";
 
 interface PersistedStoreConfig<T extends string> {
   storageKey: string;
@@ -42,14 +43,9 @@ export function createPersistedStore<T extends string>(config: PersistedStoreCon
   }
 
   function load() {
-    if (typeof window === "undefined") return;
-    try {
-      const stored = window.localStorage.getItem(storageKey);
-      if (stored && validValues.includes(stored as T)) {
-        current = stored as T;
-      }
-    } catch {
-      // localStorage unavailable — keep default
+    const stored = safeStorage.getItem(storageKey);
+    if (stored && validValues.includes(stored as T)) {
+      current = stored as T;
     }
     loaded = true;
     emit();
@@ -59,21 +55,13 @@ export function createPersistedStore<T extends string>(config: PersistedStoreCon
     if (!validValues.includes(value)) return;
     current = value;
     emit();
-    try {
-      window.localStorage.setItem(storageKey, value);
-    } catch {
-      // write failed — in-memory state still updated
-    }
+    safeStorage.setItem(storageKey, value);
   }
 
   function clear() {
     current = defaultValue;
     loaded = false;
-    try {
-      window.localStorage.removeItem(storageKey);
-    } catch {
-      // storage unavailable — in-memory state still reset
-    }
+    safeStorage.removeItem(storageKey);
     emit();
   }
 

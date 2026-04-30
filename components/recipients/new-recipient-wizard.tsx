@@ -19,6 +19,7 @@ import { SharedRecipientCard } from "@/components/recipients/shared-recipient-ca
 import { useCheckRecipientIdentity, useCreateRecipient } from "@/hooks/api";
 import { recipientSchema, type RecipientFormData } from "@/schemas/recipient.schema";
 import type { CheckIdentityResult, Recipient } from "@/types/recipient";
+import safeStorage from "@/lib/safe-storage";
 
 type WizardStep = "contact" | "address" | "review" | "success";
 
@@ -40,10 +41,9 @@ type StoredDraft = {
 };
 
 function readDraft(): Partial<RecipientFormData> | null {
-  if (typeof window === "undefined") return null;
+  const raw = safeStorage.getItem(DRAFT_KEY);
+  if (!raw) return null;
   try {
-    const raw = window.localStorage.getItem(DRAFT_KEY);
-    if (!raw) return null;
     const parsed = JSON.parse(raw) as Partial<StoredDraft> | Partial<RecipientFormData>;
     if (
       !parsed ||
@@ -53,12 +53,12 @@ function readDraft(): Partial<RecipientFormData> | null {
     ) {
       // Legacy format (raw values, pre-expiry) or anything malformed: clear it
       // so we don't carry it forward and so the user starts fresh.
-      window.localStorage.removeItem(DRAFT_KEY);
+      safeStorage.removeItem(DRAFT_KEY);
       return null;
     }
     const { savedAt, values } = parsed as StoredDraft;
     if (Date.now() - savedAt > DRAFT_TTL_MS) {
-      window.localStorage.removeItem(DRAFT_KEY);
+      safeStorage.removeItem(DRAFT_KEY);
       return null;
     }
     return values;
@@ -68,22 +68,12 @@ function readDraft(): Partial<RecipientFormData> | null {
 }
 
 function writeDraft(values: Partial<RecipientFormData>) {
-  if (typeof window === "undefined") return;
-  try {
-    const payload: StoredDraft = { savedAt: Date.now(), values };
-    window.localStorage.setItem(DRAFT_KEY, JSON.stringify(payload));
-  } catch {
-    // Storage may be full or disabled — silently drop the draft.
-  }
+  const payload: StoredDraft = { savedAt: Date.now(), values };
+  safeStorage.setItem(DRAFT_KEY, JSON.stringify(payload));
 }
 
 function clearDraft() {
-  if (typeof window === "undefined") return;
-  try {
-    window.localStorage.removeItem(DRAFT_KEY);
-  } catch {
-    // ignore
-  }
+  safeStorage.removeItem(DRAFT_KEY);
 }
 
 type Match = Extract<CheckIdentityResult, { exists: true }>;

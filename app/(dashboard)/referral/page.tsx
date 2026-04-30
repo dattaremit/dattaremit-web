@@ -8,6 +8,7 @@ import { toast } from "sonner";
 import { useValidateReferral } from "@/hooks/api";
 import { reserveReferralCode } from "@/services/api";
 import { STORAGE_KEYS } from "@/constants/storage-keys";
+import safeStorage from "@/lib/safe-storage";
 import { ROUTES } from "@/constants/routes";
 import { isValidReferralCode } from "@/schemas/referral.schema";
 import { Card } from "@/components/ui/card";
@@ -34,7 +35,7 @@ export default function ReferralPage() {
     try {
       await validateMutation.mutateAsync(trimmed);
       await reserveReferralCode(trimmed);
-      localStorage.removeItem(STORAGE_KEYS.REFERRAL_CODE);
+      safeStorage.removeItem(STORAGE_KEYS.REFERRAL_CODE);
       toast.success("Referral code applied!");
       router.push(ROUTES.EDIT_PROFILE);
     } catch (err: unknown) {
@@ -44,7 +45,7 @@ export default function ReferralPage() {
   };
 
   const handleSkip = () => {
-    localStorage.removeItem(STORAGE_KEYS.REFERRAL_CODE);
+    safeStorage.removeItem(STORAGE_KEYS.REFERRAL_CODE);
     router.push("/edit-profile");
   };
 

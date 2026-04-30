@@ -21,7 +21,9 @@ rules:
             ...
             axios.$METHOD(...)
             ...
-          } catch(...) { ... }
+          } catch($E) {
+            ...
+          }
     message: "Axios call is missing error handling. Add .catch() or wrap in try/catch."
     languages: [typescript, javascript]
     severity: WARNING
@@ -47,15 +49,21 @@ rules:
   # ── localStorage (SSR safety) ──────────────────────────────────────────────────
   - id: direct-localstorage-via-window
     pattern: window.localStorage.$METHOD(...)
-    message: "Direct window.localStorage access is unsafe in Next.js SSR. Use a utility that checks typeof window first."
+    message: "Direct window.localStorage access is unsafe in Next.js SSR. Use safeStorage from lib/safe-storage instead."
     languages: [typescript, javascript]
     severity: WARNING
+    paths:
+      exclude:
+        - "lib/safe-storage.ts"
 
   - id: bare-localstorage-access
     pattern: localStorage.$METHOD(...)
-    message: "Direct localStorage access is unsafe in Next.js SSR. Use a utility that checks typeof window first."
+    message: "Direct localStorage access is unsafe in Next.js SSR. Use safeStorage from lib/safe-storage instead."
     languages: [typescript, javascript]
     severity: WARNING
+    paths:
+      exclude:
+        - "lib/safe-storage.ts"
 
   # ── TypeScript safety ──────────────────────────────────────────────────────────
   - id: no-explicit-any-cast
@@ -88,4 +96,4 @@ rules:
     severity: WARNING
     paths:
       include:
-        - "app/api/**"
+        - "**/app/api/**"

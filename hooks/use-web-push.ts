@@ -11,6 +11,7 @@ import {
 } from "@/lib/web-push";
 import { registerWebPushDevice, unregisterDevice } from "@/services/api";
 import { STORAGE_KEYS } from "@/constants/storage-keys";
+import safeStorage from "@/lib/safe-storage";
 
 type Status = "unsupported" | "blocked" | "disabled" | "enabled";
 
@@ -69,7 +70,7 @@ export function useWebPush() {
       }
       const sub = await subscribePush();
       const device = await registerWebPushDevice(subscriptionToPayload(sub));
-      window.localStorage.setItem(DEVICE_ID_KEY, device.id);
+      safeStorage.setItem(DEVICE_ID_KEY, device.id);
       setStatus("enabled");
     } catch (err) {
       setError(err instanceof Error ? err.message : "Failed to enable push.");
@@ -82,7 +83,7 @@ export function useWebPush() {
     setLoading(true);
     setError(null);
     try {
-      const deviceId = window.localStorage.getItem(DEVICE_ID_KEY);
+      const deviceId = safeStorage.getItem(DEVICE_ID_KEY);
       await unsubscribePush();
       if (deviceId) {
         try {
@@ -90,7 +91,7 @@ export function useWebPush() {
         } catch {
           // server may already have purged the device; continue
         }
-        window.localStorage.removeItem(DEVICE_ID_KEY);
+        safeStorage.removeItem(DEVICE_ID_KEY);
       }
       setStatus("disabled");
     } catch (err) {
