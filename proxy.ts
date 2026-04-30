@@ -46,7 +46,10 @@ function buildCsp(nonce: string): string {
 
   if (!isDev) directives.push(`upgrade-insecure-requests`);
 
-  return directives.join("; ").replace(/\s{2,}/g, " ").trim();
+  return directives
+    .join("; ")
+    .replace(/\s{2,}/g, " ")
+    .trim();
 }
 
 export default clerkMiddleware(async (auth, request) => {

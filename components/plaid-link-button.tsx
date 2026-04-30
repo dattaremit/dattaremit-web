@@ -54,12 +54,7 @@ export function PlaidLinkButton({
   }, [data?.plaid_token, ready, open]);
 
   return (
-    <Button
-      onClick={handleClick}
-      variant="brand"
-      size="lg"
-      loading={isPending}
-    >
+    <Button onClick={handleClick} variant="brand" size="lg" loading={isPending}>
       {!isPending && <Building2 />}
       {isPending ? "Connecting…" : label}
     </Button>

@@ -31,11 +31,7 @@ const STEP_FROM_PATH: Record<string, OnboardingStepKey> = {
 
 const INDICATOR_STEPS: IndicatorStepKey[] = ["profile", "address"];
 
-export default function OnboardingLayout({
-  children,
-}: {
-  children: React.ReactNode;
-}) {
+export default function OnboardingLayout({ children }: { children: React.ReactNode }) {
   const router = useRouter();
   const pathname = usePathname();
   const { isLoaded, isSignedIn } = useAuth();
@@ -108,8 +104,7 @@ export default function OnboardingLayout({
   ]);
 
   const stepKey = STEP_FROM_PATH[pathname];
-  const isIndicatorStep =
-    !!stepKey && (INDICATOR_STEPS as OnboardingStepKey[]).includes(stepKey);
+  const isIndicatorStep = !!stepKey && (INDICATOR_STEPS as OnboardingStepKey[]).includes(stepKey);
   const isGatedPath =
     pathname === ROUTES.ONBOARDING.WAITLIST ||
     pathname === ROUTES.ONBOARDING.BLOCKED ||
@@ -128,9 +123,7 @@ export default function OnboardingLayout({
         <header className="relative z-10 flex h-16 items-center justify-between border-b border-border/60 bg-background/70 px-5 backdrop-blur-xl sm:px-8">
           <Link href="/" className="flex items-center gap-2.5">
             <Image src="/logo.png" alt="Dattapay" width={26} height={22} />
-            <span className="font-semibold text-lg text-foreground">
-              Dattapay
-            </span>
+            <span className="font-semibold text-lg text-foreground">Dattapay</span>
           </Link>
           <AccountMenu />
         </header>

@@ -3,11 +3,7 @@
 import * as React from "react";
 import { Check, ChevronDown, Calendar as CalendarIcon } from "lucide-react";
 
-import {
-  Popover,
-  PopoverContent,
-  PopoverTrigger,
-} from "@/components/ui/popover";
+import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { cn } from "@/lib/utils";
 
 const MONTHS = [
@@ -42,13 +38,8 @@ function parse(value: string | undefined) {
   };
 }
 
-function format(
-  day: number | undefined,
-  month: number | undefined,
-  year: number | undefined,
-) {
-  if (day === undefined || month === undefined || year === undefined)
-    return "";
+function format(day: number | undefined, month: number | undefined, year: number | undefined) {
+  if (day === undefined || month === undefined || year === undefined) return "";
   const maxDay = daysInMonth(year, month);
   const clamped = Math.min(day, maxDay);
   return `${year}-${pad2(month + 1)}-${pad2(clamped)}`;
@@ -89,19 +80,12 @@ export function DateSelect({
   }, [value]);
 
   const maxDay = React.useMemo(
-    () =>
-      month !== undefined && year !== undefined
-        ? daysInMonth(year, month)
-        : 31,
+    () => (month !== undefined && year !== undefined ? daysInMonth(year, month) : 31),
     [month, year],
   );
 
   // Auto-emit a complete ISO date whenever all three are set
-  const emit = (
-    d: number | undefined,
-    m: number | undefined,
-    y: number | undefined,
-  ) => {
+  const emit = (d: number | undefined, m: number | undefined, y: number | undefined) => {
     const iso = format(d, m, y);
     if (iso) onChange(iso);
   };
@@ -119,17 +103,12 @@ export function DateSelect({
   const onSelectYear = (y: number) => {
     setYear(y);
     const safeDay =
-      day !== undefined && month !== undefined
-        ? Math.min(day, daysInMonth(y, month))
-        : day;
+      day !== undefined && month !== undefined ? Math.min(day, daysInMonth(y, month)) : day;
     if (safeDay !== undefined && safeDay !== day) setDay(safeDay);
     emit(safeDay, month, y);
   };
 
-  const days = React.useMemo(
-    () => Array.from({ length: maxDay }, (_, i) => i + 1),
-    [maxDay],
-  );
+  const days = React.useMemo(() => Array.from({ length: maxDay }, (_, i) => i + 1), [maxDay]);
   const years = React.useMemo(
     () => Array.from({ length: maxYear - minYear + 1 }, (_, i) => maxYear - i),
     [minYear, maxYear],
@@ -152,11 +131,7 @@ export function DateSelect({
         <CalendarIcon className="size-4" />
       </span>
 
-      <Segment
-        label="Day"
-        placeholder="DD"
-        display={day !== undefined ? pad2(day) : undefined}
-      >
+      <Segment label="Day" placeholder="DD" display={day !== undefined ? pad2(day) : undefined}>
         <OptionList
           options={days.map((d) => ({
             value: d,
@@ -200,12 +175,7 @@ export function DateSelect({
 }
 
 function Divider() {
-  return (
-    <span
-      aria-hidden="true"
-      className="my-2 w-px bg-border"
-    />
-  );
+  return <span aria-hidden="true" className="my-2 w-px bg-border" />;
 }
 
 function Segment({
@@ -278,11 +248,7 @@ function OptionList<T extends number>({
   }, []);
 
   return (
-    <div
-      ref={listRef}
-      role="listbox"
-      className="max-h-60 overflow-y-auto overscroll-contain"
-    >
+    <div ref={listRef} role="listbox" className="max-h-60 overflow-y-auto overscroll-contain">
       {options.map((opt) => {
         const isSelected = opt.value === selected;
         return (

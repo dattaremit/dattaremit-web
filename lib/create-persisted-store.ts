@@ -10,9 +10,7 @@ interface PersistedStoreConfig<T extends string> {
 
 type Listener = () => void;
 
-export function createPersistedStore<T extends string>(
-  config: PersistedStoreConfig<T>,
-) {
+export function createPersistedStore<T extends string>(config: PersistedStoreConfig<T>) {
   const { storageKey, defaultValue, validValues } = config;
   let current: T = defaultValue;
   let loaded = false;
@@ -81,11 +79,7 @@ export function createPersistedStore<T extends string>(
 
   function useStore() {
     const value = useSyncExternalStore(subscribe, getSnapshot, getServerSnapshot);
-    const isLoaded = useSyncExternalStore(
-      subscribe,
-      getLoadedSnapshot,
-      getLoadedServerSnapshot,
-    );
+    const isLoaded = useSyncExternalStore(subscribe, getLoadedSnapshot, getLoadedServerSnapshot);
 
     useEffect(() => {
       if (!loaded) load();

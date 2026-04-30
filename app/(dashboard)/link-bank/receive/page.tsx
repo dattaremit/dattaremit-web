@@ -54,9 +54,7 @@ export default function ReceiveBankPage() {
       toast.success("Indian bank added successfully!");
       router.push(ROUTES.LINK_BANK);
     } catch (err) {
-      toast.error(
-        err instanceof ApiError ? err.message : "Failed to add Indian bank",
-      );
+      toast.error(err instanceof ApiError ? err.message : "Failed to add Indian bank");
     }
   };
 
@@ -96,11 +94,7 @@ export default function ReceiveBankPage() {
             eyebrow="Your Indian bank"
             title={
               <>
-                Add your{" "}
-                <span className="text-brand">
-                  Indian bank
-                </span>
-                .
+                Add your <span className="text-brand">Indian bank</span>.
               </>
             }
             subtitle="Enter your own Indian bank details. This is where money will land when you send to yourself."

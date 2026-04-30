@@ -105,11 +105,7 @@ export function clearOnboardingStore() {
 
 export function useOnboardingStore() {
   const step = useSyncExternalStore(subscribe, getSnapshot, getServerSnapshot);
-  const loaded = useSyncExternalStore(
-    subscribe,
-    getLoadedSnapshot,
-    getLoadedServerSnapshot,
-  );
+  const loaded = useSyncExternalStore(subscribe, getLoadedSnapshot, getLoadedServerSnapshot);
 
   useEffect(() => {
     if (!isLoaded) loadStep();

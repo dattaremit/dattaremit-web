@@ -1,8 +1,7 @@
 import type { OnboardingStep } from "@/store/onboarding-store";
 import type { Account } from "@/types/api";
 
-export const delay = (ms: number) =>
-  new Promise<void>((resolve) => setTimeout(resolve, ms));
+export const delay = (ms: number) => new Promise<void>((resolve) => setTimeout(resolve, ms));
 
 /**
  * Determines the correct onboarding step from server account data.

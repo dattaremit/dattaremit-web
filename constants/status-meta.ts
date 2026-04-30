@@ -1,10 +1,4 @@
-import {
-  CheckCircle2,
-  Clock,
-  ShieldCheck,
-  XCircle,
-  type LucideIcon,
-} from "lucide-react";
+import { CheckCircle2, Clock, ShieldCheck, XCircle, type LucideIcon } from "lucide-react";
 
 type BadgeVariant = "default" | "secondary" | "destructive" | "outline";
 

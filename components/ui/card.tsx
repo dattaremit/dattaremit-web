@@ -10,8 +10,7 @@ const cardVariants = cva(
       variant: {
         default: "bg-card border border-border shadow-soft",
         elevated: "bg-card border border-border shadow-lift",
-        glass:
-          "bg-card/70 backdrop-blur-xl border border-border/60 shadow-soft",
+        glass: "bg-card/70 backdrop-blur-xl border border-border/60 shadow-soft",
         flat: "bg-muted/40 border border-transparent",
         outline: "bg-transparent border border-border",
       },
@@ -27,13 +26,7 @@ function Card({
   variant,
   ...props
 }: React.ComponentProps<"div"> & VariantProps<typeof cardVariants>) {
-  return (
-    <div
-      data-slot="card"
-      className={cn(cardVariants({ variant, className }))}
-      {...props}
-    />
-  );
+  return <div data-slot="card" className={cn(cardVariants({ variant, className }))} {...props} />;
 }
 
 function CardHeader({ className, ...props }: React.ComponentProps<"div">) {
@@ -73,19 +66,14 @@ function CardAction({ className, ...props }: React.ComponentProps<"div">) {
   return (
     <div
       data-slot="card-action"
-      className={cn(
-        "col-start-2 row-span-2 row-start-1 self-start justify-self-end",
-        className,
-      )}
+      className={cn("col-start-2 row-span-2 row-start-1 self-start justify-self-end", className)}
       {...props}
     />
   );
 }
 
 function CardContent({ className, ...props }: React.ComponentProps<"div">) {
-  return (
-    <div data-slot="card-content" className={cn("px-6", className)} {...props} />
-  );
+  return <div data-slot="card-content" className={cn("px-6", className)} {...props} />;
 }
 
 function CardFooter({ className, ...props }: React.ComponentProps<"div">) {

@@ -14,10 +14,7 @@ export default function NewRecipientPage() {
     return (
       <div className="mx-auto w-full max-w-2xl space-y-7">
         <BackLink href={ROUTES.RECIPIENTS} />
-        <KycGate
-          accountStatus={account.accountStatus}
-          feature="adding recipients"
-        />
+        <KycGate accountStatus={account.accountStatus} feature="adding recipients" />
       </div>
     );
   }

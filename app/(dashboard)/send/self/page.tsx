@@ -6,10 +6,7 @@ import { yupResolver } from "@hookform/resolvers/yup";
 import { Send } from "lucide-react";
 import { AnimatePresence } from "motion/react";
 
-import {
-  transferAmountSchema,
-  type TransferAmountFormData,
-} from "@/schemas/transfer.schema";
+import { transferAmountSchema, type TransferAmountFormData } from "@/schemas/transfer.schema";
 import { useAccount, useSendToSelf } from "@/hooks/api";
 import { useSendMoneyState } from "@/hooks/use-send-money-state";
 import { dollarsToCents } from "@/lib/money";
@@ -50,9 +47,7 @@ export default function SendToSelfPage() {
   } = useSendMoneyState<Step>("amount");
 
   const form = useForm<TransferAmountFormData>({
-    resolver: yupResolver(
-      transferAmountSchema,
-    ) as unknown as Resolver<TransferAmountFormData>,
+    resolver: yupResolver(transferAmountSchema) as unknown as Resolver<TransferAmountFormData>,
     defaultValues: { amount: "", note: "" },
   });
 
@@ -63,12 +58,9 @@ export default function SendToSelfPage() {
       <div className="mx-auto w-full max-w-lg space-y-7">
         <BackLink href="/" />
         <Card variant="elevated" className="p-7">
-          <h2 className="font-semibold text-2xl text-foreground">
-            Add a deposit account first
-          </h2>
+          <h2 className="font-semibold text-2xl text-foreground">Add a deposit account first</h2>
           <p className="mt-1 text-sm text-muted-foreground">
-            You need to link your own receiving bank account before you can send
-            money to yourself.
+            You need to link your own receiving bank account before you can send money to yourself.
           </p>
           <Button asChild variant="brand" className="mt-5">
             <Link href={ROUTES.LINK_BANK_RECEIVE}>Link deposit account</Link>
@@ -85,9 +77,7 @@ export default function SendToSelfPage() {
         <TransferResult
           status={sendError ? "error" : "success"}
           title={sendError ? "Transfer failed" : "Money on its way"}
-          description={
-            sendError ?? `You moved $${amount} to your own account.`
-          }
+          description={sendError ?? `You moved $${amount} to your own account.`}
           transactionId={transactionId}
           onRetry={() => {
             setSendError(null);
@@ -120,11 +110,7 @@ export default function SendToSelfPage() {
               eyebrow="Self-send"
               title={
                 <>
-                  Move to{" "}
-                  <span className="text-brand">
-                    yourself
-                  </span>
-                  .
+                  Move to <span className="text-brand">yourself</span>.
                 </>
               }
               subtitle="Funds go to your linked deposit account."
@@ -147,9 +133,7 @@ export default function SendToSelfPage() {
                     inputMode="decimal"
                     placeholder="100.00"
                     leading={
-                      <span className="font-semibold text-base text-muted-foreground">
-                        $
-                      </span>
+                      <span className="font-semibold text-base text-muted-foreground">$</span>
                     }
                     inputClassName="font-semibold text-2xl h-14 tabular pl-9"
                   />
@@ -159,12 +143,7 @@ export default function SendToSelfPage() {
                     label="Note"
                     placeholder="What's it for?"
                   />
-                  <Button
-                    type="submit"
-                    variant="brand"
-                    size="lg"
-                    className="w-full"
-                  >
+                  <Button type="submit" variant="brand" size="lg" className="w-full">
                     Continue
                   </Button>
                 </form>
@@ -179,11 +158,7 @@ export default function SendToSelfPage() {
               eyebrow="Confirm"
               title={
                 <>
-                  One last{" "}
-                  <span className="text-brand">
-                    look
-                  </span>
-                  .
+                  One last <span className="text-brand">look</span>.
                 </>
               }
             />
@@ -200,18 +175,14 @@ export default function SendToSelfPage() {
                 <p className="relative mt-2 font-semibold text-5xl leading-none tabular text-foreground sm:text-6xl">
                   ${amount}
                 </p>
-                <p className="relative mt-2 text-sm text-muted-foreground">
-                  to your own account
-                </p>
+                <p className="relative mt-2 text-sm text-muted-foreground">to your own account</p>
               </div>
 
               {note && (
                 <div className="space-y-3 p-6 text-sm">
                   <div className="flex items-start justify-between gap-3">
                     <span className="text-muted-foreground">Note</span>
-                    <span className="text-right font-medium text-foreground">
-                      {note}
-                    </span>
+                    <span className="text-right font-medium text-foreground">{note}</span>
                   </div>
                 </div>
               )}
@@ -229,11 +200,7 @@ export default function SendToSelfPage() {
                       try {
                         amountCents = dollarsToCents(amount);
                       } catch (err) {
-                        setSendError(
-                          err instanceof Error
-                            ? err.message
-                            : "Invalid amount",
-                        );
+                        setSendError(err instanceof Error ? err.message : "Invalid amount");
                         return undefined;
                       }
                       try {
@@ -242,11 +209,7 @@ export default function SendToSelfPage() {
                           idempotencyKey,
                         });
                       } catch (err) {
-                        setSendError(
-                          err instanceof Error
-                            ? err.message
-                            : "Transfer failed",
-                        );
+                        setSendError(err instanceof Error ? err.message : "Transfer failed");
                         return undefined;
                       }
                     });

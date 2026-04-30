@@ -42,10 +42,7 @@ self.addEventListener("push", (event) => {
   };
 
   event.waitUntil(
-    Promise.all([
-      self.registration.showNotification(title, options),
-      broadcast(payload),
-    ]),
+    Promise.all([self.registration.showNotification(title, options), broadcast(payload)]),
   );
 });
 
@@ -62,23 +59,19 @@ function resolveSafeUrl(candidate) {
 
 self.addEventListener("notificationclick", (event) => {
   event.notification.close();
-  const url = resolveSafeUrl(
-    event.notification.data && event.notification.data.url,
-  );
+  const url = resolveSafeUrl(event.notification.data && event.notification.data.url);
   event.waitUntil(
-    self.clients
-      .matchAll({ type: "window", includeUncontrolled: true })
-      .then((matchedClients) => {
-        for (const client of matchedClients) {
-          if ("focus" in client) {
-            client.navigate(url);
-            return client.focus();
-          }
+    self.clients.matchAll({ type: "window", includeUncontrolled: true }).then((matchedClients) => {
+      for (const client of matchedClients) {
+        if ("focus" in client) {
+          client.navigate(url);
+          return client.focus();
         }
-        if (self.clients.openWindow) {
-          return self.clients.openWindow(url);
-        }
-      }),
+      }
+      if (self.clients.openWindow) {
+        return self.clients.openWindow(url);
+      }
+    }),
   );
 });
 

@@ -31,12 +31,10 @@ export function KycBanner() {
             <Clock className="size-4.5" />
           </div>
           <div className="space-y-0.5">
-            <p className="font-semibold text-sm text-foreground">
-              Verification in progress
-            </p>
+            <p className="font-semibold text-sm text-foreground">Verification in progress</p>
             <p className="text-xs text-muted-foreground sm:text-sm">
-              We&apos;re reviewing your identity. We&apos;ll email you the
-              moment it&apos;s approved.
+              We&apos;re reviewing your identity. We&apos;ll email you the moment it&apos;s
+              approved.
             </p>
           </div>
         </div>

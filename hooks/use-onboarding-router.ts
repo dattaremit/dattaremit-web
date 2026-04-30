@@ -5,10 +5,7 @@ import { useRouter } from "next/navigation";
 import { useQueryClient } from "@tanstack/react-query";
 import { queryKeys } from "@/constants/query-keys";
 import { getAccount } from "@/services/api";
-import {
-  computeOnboardingState,
-  nextHref as computeNextHref,
-} from "@/lib/onboarding-progress";
+import { computeOnboardingState, nextHref as computeNextHref } from "@/lib/onboarding-progress";
 
 /**
  * Used by onboarding step pages to navigate after a save:

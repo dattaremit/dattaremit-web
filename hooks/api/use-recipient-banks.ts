@@ -46,13 +46,8 @@ export function useUpdateRecipientBank() {
 export function useSetDefaultRecipientBank() {
   const invalidate = useRecipientBankInvalidations();
   return useMutation({
-    mutationFn: ({
-      recipientId,
-      bankId,
-    }: {
-      recipientId: string;
-      bankId: string;
-    }) => setDefaultRecipientBank(recipientId, bankId),
+    mutationFn: ({ recipientId, bankId }: { recipientId: string; bankId: string }) =>
+      setDefaultRecipientBank(recipientId, bankId),
     onSuccess: (_res, { recipientId }) => invalidate(recipientId),
   });
 }
@@ -60,13 +55,8 @@ export function useSetDefaultRecipientBank() {
 export function useDeleteRecipientBank() {
   const invalidate = useRecipientBankInvalidations();
   return useMutation({
-    mutationFn: ({
-      recipientId,
-      bankId,
-    }: {
-      recipientId: string;
-      bankId: string;
-    }) => deleteRecipientBank(recipientId, bankId),
+    mutationFn: ({ recipientId, bankId }: { recipientId: string; bankId: string }) =>
+      deleteRecipientBank(recipientId, bankId),
     onSuccess: (_res, { recipientId }) => invalidate(recipientId),
   });
 }

@@ -3,11 +3,7 @@
 import * as React from "react";
 import { motion } from "motion/react";
 
-import {
-  InputOTP,
-  InputOTPGroup,
-  InputOTPSlot,
-} from "@/components/ui/input-otp";
+import { InputOTP, InputOTPGroup, InputOTPSlot } from "@/components/ui/input-otp";
 import { Button } from "@/components/ui/button";
 import { EASE_OUT_SMOOTH } from "@/constants/motion";
 import { cn } from "@/lib/utils";
@@ -44,12 +40,7 @@ export function OtpForm({
   const lastSubmittedRef = React.useRef("");
 
   React.useEffect(() => {
-    if (
-      autoSubmit &&
-      value.length === length &&
-      lastSubmittedRef.current !== value &&
-      !loading
-    ) {
+    if (autoSubmit && value.length === length && lastSubmittedRef.current !== value && !loading) {
       lastSubmittedRef.current = value;
       void onSubmit();
     }
@@ -60,20 +51,12 @@ export function OtpForm({
     if (value.length === length) void onSubmit();
   };
 
-  const slots = React.useMemo(
-    () => Array.from({ length }, (_, i) => i),
-    [length],
-  );
+  const slots = React.useMemo(() => Array.from({ length }, (_, i) => i), [length]);
 
   return (
     <form onSubmit={handleSubmit} className={cn("space-y-5", className)}>
       <div className="flex flex-col items-center gap-3">
-        <InputOTP
-          maxLength={length}
-          value={value}
-          onChange={onChange}
-          autoFocus
-        >
+        <InputOTP maxLength={length} value={value} onChange={onChange} autoFocus>
           <InputOTPGroup>
             {slots.map((i) => (
               <motion.div

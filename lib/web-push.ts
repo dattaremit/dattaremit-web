@@ -54,9 +54,7 @@ export async function getExistingSubscription(): Promise<PushSubscription | null
 export async function subscribePush(): Promise<PushSubscription> {
   const vapidPublicKey = process.env.NEXT_PUBLIC_VAPID_PUBLIC_KEY;
   if (!vapidPublicKey) {
-    throw new Error(
-      "NEXT_PUBLIC_VAPID_PUBLIC_KEY is not set — push cannot be enabled.",
-    );
+    throw new Error("NEXT_PUBLIC_VAPID_PUBLIC_KEY is not set — push cannot be enabled.");
   }
 
   const registration = await registerServiceWorker();

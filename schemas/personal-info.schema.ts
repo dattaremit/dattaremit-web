@@ -20,11 +20,7 @@ export const personalInfoSchema = yup.object({
     .trim()
     .required("First name is required")
     .max(50, "First name is too long"),
-  lastName: yup
-    .string()
-    .trim()
-    .required("Last name is required")
-    .max(50, "Last name is too long"),
+  lastName: yup.string().trim().required("Last name is required").max(50, "Last name is too long"),
   phoneNumberPrefix: yup
     .string()
     .trim()
@@ -44,15 +40,11 @@ export const personalInfoSchema = yup.object({
       if (!value) return false;
       return Number.isFinite(Date.parse(value));
     })
-    .test(
-      "min-age",
-      `You must be at least ${MIN_AGE} years old to use this service`,
-      (value) => {
-        if (!value) return false;
-        const age = yearsSince(value);
-        return age !== null && age >= MIN_AGE;
-      },
-    )
+    .test("min-age", `You must be at least ${MIN_AGE} years old to use this service`, (value) => {
+      if (!value) return false;
+      const age = yearsSince(value);
+      return age !== null && age >= MIN_AGE;
+    })
     .test("max-age", "Please enter a valid date of birth", (value) => {
       if (!value) return false;
       const age = yearsSince(value);

@@ -15,36 +15,22 @@ describe("queryKeys", () => {
     });
 
     it("exposes a stable key for unread notifications count", () => {
-      expect(queryKeys.notifications.unreadCount).toEqual([
-        "notifications",
-        "unread-count",
-      ]);
+      expect(queryKeys.notifications.unreadCount).toEqual(["notifications", "unread-count"]);
     });
   });
 
   describe("dynamic keys", () => {
     it("builds a detail key for an address by id", () => {
-      expect(queryKeys.addresses.detail("addr-123")).toEqual([
-        "addresses",
-        "addr-123",
-      ]);
+      expect(queryKeys.addresses.detail("addr-123")).toEqual(["addresses", "addr-123"]);
     });
 
     it("builds a list key for activities including the params object", () => {
       const params = { page: 2, type: "TRANSFER" };
-      expect(queryKeys.activities.list(params)).toEqual([
-        "activities",
-        "list",
-        params,
-      ]);
+      expect(queryKeys.activities.list(params)).toEqual(["activities", "list", params]);
     });
 
     it("builds a recipient banks key by id", () => {
-      expect(queryKeys.recipients.banks("rec-1")).toEqual([
-        "recipients",
-        "rec-1",
-        "banks",
-      ]);
+      expect(queryKeys.recipients.banks("rec-1")).toEqual(["recipients", "rec-1", "banks"]);
     });
 
     it("builds a scoped email-check key", () => {

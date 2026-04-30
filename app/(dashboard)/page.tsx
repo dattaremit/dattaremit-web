@@ -1,13 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import {
-  CheckCircle2,
-  ArrowRight,
-  Send,
-  Sparkles,
-  Landmark,
-} from "lucide-react";
+import { CheckCircle2, ArrowRight, Send, Sparkles, Landmark } from "lucide-react";
 import { useAccount, useExchangeRate } from "@/hooks/api";
 import { ApiError } from "@/services/api";
 import { ROUTES } from "@/constants/routes";
@@ -72,11 +66,7 @@ export default function HomePage() {
           <h1 className="font-semibold text-4xl leading-[1.05] text-foreground sm:text-5xl">
             {user?.firstName ? (
               <>
-                Welcome back,{" "}
-                <span className="text-brand">
-                  {user.firstName}
-                </span>
-                .
+                Welcome back, <span className="text-brand">{user.firstName}</span>.
               </>
             ) : (
               "Welcome."
@@ -96,10 +86,7 @@ export default function HomePage() {
             label="Live rate"
             value={
               <>
-                ₹
-                <span className="text-brand">
-                  {rate ? rate.toFixed(2) : "—"}
-                </span>
+                ₹<span className="text-brand">{rate ? rate.toFixed(2) : "—"}</span>
               </>
             }
             hint="USD → INR · live from Yahoo Finance"
@@ -119,11 +106,7 @@ export default function HomePage() {
           />
           <QuickAction
             icon={
-              hasSendAccount ? (
-                <CheckCircle2 className="size-5" />
-              ) : (
-                <Landmark className="size-5" />
-              )
+              hasSendAccount ? <CheckCircle2 className="size-5" /> : <Landmark className="size-5" />
             }
             label={hasSendAccount ? "Bank Connected" : "Connect Bank"}
             href={ROUTES.LINK_BANK}
@@ -145,28 +128,21 @@ export default function HomePage() {
                   <CheckCircle2 className="size-5" />
                 </div>
                 <div className="flex flex-col gap-1">
-                  <h3 className="font-semibold text-xl text-foreground">
-                    Accounts linked
-                  </h3>
+                  <h3 className="font-semibold text-xl text-foreground">Accounts linked</h3>
                   <p className="text-sm text-muted-foreground">
                     Send and receive accounts are connected and ready.
                   </p>
                 </div>
               </div>
             </Card>
-            <Card
-              variant="elevated"
-              className="relative overflow-hidden border-brand/20"
-            >
+            <Card variant="elevated" className="relative overflow-hidden border-brand/20">
               <div
                 aria-hidden="true"
                 className="pointer-events-none absolute -right-12 -top-12 size-48 rounded-full bg-brand/20 blur-3xl"
               />
               <div className="relative flex h-full flex-col justify-between gap-4 p-6">
                 <div className="flex flex-col gap-1">
-                  <h3 className="font-semibold text-xl text-foreground">
-                    Ready to send?
-                  </h3>
+                  <h3 className="font-semibold text-xl text-foreground">Ready to send?</h3>
                   <p className="text-sm text-muted-foreground">
                     Pick a recipient and we&apos;ll do the rest.
                   </p>
@@ -208,14 +184,10 @@ function QuickAction({
       href={href}
       className="group flex items-center gap-4 rounded-2xl border border-border bg-card p-4 shadow-soft transition-all hover:border-foreground/20 hover:shadow-lift"
     >
-      <div
-        className={`flex size-11 items-center justify-center rounded-xl ring-1 ${tintClass}`}
-      >
+      <div className={`flex size-11 items-center justify-center rounded-xl ring-1 ${tintClass}`}>
         {icon}
       </div>
-      <span className="flex-1 text-left font-semibold text-foreground">
-        {label}
-      </span>
+      <span className="flex-1 text-left font-semibold text-foreground">{label}</span>
       <ArrowRight className="size-4 text-muted-foreground transition-transform group-hover:translate-x-0.5 group-hover:text-foreground" />
     </Link>
   );

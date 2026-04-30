@@ -6,11 +6,7 @@ export const recipientSchema = yup.object({
     .trim()
     .required("First name is required")
     .max(50, "First name is too long"),
-  lastName: yup
-    .string()
-    .trim()
-    .required("Last name is required")
-    .max(50, "Last name is too long"),
+  lastName: yup.string().trim().required("Last name is required").max(50, "Last name is too long"),
   email: yup
     .string()
     .trim()
@@ -33,16 +29,8 @@ export const recipientSchema = yup.object({
     .trim()
     .required("Address line 1 is required")
     .max(100, "Address is too long"),
-  city: yup
-    .string()
-    .trim()
-    .required("City is required")
-    .max(60, "City is too long"),
-  state: yup
-    .string()
-    .trim()
-    .required("State is required")
-    .max(60, "State is too long"),
+  city: yup.string().trim().required("City is required").max(60, "City is too long"),
+  state: yup.string().trim().required("State is required").max(60, "State is too long"),
   // Indian PINs are exactly 6 digits; matches the Zynk KYC format so we
   // don't silently send garbage through to the provider.
   postalCode: yup

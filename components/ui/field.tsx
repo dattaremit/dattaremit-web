@@ -11,51 +11,26 @@ type FieldLabelProps = React.LabelHTMLAttributes<HTMLLabelElement> & {
   optional?: boolean;
 };
 
-export function FieldLabel({
-  className,
-  optional,
-  children,
-  ...props
-}: FieldLabelProps) {
+export function FieldLabel({ className, optional, children, ...props }: FieldLabelProps) {
   return (
     <label
-      className={cn(
-        "flex items-center gap-1.5 text-sm font-medium text-foreground/90",
-        className,
-      )}
+      className={cn("flex items-center gap-1.5 text-sm font-medium text-foreground/90", className)}
       {...props}
     >
       {children}
-      {optional && (
-        <span className="text-xs font-normal text-muted-foreground/70">
-          (optional)
-        </span>
-      )}
+      {optional && <span className="text-xs font-normal text-muted-foreground/70">(optional)</span>}
     </label>
   );
 }
 
-export function FieldHint({
-  className,
-  ...props
-}: React.HTMLAttributes<HTMLParagraphElement>) {
+export function FieldHint({ className, ...props }: React.HTMLAttributes<HTMLParagraphElement>) {
   return (
-    <p
-      className={cn("text-xs leading-relaxed text-muted-foreground", className)}
-      {...props}
-    />
+    <p className={cn("text-xs leading-relaxed text-muted-foreground", className)} {...props} />
   );
 }
 
-export function FieldError({
-  className,
-  ...props
-}: React.HTMLAttributes<HTMLParagraphElement>) {
+export function FieldError({ className, ...props }: React.HTMLAttributes<HTMLParagraphElement>) {
   return (
-    <p
-      role="alert"
-      className={cn("text-xs font-medium text-destructive", className)}
-      {...props}
-    />
+    <p role="alert" className={cn("text-xs font-medium text-destructive", className)} {...props} />
   );
 }

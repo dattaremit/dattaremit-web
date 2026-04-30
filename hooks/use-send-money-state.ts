@@ -15,9 +15,7 @@ export function useSendMoneyState<S extends string>(initialStep: S) {
   const [note, setNote] = useState("");
   const [transactionId, setTransactionId] = useState<string>();
   const [sendError, setSendError] = useState<string | null>(null);
-  const [idempotencyKey, setIdempotencyKey] = useState<string>(() =>
-    generateIdempotencyKey(),
-  );
+  const [idempotencyKey, setIdempotencyKey] = useState<string>(() => generateIdempotencyKey());
 
   const resetIdempotencyKey = () => setIdempotencyKey(generateIdempotencyKey());
 

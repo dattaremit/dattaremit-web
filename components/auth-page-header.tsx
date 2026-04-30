@@ -4,11 +4,7 @@ interface AuthPageHeaderProps {
   eyebrow?: string;
 }
 
-export function AuthPageHeader({
-  title,
-  subtitle,
-  eyebrow,
-}: AuthPageHeaderProps) {
+export function AuthPageHeader({ title, subtitle, eyebrow }: AuthPageHeaderProps) {
   return (
     <div className="mb-7 flex flex-col gap-3">
       {eyebrow && (
@@ -17,12 +13,8 @@ export function AuthPageHeader({
           {eyebrow}
         </span>
       )}
-      <h1 className="font-semibold text-4xl leading-[1.05] text-foreground sm:text-5xl">
-        {title}
-      </h1>
-      <p className="text-sm leading-relaxed text-muted-foreground sm:text-base">
-        {subtitle}
-      </p>
+      <h1 className="font-semibold text-4xl leading-[1.05] text-foreground sm:text-5xl">{title}</h1>
+      <p className="text-sm leading-relaxed text-muted-foreground sm:text-base">{subtitle}</p>
     </div>
   );
 }

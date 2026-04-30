@@ -49,10 +49,7 @@ export default function ForgotPasswordPage() {
 
   useEffect(() => {
     if (resendCountdown <= 0) return;
-    const timer = setTimeout(
-      () => setResendCountdown((v) => v - 1),
-      1000,
-    );
+    const timer = setTimeout(() => setResendCountdown((v) => v - 1), 1000);
     return () => clearTimeout(timer);
   }, [resendCountdown]);
 
@@ -66,12 +63,7 @@ export default function ForgotPasswordPage() {
       setResendCountdown(RESEND_COOLDOWN_SECONDS);
       return true;
     } catch (err: unknown) {
-      toast.error(
-        getClerkErrorMessage(
-          err,
-          "Could not send reset code. Please try again.",
-        ),
-      );
+      toast.error(getClerkErrorMessage(err, "Could not send reset code. Please try again."));
       return false;
     }
   };
@@ -102,9 +94,7 @@ export default function ForgotPasswordPage() {
         setOtpError("Verification failed. Please try again.");
       }
     } catch (err: unknown) {
-      setOtpError(
-        getClerkErrorMessage(err, "Invalid code. Please try again."),
-      );
+      setOtpError(getClerkErrorMessage(err, "Invalid code. Please try again."));
     } finally {
       setLoading(false);
     }
@@ -135,12 +125,7 @@ export default function ForgotPasswordPage() {
 
       toast.error("Password reset could not be completed.");
     } catch (err: unknown) {
-      toast.error(
-        getClerkErrorMessage(
-          err,
-          "Password reset failed. Please try again.",
-        ),
-      );
+      toast.error(getClerkErrorMessage(err, "Password reset failed. Please try again."));
     } finally {
       setLoading(false);
     }
@@ -159,8 +144,7 @@ export default function ForgotPasswordPage() {
         }
         subtitle={
           <>
-            We sent a 6-digit code to{" "}
-            <span className="font-medium text-foreground">{email}</span>.
+            We sent a 6-digit code to <span className="font-medium text-foreground">{email}</span>.
           </>
         }
         back={{ href: ROUTES.FORGOT_PASSWORD, label: "Use a different email" }}
@@ -196,10 +180,7 @@ export default function ForgotPasswordPage() {
         subtitle="Choose a strong password you haven't used before."
       >
         <Form {...passwordForm}>
-          <form
-            onSubmit={passwordForm.handleSubmit(onSubmitPassword)}
-            className="space-y-4"
-          >
+          <form onSubmit={passwordForm.handleSubmit(onSubmitPassword)} className="space-y-4">
             <TextField
               control={passwordForm.control}
               name="password"
@@ -216,13 +197,7 @@ export default function ForgotPasswordPage() {
               placeholder="Re-enter your password"
               autoComplete="new-password"
             />
-            <Button
-              type="submit"
-              variant="brand"
-              size="lg"
-              className="w-full"
-              loading={loading}
-            >
+            <Button type="submit" variant="brand" size="lg" className="w-full" loading={loading}>
               Reset password
             </Button>
           </form>
@@ -256,10 +231,7 @@ export default function ForgotPasswordPage() {
       }
     >
       <Form {...emailForm}>
-        <form
-          onSubmit={emailForm.handleSubmit(onSubmitEmail)}
-          className="space-y-4"
-        >
+        <form onSubmit={emailForm.handleSubmit(onSubmitEmail)} className="space-y-4">
           <TextField
             control={emailForm.control}
             name="email"
@@ -268,13 +240,7 @@ export default function ForgotPasswordPage() {
             placeholder="you@example.com"
             autoComplete="email"
           />
-          <Button
-            type="submit"
-            variant="brand"
-            size="lg"
-            className="w-full"
-            loading={loading}
-          >
+          <Button type="submit" variant="brand" size="lg" className="w-full" loading={loading}>
             Send reset code
           </Button>
         </form>

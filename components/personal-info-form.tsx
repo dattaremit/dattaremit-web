@@ -5,10 +5,7 @@ import { useRouter } from "next/navigation";
 import { useEffect, useRef } from "react";
 import { useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
-import {
-  personalInfoSchema,
-  type PersonalInfoFormData,
-} from "@/schemas/personal-info.schema";
+import { personalInfoSchema, type PersonalInfoFormData } from "@/schemas/personal-info.schema";
 import { useQueryClient } from "@tanstack/react-query";
 import { useAccount, useCreateUser, useUpdateUser } from "@/hooks/api";
 import { queryKeys } from "@/constants/query-keys";
@@ -123,9 +120,7 @@ export function PersonalInfoForm({
       }
 
       toast.success(
-        isExistingUser
-          ? "Profile updated successfully"
-          : "Profile created successfully",
+        isExistingUser ? "Profile updated successfully" : "Profile created successfully",
       );
 
       if (onAfterSubmit) {
@@ -136,8 +131,7 @@ export function PersonalInfoForm({
         router.push(nextHrefOnUpdate);
       }
     } catch (err: unknown) {
-      const message =
-        err instanceof Error ? err.message : "Something went wrong";
+      const message = err instanceof Error ? err.message : "Something went wrong";
       toast.error(message);
     }
   };
@@ -162,23 +156,14 @@ export function PersonalInfoForm({
             label="First name"
             placeholder="John"
           />
-          <TextField
-            control={form.control}
-            name="lastName"
-            label="Last name"
-            placeholder="Doe"
-          />
+          <TextField control={form.control} name="lastName" label="Last name" placeholder="Doe" />
         </div>
 
         <FormItem>
           <FormLabel>Email</FormLabel>
           <FormControl>
             <Input
-              value={
-                account?.user?.email ||
-                clerkUser?.emailAddresses[0]?.emailAddress ||
-                ""
-              }
+              value={account?.user?.email || clerkUser?.emailAddresses[0]?.emailAddress || ""}
               disabled
               readOnly
             />
@@ -194,12 +179,7 @@ export function PersonalInfoForm({
                 label="Phone number"
                 value={form.getValues("phoneNumberPrefix") + field.value}
                 onChangePhone={(fullPhone) => {
-                  field.onChange(
-                    stripPhonePrefix(
-                      fullPhone,
-                      form.getValues("phoneNumberPrefix"),
-                    ),
-                  );
+                  field.onChange(stripPhonePrefix(fullPhone, form.getValues("phoneNumberPrefix")));
                 }}
                 onChangeCountry={(dialCode) => {
                   form.setValue("phoneNumberPrefix", dialCode);
@@ -229,13 +209,7 @@ export function PersonalInfoForm({
           )}
         />
 
-        <Button
-          type="submit"
-          variant="brand"
-          size="lg"
-          className="w-full"
-          loading={loading}
-        >
+        <Button type="submit" variant="brand" size="lg" className="w-full" loading={loading}>
           {submitText}
         </Button>
       </form>
@@ -253,11 +227,7 @@ export function PersonalInfoForm({
 
   return (
     <div className="space-y-7">
-      <PageHeader
-        eyebrow="Profile"
-        title={headerTitle}
-        subtitle={headerDescription}
-      />
+      <PageHeader eyebrow="Profile" title={headerTitle} subtitle={headerDescription} />
       <Card variant="elevated" className="p-6 sm:p-8">
         {formContent}
       </Card>

@@ -66,9 +66,7 @@ export default function SignInPage() {
 
       toast.error("Sign in could not be completed.");
     } catch (err: unknown) {
-      toast.error(
-        getClerkErrorMessage(err, "Sign in failed. Please try again."),
-      );
+      toast.error(getClerkErrorMessage(err, "Sign in failed. Please try again."));
     } finally {
       setLoading(false);
     }
@@ -90,9 +88,7 @@ export default function SignInPage() {
         router.replace(ROUTES.ROOT);
       }
     } catch (err: unknown) {
-      setOtpError(
-        getClerkErrorMessage(err, "Verification failed. Please try again."),
-      );
+      setOtpError(getClerkErrorMessage(err, "Verification failed. Please try again."));
     } finally {
       setLoading(false);
     }
@@ -175,13 +171,7 @@ export default function SignInPage() {
               Forgot password?
             </Link>
           </div>
-          <Button
-            type="submit"
-            variant="brand"
-            size="lg"
-            className="w-full"
-            loading={loading}
-          >
+          <Button type="submit" variant="brand" size="lg" className="w-full" loading={loading}>
             Sign in
           </Button>
         </form>

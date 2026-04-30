@@ -7,8 +7,7 @@ export function useAddDepositAccount() {
   const queryClient = useQueryClient();
 
   return useMutation({
-    mutationFn: (payload: AddDepositAccountPayload) =>
-      addDepositAccount(payload),
+    mutationFn: (payload: AddDepositAccountPayload) => addDepositAccount(payload),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: queryKeys.account });
     },

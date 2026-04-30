@@ -39,14 +39,11 @@ export default function AccountPage() {
   };
 
   const displayName =
-    (serverUser
-      ? `${serverUser.firstName} ${serverUser.lastName}`.trim()
-      : null) ||
+    (serverUser ? `${serverUser.firstName} ${serverUser.lastName}`.trim() : null) ||
     clerkUser?.fullName ||
     clerkUser?.emailAddresses[0]?.emailAddress ||
     "";
-  const email =
-    serverUser?.email || clerkUser?.emailAddresses[0]?.emailAddress || "";
+  const email = serverUser?.email || clerkUser?.emailAddresses[0]?.emailAddress || "";
   const initials = displayName
     .split(" ")
     .map((n) => n[0])
@@ -56,10 +53,7 @@ export default function AccountPage() {
 
   return (
     <div className="space-y-10">
-      <Card
-        variant="elevated"
-        className="relative overflow-hidden border-brand/15 p-7"
-      >
+      <Card variant="elevated" className="relative overflow-hidden border-brand/15 p-7">
         <div
           aria-hidden="true"
           className="pointer-events-none absolute -top-16 -right-16 size-64 rounded-full bg-brand/15 blur-3xl"
@@ -72,9 +66,7 @@ export default function AccountPage() {
             </AvatarFallback>
           </Avatar>
           <div className="flex flex-col gap-1">
-            <h1 className="font-semibold text-3xl leading-tight text-foreground">
-              {displayName}
-            </h1>
+            <h1 className="font-semibold text-3xl leading-tight text-foreground">{displayName}</h1>
             <p className="text-sm text-muted-foreground">{email}</p>
           </div>
         </div>
@@ -148,13 +140,7 @@ export default function AccountPage() {
   );
 }
 
-function Section({
-  title,
-  children,
-}: {
-  title: string;
-  children: React.ReactNode;
-}) {
+function Section({ title, children }: { title: string; children: React.ReactNode }) {
   return (
     <div className="flex flex-col gap-3">
       <p className="px-1 text-[10px] font-medium uppercase tracking-[0.18em] text-muted-foreground">
@@ -206,19 +192,11 @@ function NavRow({
     >
       <span className="flex items-center gap-3">
         <span
-          className={cn(
-            "transition-colors",
-            accent ? "text-brand" : "text-muted-foreground/70",
-          )}
+          className={cn("transition-colors", accent ? "text-brand" : "text-muted-foreground/70")}
         >
           {icon}
         </span>
-        <span
-          className={cn(
-            "font-medium",
-            accent ? "text-foreground" : "text-foreground",
-          )}
-        >
+        <span className={cn("font-medium", accent ? "text-foreground" : "text-foreground")}>
           {label}
         </span>
       </span>

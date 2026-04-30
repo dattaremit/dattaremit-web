@@ -2,13 +2,7 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
-import {
-  Building2,
-  CheckCircle2,
-  ArrowRight,
-  Landmark,
-  Zap,
-} from "lucide-react";
+import { Building2, CheckCircle2, ArrowRight, Landmark, Zap } from "lucide-react";
 import { toast } from "sonner";
 import { useQueryClient } from "@tanstack/react-query";
 
@@ -49,15 +43,12 @@ export default function LinkBankPage() {
 
     const selectedName = accounts?.[0]?.name ?? "Account";
     const institutionName = meta?.institution?.name;
-    const accountName = institutionName
-      ? `${institutionName} - ${selectedName}`
-      : selectedName;
+    const accountName = institutionName ? `${institutionName} - ${selectedName}` : selectedName;
 
     addExternal.mutate(
       {
         accountName,
-        paymentRail:
-          user?.achPushEnabled && useFastTransfer ? "ach_push" : "ach_pull",
+        paymentRail: user?.achPushEnabled && useFastTransfer ? "ach_push" : "ach_pull",
         plaidPublicToken: publicToken,
         plaidAccountId: accountId,
       },
@@ -67,11 +58,7 @@ export default function LinkBankPage() {
           toast.success("Bank account linked successfully!");
         },
         onError: (err) => {
-          toast.error(
-            err instanceof ApiError
-              ? err.message
-              : "Failed to link external account",
-          );
+          toast.error(err instanceof ApiError ? err.message : "Failed to link external account");
         },
       },
     );
@@ -87,11 +74,7 @@ export default function LinkBankPage() {
         eyebrow="Setup"
         title={
           <>
-            Link your{" "}
-            <span className="text-brand">
-              accounts
-            </span>
-            .
+            Link your <span className="text-brand">accounts</span>.
           </>
         }
         subtitle="Connect a US account to fund transfers, and add your Indian bank to receive money to yourself."
@@ -120,16 +103,11 @@ export default function LinkBankPage() {
                   <div className="flex items-center gap-2.5">
                     <Zap className="size-4 text-brand" />
                     <div>
-                      <Label
-                        htmlFor="fast-transfer"
-                        className="text-sm font-medium"
-                      >
+                      <Label htmlFor="fast-transfer" className="text-sm font-medium">
                         Fast transfer
                       </Label>
                       <p className="text-xs text-muted-foreground">
-                        {useFastTransfer
-                          ? "Instant ACH push"
-                          : "Regular ACH pull (1–3 days)"}
+                        {useFastTransfer ? "Instant ACH push" : "Regular ACH pull (1–3 days)"}
                       </p>
                     </div>
                   </div>
@@ -148,11 +126,7 @@ export default function LinkBankPage() {
               ) : (
                 <PlaidLinkButton
                   onSuccess={handlePlaidSuccess}
-                  label={
-                    hasBankAccount
-                      ? "Connect Different Bank Account"
-                      : "Connect Bank Account"
-                  }
+                  label={hasBankAccount ? "Connect Different Bank Account" : "Connect Bank Account"}
                 />
               )}
 
@@ -179,9 +153,7 @@ export default function LinkBankPage() {
               step="02"
             >
               {hasDepositAccount ? (
-                <p className="text-sm font-medium text-success">
-                  Account linked
-                </p>
+                <p className="text-sm font-medium text-success">Account linked</p>
               ) : (
                 <Button
                   variant="brand"
@@ -227,10 +199,7 @@ function SetupCard({
   return (
     <Card
       variant="elevated"
-      className={cn(
-        "relative h-full overflow-hidden p-6",
-        done && "border-success/30",
-      )}
+      className={cn("relative h-full overflow-hidden p-6", done && "border-success/30")}
     >
       <div
         aria-hidden="true"
@@ -249,17 +218,13 @@ function SetupCard({
           >
             {icon}
           </div>
-          <span className="font-semibold text-xl tabular text-muted-foreground/40">
-            {step}
-          </span>
+          <span className="font-semibold text-xl tabular text-muted-foreground/40">{step}</span>
         </div>
         <div className="flex flex-col gap-1">
           <h3 className="font-semibold text-xl text-foreground">{title}</h3>
           <p className="text-sm text-muted-foreground">{description}</p>
         </div>
-        <div className="mt-auto flex flex-col items-stretch gap-3">
-          {children}
-        </div>
+        <div className="mt-auto flex flex-col items-stretch gap-3">{children}</div>
       </div>
     </Card>
   );

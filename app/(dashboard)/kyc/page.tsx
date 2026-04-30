@@ -61,8 +61,7 @@ export default function KycPage() {
   const meta = ACCOUNT_STATUS_META[status] ?? ACCOUNT_STATUS_META.INITIAL;
   const StatusIcon = meta.icon;
   const indianStatus = account?.indianKycStatus ?? "NONE";
-  const indianStatusLabel =
-    INDIAN_KYC_STATUS_LABEL[indianStatus] ?? "Not started";
+  const indianStatusLabel = INDIAN_KYC_STATUS_LABEL[indianStatus] ?? "Not started";
   const canStartPrimary = status === "INITIAL" || status === "REJECTED";
 
   return (
@@ -71,8 +70,7 @@ export default function KycPage() {
         eyebrow="Verification"
         title={
           <>
-            Prove it&apos;s{" "}
-            <span className="text-brand">you</span>.
+            Prove it&apos;s <span className="text-brand">you</span>.
           </>
         }
         subtitle="A quick check unlocks transfers across the network."
@@ -85,9 +83,7 @@ export default function KycPage() {
               <ShieldCheck className="size-5" />
             </div>
             <div>
-              <h2 className="font-semibold text-xl text-foreground">
-                Primary KYC
-              </h2>
+              <h2 className="font-semibold text-xl text-foreground">Primary KYC</h2>
               <p className="text-sm text-muted-foreground">
                 Email-based verification through our partner.
               </p>
@@ -106,8 +102,7 @@ export default function KycPage() {
           ) : status === "PENDING" ? (
             <>
               <p className="text-sm text-muted-foreground">
-                Your KYC is under review. We&apos;ll email you when a decision
-                is made.
+                Your KYC is under review. We&apos;ll email you when a decision is made.
               </p>
               <Button
                 variant="outline"
@@ -118,9 +113,7 @@ export default function KycPage() {
               </Button>
             </>
           ) : (
-            <p className="text-sm text-muted-foreground">
-              Your primary KYC is verified.
-            </p>
+            <p className="text-sm text-muted-foreground">Your primary KYC is verified.</p>
           )}
           {requestLink.isError && (
             <p className="text-sm text-destructive">
@@ -155,23 +148,18 @@ export default function KycPage() {
               <ShieldCheck className="size-5" />
             </div>
             <div>
-              <h2 className="font-semibold text-xl text-foreground">
-                Indian KYC
-              </h2>
+              <h2 className="font-semibold text-xl text-foreground">Indian KYC</h2>
               <p className="text-sm text-muted-foreground">
                 Required to receive money into an Indian bank account.
               </p>
             </div>
           </div>
-          <Badge variant={getIndianKycStatusVariant(indianStatus)}>
-            {indianStatusLabel}
-          </Badge>
+          <Badge variant={getIndianKycStatusVariant(indianStatus)}>{indianStatusLabel}</Badge>
         </div>
         <div className="p-6">
           {indianStatus === "PENDING" ? (
             <p className="text-sm text-muted-foreground">
-              Your Indian KYC is being processed. This typically takes 3–5
-              minutes.
+              Your Indian KYC is being processed. This typically takes 3–5 minutes.
             </p>
           ) : indianStatus === "APPROVED" ? (
             <p className="text-sm text-muted-foreground">
@@ -180,8 +168,8 @@ export default function KycPage() {
           ) : (
             <div className="space-y-4">
               <p className="text-sm text-muted-foreground">
-                Submit your Aadhar and PAN to verify your Indian identity. Data
-                is encrypted in your browser before being sent.
+                Submit your Aadhar and PAN to verify your Indian identity. Data is encrypted in your
+                browser before being sent.
               </p>
               <Button asChild variant="brand">
                 <Link href={ROUTES.KYC_INDIAN}>
@@ -208,8 +196,7 @@ export default function KycPage() {
             </div>
             <DialogTitle className="text-center">KYC Link Sent!</DialogTitle>
             <DialogDescription className="text-center">
-              Please check your email and complete the KYC verification to get
-              started.
+              Please check your email and complete the KYC verification to get started.
             </DialogDescription>
           </DialogHeader>
           <DialogFooter>

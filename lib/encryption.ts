@@ -49,10 +49,7 @@ async function importPublicKey(pem: string): Promise<CryptoKey> {
  * Encrypts `plaintext` using the given PEM-formatted RSA public key, returning
  * a base64-encoded ciphertext ready to send to the server.
  */
-export async function encryptWithPublicKey(
-  pem: string,
-  plaintext: string,
-): Promise<string> {
+export async function encryptWithPublicKey(pem: string, plaintext: string): Promise<string> {
   if (typeof crypto === "undefined" || !crypto.subtle) {
     throw new Error("SubtleCrypto unavailable — encryption requires a secure context (HTTPS).");
   }

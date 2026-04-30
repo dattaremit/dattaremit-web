@@ -48,9 +48,7 @@ export function AddressForm({
   const queryClient = useQueryClient();
 
   const { data: account, isLoading } = useAccount();
-  const existingAddress = account?.addresses?.find(
-    (a) => a.type === "PRESENT",
-  );
+  const existingAddress = account?.addresses?.find((a) => a.type === "PRESENT");
 
   const form = useForm<AddressFormData>({
     resolver: yupResolver(addressSchema),
@@ -101,9 +99,7 @@ export function AddressForm({
         staleTime: 0,
       });
 
-      toast.success(
-        existingAddress ? "Address updated" : "Address saved successfully",
-      );
+      toast.success(existingAddress ? "Address updated" : "Address saved successfully");
 
       if (onAfterSubmit) {
         await onAfterSubmit(existingAddress ? "update" : "create");
@@ -113,8 +109,7 @@ export function AddressForm({
         router.replace(nextHrefOnCreate);
       }
     } catch (err: unknown) {
-      const message =
-        err instanceof Error ? err.message : "Something went wrong";
+      const message = err instanceof Error ? err.message : "Something went wrong";
       toast.error(message);
     }
   };
@@ -155,12 +150,7 @@ export function AddressForm({
           label="State / Division"
           placeholder="Enter state"
         />
-        <TextField
-          control={form.control}
-          name="city"
-          label="City"
-          placeholder="Enter city"
-        />
+        <TextField control={form.control} name="city" label="City" placeholder="Enter city" />
         <TextField
           control={form.control}
           name="addressLine1"
@@ -198,11 +188,7 @@ export function AddressForm({
 
   return (
     <div className="space-y-7">
-      <PageHeader
-        eyebrow="Address"
-        title={headerTitle}
-        subtitle={headerDescription}
-      />
+      <PageHeader eyebrow="Address" title={headerTitle} subtitle={headerDescription} />
       <Card variant="elevated" className="p-6 sm:p-8">
         {formContent}
       </Card>

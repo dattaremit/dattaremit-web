@@ -1,13 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import {
-  ArrowRight,
-  Banknote,
-  CheckCircle2,
-  Clock,
-  XCircle,
-} from "lucide-react";
+import { ArrowRight, Banknote, CheckCircle2, Clock, XCircle } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import type { Recipient } from "@/types/recipient";
 
@@ -42,9 +36,7 @@ export function RecipientCard({ recipient }: { recipient: Recipient }) {
         <div className="truncate font-medium text-foreground">
           {recipient.firstName} {recipient.lastName}
         </div>
-        <div className="truncate text-sm text-muted-foreground">
-          {recipient.email}
-        </div>
+        <div className="truncate text-sm text-muted-foreground">{recipient.email}</div>
         <div className="mt-1.5 flex flex-wrap items-center gap-1.5">
           <Badge variant={kyc.variant} className="gap-1">
             <Icon className="h-3 w-3" />

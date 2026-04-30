@@ -16,14 +16,8 @@ import { AddressStep } from "@/components/recipients/wizard/address-step";
 import { ReviewStep } from "@/components/recipients/wizard/review-step";
 import { SuccessScreen } from "@/components/recipients/wizard/success-screen";
 import { SharedRecipientCard } from "@/components/recipients/shared-recipient-card";
-import {
-  useCheckRecipientIdentity,
-  useCreateRecipient,
-} from "@/hooks/api";
-import {
-  recipientSchema,
-  type RecipientFormData,
-} from "@/schemas/recipient.schema";
+import { useCheckRecipientIdentity, useCreateRecipient } from "@/hooks/api";
+import { recipientSchema, type RecipientFormData } from "@/schemas/recipient.schema";
 import type { CheckIdentityResult, Recipient } from "@/types/recipient";
 
 type WizardStep = "contact" | "address" | "review" | "success";
@@ -114,9 +108,7 @@ export function NewRecipientWizard() {
   } | null>(null);
 
   const form = useForm<RecipientFormData>({
-    resolver: yupResolver(
-      recipientSchema,
-    ) as unknown as Resolver<RecipientFormData>,
+    resolver: yupResolver(recipientSchema) as unknown as Resolver<RecipientFormData>,
     defaultValues: {
       firstName: "",
       lastName: "",
@@ -144,8 +136,7 @@ export function NewRecipientWizard() {
     return () => sub.unsubscribe();
   }, [form]);
 
-  const activeIndex =
-    step === "success" ? STEPS.length - 1 : STEPS.findIndex((s) => s.id === step);
+  const activeIndex = step === "success" ? STEPS.length - 1 : STEPS.findIndex((s) => s.id === step);
 
   const handleContactContinue = async () => {
     const ok = await form.trigger([
@@ -187,12 +178,7 @@ export function NewRecipientWizard() {
   };
 
   const handleAddressContinue = async () => {
-    const ok = await form.trigger([
-      "addressLine1",
-      "city",
-      "state",
-      "postalCode",
-    ]);
+    const ok = await form.trigger(["addressLine1", "city", "state", "postalCode"]);
     if (!ok) return;
     setStep("review");
   };
@@ -214,9 +200,7 @@ export function NewRecipientWizard() {
       });
       setStep("success");
     } catch (err) {
-      toast.error(
-        err instanceof Error ? err.message : "Failed to add recipient",
-      );
+      toast.error(err instanceof Error ? err.message : "Failed to add recipient");
     }
   };
 
@@ -258,17 +242,11 @@ export function NewRecipientWizard() {
             </StepTransition>
           ) : step === "contact" ? (
             <StepTransition key="contact">
-              <ContactStep
-                onContinue={handleContactContinue}
-                checking={checkIdentity.isPending}
-              />
+              <ContactStep onContinue={handleContactContinue} checking={checkIdentity.isPending} />
             </StepTransition>
           ) : step === "address" ? (
             <StepTransition key="address">
-              <AddressStep
-                onBack={() => setStep("contact")}
-                onContinue={handleAddressContinue}
-              />
+              <AddressStep onBack={() => setStep("contact")} onContinue={handleAddressContinue} />
             </StepTransition>
           ) : step === "review" ? (
             <StepTransition key="review">
@@ -283,10 +261,7 @@ export function NewRecipientWizard() {
           ) : (
             created && (
               <StepTransition key="success">
-                <SuccessScreen
-                  recipient={created.recipient}
-                  wasShared={created.wasShared}
-                />
+                <SuccessScreen recipient={created.recipient} wasShared={created.wasShared} />
               </StepTransition>
             )
           )}

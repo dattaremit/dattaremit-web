@@ -9,13 +9,11 @@ export default function OnboardingBlockedPage() {
         <ShieldOff className="size-7 text-destructive" />
       </span>
 
-      <h1 className="text-2xl font-semibold text-foreground">
-        Access not available
-      </h1>
+      <h1 className="text-2xl font-semibold text-foreground">Access not available</h1>
 
       <p className="max-w-sm text-base leading-6 text-muted-foreground">
-        This account isn&apos;t eligible for Dattapay at this time. If you think
-        this is a mistake, please contact support.
+        This account isn&apos;t eligible for Dattapay at this time. If you think this is a mistake,
+        please contact support.
       </p>
     </div>
   );

@@ -60,9 +60,7 @@ export function AuthShell({
 
       <div>{children}</div>
 
-      {footer && (
-        <footer className="text-sm text-muted-foreground">{footer}</footer>
-      )}
+      {footer && <footer className="text-sm text-muted-foreground">{footer}</footer>}
     </motion.div>
   );
 }

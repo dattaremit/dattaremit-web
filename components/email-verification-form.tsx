@@ -14,10 +14,7 @@ interface EmailVerificationFormProps {
   onBack?: () => void;
 }
 
-export function EmailVerificationForm({
-  email,
-  onBack,
-}: EmailVerificationFormProps) {
+export function EmailVerificationForm({ email, onBack }: EmailVerificationFormProps) {
   const { isLoaded, signUp, setActive } = useSignUp();
   const router = useRouter();
 
@@ -43,10 +40,7 @@ export function EmailVerificationForm({
         setError("Verification could not be completed.");
       }
     } catch (err: unknown) {
-      const message = getClerkErrorMessage(
-        err,
-        "Verification failed. Please try again.",
-      );
+      const message = getClerkErrorMessage(err, "Verification failed. Please try again.");
       setError(message);
     } finally {
       setLoading(false);
@@ -77,8 +71,7 @@ export function EmailVerificationForm({
       }
       subtitle={
         <>
-          We sent a 6-digit code to{" "}
-          <span className="font-medium text-foreground">{email}</span>.
+          We sent a 6-digit code to <span className="font-medium text-foreground">{email}</span>.
         </>
       }
       back={onBack ? { href: "#", label: "Back" } : undefined}

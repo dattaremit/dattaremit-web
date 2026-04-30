@@ -32,16 +32,13 @@ export function AddRecipientWarningModal({
             Please confirm your bank details
           </DialogTitle>
           <DialogDescription className="text-center">
-            Before adding your Indian bank account, make sure your name, account
-            number, and IFSC code are correct. Transfers cannot be reversed once
-            sent.
+            Before adding your Indian bank account, make sure your name, account number, and IFSC
+            code are correct. Transfers cannot be reversed once sent.
           </DialogDescription>
         </DialogHeader>
 
         <div className="rounded-xl bg-warning/10 px-4 py-3 text-center">
-          <p className="text-sm font-semibold text-warning">
-            NRE accounts are not supported
-          </p>
+          <p className="text-sm font-semibold text-warning">NRE accounts are not supported</p>
           <p className="mt-1 text-xs text-muted-foreground">
             Only NRO and resident savings accounts can receive transfers.
           </p>

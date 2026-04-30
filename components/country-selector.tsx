@@ -39,15 +39,17 @@ export function CountrySelector({
         <SelectContent>
           {countries.map((country) => (
             <SelectItem key={country.code} value={country.code}>
-              <span className="text-lg leading-none">
-                {getFlagEmoji(country.code)}
-              </span>
+              <span className="text-lg leading-none">{getFlagEmoji(country.code)}</span>
               <span>{country.name}</span>
             </SelectItem>
           ))}
         </SelectContent>
       </Select>
-      {error && (<p className="absolute top-full left-0 mt-0.5 text-xs leading-4 text-destructive">{error}</p>)}
+      {error && (
+        <p className="absolute top-full left-0 mt-0.5 text-xs leading-4 text-destructive">
+          {error}
+        </p>
+      )}
     </div>
   );
 }

@@ -3,15 +3,8 @@
 import { useForm, useWatch, type Resolver } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 
-import {
-  recipientSchema,
-  type RecipientFormData,
-} from "@/schemas/recipient.schema";
-import {
-  Form,
-  FormField,
-  FormItem,
-} from "@/components/ui/form";
+import { recipientSchema, type RecipientFormData } from "@/schemas/recipient.schema";
+import { Form, FormField, FormItem } from "@/components/ui/form";
 import { Button } from "@/components/ui/button";
 import { TextField } from "@/components/ui/text-field";
 import { PhoneInput } from "@/components/phone-input";
@@ -39,9 +32,7 @@ export function RecipientForm({
   originalEmail,
 }: RecipientFormProps) {
   const form = useForm<RecipientFormData>({
-    resolver: yupResolver(
-      recipientSchema,
-    ) as unknown as Resolver<RecipientFormData>,
+    resolver: yupResolver(recipientSchema) as unknown as Resolver<RecipientFormData>,
     defaultValues: {
       firstName: "",
       lastName: "",
@@ -58,8 +49,7 @@ export function RecipientForm({
 
   const emailValue = useWatch({ control: form.control, name: "email" }) ?? "";
   const isUnchanged =
-    !!originalEmail &&
-    emailValue.trim().toLowerCase() === originalEmail.trim().toLowerCase();
+    !!originalEmail && emailValue.trim().toLowerCase() === originalEmail.trim().toLowerCase();
   const { available, isChecking } = useCheckEmailAvailability(
     isUnchanged ? "" : emailValue,
     "recipient",
@@ -76,12 +66,7 @@ export function RecipientForm({
             label="First name"
             placeholder="Asha"
           />
-          <TextField
-            control={form.control}
-            name="lastName"
-            label="Last name"
-            placeholder="Patel"
-          />
+          <TextField control={form.control} name="lastName" label="Last name" placeholder="Patel" />
         </div>
 
         <div>
@@ -98,9 +83,7 @@ export function RecipientForm({
             </p>
           )}
           {isChecking && !emailTaken && (
-            <p className="mt-1.5 text-sm text-muted-foreground">
-              Checking availability…
-            </p>
+            <p className="mt-1.5 text-sm text-muted-foreground">Checking availability…</p>
           )}
         </div>
 
@@ -113,16 +96,9 @@ export function RecipientForm({
                 label="Phone"
                 value={form.getValues("phoneNumberPrefix") + field.value}
                 onChangePhone={(fullPhone) => {
-                  field.onChange(
-                    stripPhonePrefix(
-                      fullPhone,
-                      form.getValues("phoneNumberPrefix"),
-                    ),
-                  );
+                  field.onChange(stripPhonePrefix(fullPhone, form.getValues("phoneNumberPrefix")));
                 }}
-                onChangeCountry={(dialCode) =>
-                  form.setValue("phoneNumberPrefix", dialCode)
-                }
+                onChangeCountry={(dialCode) => form.setValue("phoneNumberPrefix", dialCode)}
                 placeholder="9XXXXXXXXX"
                 error={form.formState.errors.phoneNumber?.message}
               />
@@ -130,20 +106,12 @@ export function RecipientForm({
           )}
         />
 
-        <TextField
-          control={form.control}
-          name="addressLine1"
-          label="Address line 1"
-        />
+        <TextField control={form.control} name="addressLine1" label="Address line 1" />
 
         <div className="grid gap-3 sm:grid-cols-3">
           <TextField control={form.control} name="city" label="City" />
           <TextField control={form.control} name="state" label="State" />
-          <TextField
-            control={form.control}
-            name="postalCode"
-            label="Postal code"
-          />
+          <TextField control={form.control} name="postalCode" label="Postal code" />
         </div>
 
         <Button

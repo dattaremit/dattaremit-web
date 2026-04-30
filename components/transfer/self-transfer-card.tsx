@@ -1,13 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import {
-  CheckCircle,
-  ChevronRight,
-  Clock,
-  Landmark,
-  Shield,
-} from "lucide-react";
+import { CheckCircle, ChevronRight, Clock, Landmark, Shield } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { ROUTES } from "@/constants/routes";
 import type { IndianKycStatus } from "@/types/api";
@@ -17,10 +11,7 @@ interface SelfTransferCardProps {
   hasDepositAccount: boolean;
 }
 
-export function SelfTransferCard({
-  indianKycStatus,
-  hasDepositAccount,
-}: SelfTransferCardProps) {
+export function SelfTransferCard({ indianKycStatus, hasDepositAccount }: SelfTransferCardProps) {
   const isApproved = indianKycStatus === "APPROVED";
   const isPending = indianKycStatus === "PENDING";
   const isReady = isApproved && hasDepositAccount;

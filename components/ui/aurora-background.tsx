@@ -12,11 +12,7 @@ const variants: Record<Variant, string> = {
   dashboard: "opacity-50",
 };
 
-export function AuroraBackground({
-  variant = "auth",
-  className,
-  ...props
-}: AuroraBackgroundProps) {
+export function AuroraBackground({ variant = "auth", className, ...props }: AuroraBackgroundProps) {
   return (
     <div
       aria-hidden="true"

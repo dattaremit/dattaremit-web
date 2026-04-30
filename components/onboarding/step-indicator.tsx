@@ -2,10 +2,7 @@
 
 import Link from "next/link";
 import { Check } from "lucide-react";
-import {
-  ONBOARDING_STEPS,
-  type IndicatorStepKey,
-} from "@/lib/onboarding-progress";
+import { ONBOARDING_STEPS, type IndicatorStepKey } from "@/lib/onboarding-progress";
 import { cn } from "@/lib/utils";
 
 export function StepIndicator({
@@ -16,13 +13,9 @@ export function StepIndicator({
   completed: Record<IndicatorStepKey, boolean>;
 }) {
   const currentIndex = ONBOARDING_STEPS.findIndex((s) => s.key === current);
-  const firstIncompleteIndex = ONBOARDING_STEPS.findIndex(
-    (s) => !completed[s.key],
-  );
+  const firstIncompleteIndex = ONBOARDING_STEPS.findIndex((s) => !completed[s.key]);
   const maxReachable =
-    firstIncompleteIndex === -1
-      ? ONBOARDING_STEPS.length - 1
-      : firstIncompleteIndex;
+    firstIncompleteIndex === -1 ? ONBOARDING_STEPS.length - 1 : firstIncompleteIndex;
 
   return (
     <div className="flex flex-col gap-3">
@@ -41,14 +34,9 @@ export function StepIndicator({
           const isReachable = i <= maxReachable;
           const dotClass = cn(
             "relative flex h-9 w-9 shrink-0 items-center justify-center rounded-full border text-xs font-semibold tabular transition-all",
-            isComplete &&
-              "border-brand bg-brand text-brand-foreground shadow-soft",
-            isCurrent &&
-              !isComplete &&
-              "border-brand text-foreground bg-card shadow-soft",
-            !isCurrent &&
-              !isComplete &&
-              "border-border bg-card text-muted-foreground/60",
+            isComplete && "border-brand bg-brand text-brand-foreground shadow-soft",
+            isCurrent && !isComplete && "border-brand text-foreground bg-card shadow-soft",
+            !isCurrent && !isComplete && "border-border bg-card text-muted-foreground/60",
             isReachable && !isCurrent && !isComplete && "hover:border-foreground/30 cursor-pointer",
             !isReachable && "cursor-not-allowed opacity-50",
           );
@@ -57,21 +45,14 @@ export function StepIndicator({
           return (
             <li key={step.key} className="flex flex-1 items-center gap-2">
               {isReachable && !isCurrent ? (
-                <Link
-                  href={step.href}
-                  aria-label={step.label}
-                  className={dotClass}
-                >
+                <Link href={step.href} aria-label={step.label} className={dotClass}>
                   {isCurrent && (
                     <span className="absolute inset-0 -z-10 animate-pulse rounded-full bg-brand/20" />
                   )}
                   {dot}
                 </Link>
               ) : (
-                <span
-                  className={dotClass}
-                  aria-current={isCurrent ? "step" : undefined}
-                >
+                <span className={dotClass} aria-current={isCurrent ? "step" : undefined}>
                   {isCurrent && (
                     <span className="absolute inset-0 -z-10 animate-pulse rounded-full bg-brand/15" />
                   )}

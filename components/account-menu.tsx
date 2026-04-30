@@ -5,14 +5,7 @@ import { useRouter } from "next/navigation";
 import { useTheme } from "next-themes";
 import { toast } from "sonner";
 import { useAppSignOut } from "@/hooks/use-app-sign-out";
-import {
-  LogOut,
-  Moon,
-  Sun,
-  UserPen,
-  MapPin,
-  ShieldCheck,
-} from "lucide-react";
+import { LogOut, Moon, Sun, UserPen, MapPin, ShieldCheck } from "lucide-react";
 
 import { useAccount } from "@/hooks/api";
 import { ROUTES } from "@/constants/routes";
@@ -32,8 +25,7 @@ import {
 
 export function useAccountIdentity() {
   const { user } = useUser();
-  const displayName =
-    user?.fullName || user?.emailAddresses[0]?.emailAddress || "";
+  const displayName = user?.fullName || user?.emailAddresses[0]?.emailAddress || "";
   const email = user?.emailAddresses[0]?.emailAddress || "";
   const initials = displayName
     .split(" ")
@@ -63,9 +55,7 @@ export function AccountMenuItems({
         <div className="flex items-center gap-2.5">
           <Avatar size="sm">
             <AvatarImage src={user?.imageUrl} alt={displayName} />
-            <AvatarFallback className="bg-brand/15 text-foreground">
-              {initials}
-            </AvatarFallback>
+            <AvatarFallback className="bg-brand/15 text-foreground">{initials}</AvatarFallback>
           </Avatar>
           <div className="min-w-0 flex-1">
             <p className="truncate text-sm font-medium">{displayName}</p>
@@ -98,15 +88,9 @@ export function AccountMenuItems({
           Theme
         </DropdownMenuSubTrigger>
         <DropdownMenuSubContent>
-          <DropdownMenuItem onClick={() => setTheme("light")}>
-            Light
-          </DropdownMenuItem>
-          <DropdownMenuItem onClick={() => setTheme("dark")}>
-            Dark
-          </DropdownMenuItem>
-          <DropdownMenuItem onClick={() => setTheme("system")}>
-            System
-          </DropdownMenuItem>
+          <DropdownMenuItem onClick={() => setTheme("light")}>Light</DropdownMenuItem>
+          <DropdownMenuItem onClick={() => setTheme("dark")}>Dark</DropdownMenuItem>
+          <DropdownMenuItem onClick={() => setTheme("system")}>System</DropdownMenuItem>
         </DropdownMenuSubContent>
       </DropdownMenuSub>
       <DropdownMenuSeparator />

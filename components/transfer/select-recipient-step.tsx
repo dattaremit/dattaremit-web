@@ -28,13 +28,9 @@ export function SelectRecipientStep({
   onSelect,
   onAddRecipient,
 }: SelectRecipientStepProps) {
-  const eligible = recipients?.filter(
-    (r) => r.kycStatus === "APPROVED" && r.hasBankAccount,
-  );
+  const eligible = recipients?.filter((r) => r.kycStatus === "APPROVED" && r.hasBankAccount);
   const pendingCount =
-    recipients?.filter(
-      (r) => r.kycStatus !== "APPROVED" || !r.hasBankAccount,
-    ).length ?? 0;
+    recipients?.filter((r) => r.kycStatus !== "APPROVED" || !r.hasBankAccount).length ?? 0;
 
   return (
     <>
@@ -42,24 +38,15 @@ export function SelectRecipientStep({
         eyebrow="Recipient"
         title={
           <>
-            Who&apos;s it{" "}
-            <span className="text-brand">going to</span>?
+            Who&apos;s it <span className="text-brand">going to</span>?
           </>
         }
-        subtitle="Pick a verified recipient. They&apos;ll receive funds in their linked bank."
+        subtitle="Pick a verified recipient. They'll receive funds in their linked bank."
       />
 
       <div className="space-y-3">
-        <SelfTransferCard
-          indianKycStatus={indianKycStatus}
-          hasDepositAccount={hasDepositAccount}
-        />
-        <Button
-          variant="outline"
-          size="lg"
-          className="w-full"
-          onClick={onAddRecipient}
-        >
+        <SelfTransferCard indianKycStatus={indianKycStatus} hasDepositAccount={hasDepositAccount} />
+        <Button variant="outline" size="lg" className="w-full" onClick={onAddRecipient}>
           <UserPlus />
           Add Recipient
         </Button>
@@ -76,9 +63,7 @@ export function SelectRecipientStep({
       {!isLoading && (!eligible || eligible.length === 0) && (
         <EmptyState
           icon={<UserPlus className="size-5" />}
-          title={
-            pendingCount > 0 ? "Nobody's ready to send to yet" : "No recipients yet"
-          }
+          title={pendingCount > 0 ? "Nobody's ready to send to yet" : "No recipients yet"}
           description={
             pendingCount > 0
               ? `You have ${pendingCount} recipient${pendingCount === 1 ? "" : "s"} waiting on KYC or a bank link. Open one from the Recipients page to continue.`
@@ -90,11 +75,7 @@ export function SelectRecipientStep({
       {eligible && eligible.length > 0 && (
         <div className="space-y-3">
           {eligible.map((r) => (
-            <button
-              key={r.id}
-              className="block w-full text-left"
-              onClick={() => onSelect(r)}
-            >
+            <button key={r.id} className="block w-full text-left" onClick={() => onSelect(r)}>
               <RecipientCard recipient={r} />
             </button>
           ))}

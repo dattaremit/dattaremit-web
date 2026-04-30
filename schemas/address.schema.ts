@@ -9,16 +9,8 @@ export const addressSchema = yup.object({
     .trim()
     .required("Street address is required")
     .max(100, "Address is too long"),
-  city: yup
-    .string()
-    .trim()
-    .required("City is required")
-    .max(60, "City is too long"),
-  state: yup
-    .string()
-    .trim()
-    .required("State is required")
-    .max(60, "State is too long"),
+  city: yup.string().trim().required("City is required").max(60, "City is too long"),
+  state: yup.string().trim().required("State is required").max(60, "State is too long"),
   country: yup
     .string()
     .trim()

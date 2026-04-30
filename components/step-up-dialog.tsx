@@ -3,10 +3,7 @@
 import { useEffect, useRef, useState } from "react";
 import { Loader2, ShieldCheck } from "lucide-react";
 import { useSession } from "@clerk/nextjs";
-import type {
-  EmailCodeFactor,
-  SessionVerificationResource,
-} from "@clerk/shared/types";
+import type { EmailCodeFactor, SessionVerificationResource } from "@clerk/shared/types";
 import {
   Dialog,
   DialogContent,
@@ -16,11 +13,7 @@ import {
   DialogTitle,
 } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
-import {
-  InputOTP,
-  InputOTPGroup,
-  InputOTPSlot,
-} from "@/components/ui/input-otp";
+import { InputOTP, InputOTPGroup, InputOTPSlot } from "@/components/ui/input-otp";
 
 const OTP_LENGTH = 6;
 
@@ -84,8 +77,9 @@ export function StepUpDialog({
 
     (async () => {
       try {
-        const res: SessionVerificationResource =
-          await session.startVerification({ level: "first_factor" });
+        const res: SessionVerificationResource = await session.startVerification({
+          level: "first_factor",
+        });
         if (res.status !== "needs_first_factor") {
           onVerifiedRef.current();
           onOpenChangeRef.current(false);
@@ -106,11 +100,7 @@ export function StepUpDialog({
         });
         setFactor(emailFactor);
       } catch (err) {
-        setError(
-          err instanceof Error
-            ? err.message
-            : "Couldn't send verification code.",
-        );
+        setError(err instanceof Error ? err.message : "Couldn't send verification code.");
         // Allow the user to close+reopen to retry if the first send failed.
         hasStartedRef.current = false;
       } finally {
@@ -133,9 +123,7 @@ export function StepUpDialog({
       onVerified();
       onOpenChange(false);
     } catch (err) {
-      setError(
-        err instanceof Error ? err.message : "Incorrect or expired code.",
-      );
+      setError(err instanceof Error ? err.message : "Incorrect or expired code.");
       // Let the user retype and try again.
       lastSubmittedRef.current = "";
     } finally {
@@ -189,9 +177,7 @@ export function StepUpDialog({
           </div>
           <DialogTitle>{title}</DialogTitle>
           <DialogDescription>
-            {factor
-              ? `Enter the 6-digit code we sent to ${target}.`
-              : description}
+            {factor ? `Enter the 6-digit code we sent to ${target}.` : description}
           </DialogDescription>
         </DialogHeader>
 
@@ -225,9 +211,7 @@ export function StepUpDialog({
             </p>
           )}
 
-          {error && (
-            <p className="text-center text-sm text-destructive">{error}</p>
-          )}
+          {error && <p className="text-center text-sm text-destructive">{error}</p>}
 
           <DialogFooter className="items-center gap-2 sm:justify-between sm:gap-2">
             <Button
@@ -251,10 +235,7 @@ export function StepUpDialog({
               >
                 Cancel
               </Button>
-              <Button
-                type="submit"
-                disabled={verifying || code.length < OTP_LENGTH || !factor}
-              >
+              <Button type="submit" disabled={verifying || code.length < OTP_LENGTH || !factor}>
                 {verifying && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
                 Confirm
               </Button>

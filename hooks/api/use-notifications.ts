@@ -7,9 +7,7 @@ import type { NotificationFilters } from "@/types/notification";
 export function useNotifications(params?: NotificationFilters) {
   const { isSignedIn } = useAuth();
   return useQuery({
-    queryKey: queryKeys.notifications.list(
-      params as Record<string, unknown> | undefined,
-    ),
+    queryKey: queryKeys.notifications.list(params as Record<string, unknown> | undefined),
     queryFn: () => getNotifications(params),
     enabled: !!isSignedIn,
   });

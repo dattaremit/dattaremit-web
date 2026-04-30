@@ -1,10 +1,7 @@
 import * as yup from "yup";
 
 export const depositAccountSchema = yup.object({
-  accountName: yup
-    .string()
-    .trim()
-    .required("Account holder name is required"),
+  accountName: yup.string().trim().required("Account holder name is required"),
   accountNumber: yup.string().trim().required("Account number is required"),
   ifsc: yup
     .string()

@@ -12,9 +12,7 @@ describe("generateIdempotencyKey", () => {
 
   it("returns an RFC 4122 v4 UUID string", () => {
     const key = generateIdempotencyKey();
-    expect(key).toMatch(
-      /^[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i,
-    );
+    expect(key).toMatch(/^[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i);
   });
 
   it("produces a unique value on each call", () => {
@@ -28,9 +26,7 @@ describe("generateIdempotencyKey", () => {
       value: { subtle: {} },
       configurable: true,
     });
-    expect(() => generateIdempotencyKey()).toThrow(
-      "crypto.randomUUID is unavailable",
-    );
+    expect(() => generateIdempotencyKey()).toThrow("crypto.randomUUID is unavailable");
   });
 
   it("throws when crypto is undefined", () => {
@@ -38,8 +34,6 @@ describe("generateIdempotencyKey", () => {
       value: undefined,
       configurable: true,
     });
-    expect(() => generateIdempotencyKey()).toThrow(
-      "crypto.randomUUID is unavailable",
-    );
+    expect(() => generateIdempotencyKey()).toThrow("crypto.randomUUID is unavailable");
   });
 });

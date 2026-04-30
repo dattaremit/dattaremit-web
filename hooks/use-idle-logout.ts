@@ -20,9 +20,7 @@ export function useIdleLogout(idleMs: number = DEFAULT_IDLE_MS) {
 
   useEffect(() => {
     const channel =
-      typeof BroadcastChannel !== "undefined"
-        ? new BroadcastChannel(CHANNEL_NAME)
-        : null;
+      typeof BroadcastChannel !== "undefined" ? new BroadcastChannel(CHANNEL_NAME) : null;
 
     const armTimer = () => {
       if (timerRef.current) clearTimeout(timerRef.current);
@@ -56,9 +54,7 @@ export function useIdleLogout(idleMs: number = DEFAULT_IDLE_MS) {
 
     return () => {
       if (timerRef.current) clearTimeout(timerRef.current);
-      ACTIVITY_EVENTS.forEach((ev) =>
-        window.removeEventListener(ev, onLocalActivity),
-      );
+      ACTIVITY_EVENTS.forEach((ev) => window.removeEventListener(ev, onLocalActivity));
       channel?.removeEventListener("message", onPeerMessage);
       channel?.close();
     };

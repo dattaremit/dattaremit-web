@@ -66,11 +66,7 @@ export default function OnboardingReferralPage() {
         eyebrow="Referral"
         title={
           <>
-            Got a{" "}
-            <span className="text-brand">
-              referral code
-            </span>
-            ?
+            Got a <span className="text-brand">referral code</span>?
           </>
         }
         subtitle="Enter a code to claim the bonus, or skip this step."
@@ -99,20 +95,10 @@ export default function OnboardingReferralPage() {
         )}
 
         <div className="flex flex-col gap-2 pt-2">
-          <Button
-            variant="brand"
-            size="lg"
-            onClick={handleApply}
-            loading={loading}
-          >
+          <Button variant="brand" size="lg" onClick={handleApply} loading={loading}>
             Apply
           </Button>
-          <Button
-            variant="outline"
-            size="lg"
-            onClick={handleSkip}
-            disabled={loading}
-          >
+          <Button variant="outline" size="lg" onClick={handleSkip} disabled={loading}>
             Skip
           </Button>
         </div>

@@ -18,16 +18,10 @@ export function PushPreferencesCard() {
           <div
             className={cn(
               "flex size-11 items-center justify-center rounded-xl",
-              status === "enabled"
-                ? "bg-brand/15 text-brand"
-                : "bg-muted text-muted-foreground",
+              status === "enabled" ? "bg-brand/15 text-brand" : "bg-muted text-muted-foreground",
             )}
           >
-            {status === "enabled" ? (
-              <Bell className="size-5" />
-            ) : (
-              <BellOff className="size-5" />
-            )}
+            {status === "enabled" ? <Bell className="size-5" /> : <BellOff className="size-5" />}
           </div>
           <div className="flex flex-col gap-1">
             <h3 className="font-semibold text-lg leading-tight text-foreground">
@@ -40,9 +34,7 @@ export function PushPreferencesCard() {
                   ? "You'll receive alerts on this device."
                   : "Get notified about transfers, KYC, and account updates."}
             </p>
-            {error && (
-              <p className="mt-1 text-sm text-destructive">{error}</p>
-            )}
+            {error && <p className="mt-1 text-sm text-destructive">{error}</p>}
           </div>
         </div>
         <div className="shrink-0">

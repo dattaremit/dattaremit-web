@@ -36,11 +36,7 @@ export function SensitiveContent({
 
   return (
     <div
-      className={cn(
-        "transition-[filter] duration-150",
-        hidden && "blur-md select-none",
-        className,
-      )}
+      className={cn("transition-[filter] duration-150", hidden && "blur-md select-none", className)}
     >
       {children}
     </div>

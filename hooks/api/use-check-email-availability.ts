@@ -1,10 +1,6 @@
 import { useEffect, useState } from "react";
 import { useQuery } from "@tanstack/react-query";
-import {
-  checkUserEmailAvailable,
-  checkRecipientEmailAvailable,
-  ApiError,
-} from "@/services/api";
+import { checkUserEmailAvailable, checkRecipientEmailAvailable, ApiError } from "@/services/api";
 import { queryKeys } from "@/constants/query-keys";
 
 type Scope = "user" | "recipient";

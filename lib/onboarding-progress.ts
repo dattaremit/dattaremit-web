@@ -19,11 +19,7 @@ const ALL_STEP_HREFS: Record<OnboardingStepKey, string> = {
   address: ROUTES.ONBOARDING.ADDRESS,
 };
 
-const ALL_STEP_ORDER: OnboardingStepKey[] = [
-  "referral",
-  "profile",
-  "address",
-];
+const ALL_STEP_ORDER: OnboardingStepKey[] = ["referral", "profile", "address"];
 
 export function stepIndex(key: OnboardingStepKey): number {
   return ALL_STEP_ORDER.indexOf(key);
@@ -46,17 +42,13 @@ export interface OnboardingState {
   completion: Record<IndicatorStepKey, boolean>;
 }
 
-export function computeOnboardingState(
-  account: Account | null | undefined,
-): OnboardingState {
+export function computeOnboardingState(account: Account | null | undefined): OnboardingState {
   const u = account?.user;
-  const profileDone =
-    !!u && !!u.firstName && !!u.lastName && !!u.phoneNumber && !!u.dateOfBirth;
+  const profileDone = !!u && !!u.firstName && !!u.lastName && !!u.phoneNumber && !!u.dateOfBirth;
   // Address row alone isn't enough — server only creates the Zynk payment
   // entity once the address is fully accepted. If hasZynkEntity is false the
   // address step did not really complete (e.g. entity creation failed).
-  const addressDone =
-    (account?.addresses?.length ?? 0) > 0 && !!account?.hasZynkEntity;
+  const addressDone = (account?.addresses?.length ?? 0) > 0 && !!account?.hasZynkEntity;
 
   let nextStep: OnboardingStepKey | null = null;
   if (!u) nextStep = "referral";

@@ -1,9 +1,4 @@
-import {
-  computeOnboardingState,
-  stepIndex,
-  stepHref,
-  nextHref,
-} from "../onboarding-progress";
+import { computeOnboardingState, stepIndex, stepHref, nextHref } from "../onboarding-progress";
 import { ROUTES } from "@/constants/routes";
 import type { Account, AccountUser, Address } from "@/types/api";
 

@@ -28,11 +28,7 @@ import type {
   CheckIdentityPayload,
   CheckIdentityResult,
 } from "@/types/recipient";
-import type {
-  SendMoneyPayload,
-  SendToSelfPayload,
-  SendMoneyResponse,
-} from "@/types/transfer";
+import type { SendMoneyPayload, SendToSelfPayload, SendMoneyResponse } from "@/types/transfer";
 import type {
   Notification,
   NotificationFilters,
@@ -43,24 +39,16 @@ import type {
   IndianKycResponse,
   PublicKeyResponse,
 } from "@/types/indian-kyc";
-import type {
-  WebPushRegistrationPayload,
-  WebPushDevice,
-} from "@/types/web-push";
+import type { WebPushRegistrationPayload, WebPushDevice } from "@/types/web-push";
 
-const API_BASE_URL =
-  process.env.NEXT_PUBLIC_API_URL ?? process.env.NEXT_PUBLIC_API_BASE_URL;
+const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL ?? process.env.NEXT_PUBLIC_API_BASE_URL;
 
 export class ApiError extends Error {
   status: number;
   code?: string;
   details?: unknown;
 
-  constructor(
-    status: number,
-    message: string,
-    extras?: { code?: string; details?: unknown },
-  ) {
+  constructor(status: number, message: string, extras?: { code?: string; details?: unknown }) {
     super(message);
     this.status = status;
     this.code = extras?.code;
@@ -140,23 +128,20 @@ api.interceptors.response.use(
         code: body?.code,
         url: error.config?.url,
       });
-      throw new ApiError(
-        error.response.status,
-        safeErrorMessage(error.response.status),
-        { code: body?.code, details: body?.data },
-      );
+      throw new ApiError(error.response.status, safeErrorMessage(error.response.status), {
+        code: body?.code,
+        details: body?.data,
+      });
     }
     logger.error("Unexpected API error", { error: String(error) });
     throw error;
-  }
+  },
 );
 
 // ── Users ──
-export const createUser = (data: CreateUserPayload): Promise<User> =>
-  api.post("/users", data);
+export const createUser = (data: CreateUserPayload): Promise<User> => api.post("/users", data);
 
-export const updateMe = (data: UpdateUserPayload): Promise<User> =>
-  api.put("/users/me", data);
+export const updateMe = (data: UpdateUserPayload): Promise<User> => api.put("/users/me", data);
 
 // ── Account ──
 export const getAccount = (): Promise<Account> => api.get("/account");
@@ -167,33 +152,25 @@ export const createAddress = (data: CreateAddressPayload): Promise<Address> =>
 
 export const getAddresses = (): Promise<Address[]> => api.get("/addresses");
 
-export const getAddress = (id: string): Promise<Address> =>
-  api.get(`/addresses/${id}`);
+export const getAddress = (id: string): Promise<Address> => api.get(`/addresses/${id}`);
 
-export const updateAddress = (
-  id: string,
-  data: UpdateAddressPayload
-): Promise<Address> => api.put(`/addresses/${id}`, data);
+export const updateAddress = (id: string, data: UpdateAddressPayload): Promise<Address> =>
+  api.put(`/addresses/${id}`, data);
 
-export const deleteAddress = (id: string): Promise<void> =>
-  api.delete(`/addresses/${id}`);
+export const deleteAddress = (id: string): Promise<void> => api.delete(`/addresses/${id}`);
 
 // ── Referral ──
-export const validateReferralCode = (
-  code: string
-): Promise<{ valid: boolean }> => api.post("/referral/validate", { code });
+export const validateReferralCode = (code: string): Promise<{ valid: boolean }> =>
+  api.post("/referral/validate", { code });
 
-export const reserveReferralCode = (
-  code: string
-): Promise<{ reserved: boolean }> => api.post("/referral/reserve", { code });
+export const reserveReferralCode = (code: string): Promise<{ reserved: boolean }> =>
+  api.post("/referral/reserve", { code });
 
 // ── Onboarding ──
-export const submitOnboardingAddress = (
-  data: OnboardingAddressPayload
-): Promise<void> => api.post("/onboarding/address", data);
+export const submitOnboardingAddress = (data: OnboardingAddressPayload): Promise<void> =>
+  api.post("/onboarding/address", data);
 
-export const requestOnboardingKyc = (): Promise<{ message: string }> =>
-  api.post("/onboarding/kyc");
+export const requestOnboardingKyc = (): Promise<{ message: string }> => api.post("/onboarding/kyc");
 
 // ── Zynk (KYC) ──
 export const createZynkEntity = (idempotencyKey?: string): Promise<User> =>
@@ -201,8 +178,7 @@ export const createZynkEntity = (idempotencyKey?: string): Promise<User> =>
     headers: idempotencyHeaders(idempotencyKey),
   });
 
-export const startKyc = (): Promise<ZynkKycData> =>
-  api.post("/zynk/kyc");
+export const startKyc = (): Promise<ZynkKycData> => api.post("/zynk/kyc");
 
 // ── Zynk (Plaid) ──
 export const generatePlaidLinkToken = (): Promise<PlaidLinkToken> =>
@@ -211,7 +187,7 @@ export const generatePlaidLinkToken = (): Promise<PlaidLinkToken> =>
 // ── Zynk (External Account) ──
 export const addExternalAccount = (
   data: AddExternalAccountPayload,
-  idempotencyKey?: string
+  idempotencyKey?: string,
 ): Promise<User> =>
   api.post("/zynk/external-account", data, {
     headers: idempotencyHeaders(idempotencyKey),
@@ -220,43 +196,38 @@ export const addExternalAccount = (
 // ── Zynk (Deposit Account) ──
 export const addDepositAccount = (
   data: AddDepositAccountPayload,
-  idempotencyKey?: string
+  idempotencyKey?: string,
 ): Promise<User> =>
   api.post("/zynk/deposit-account", data, {
     headers: idempotencyHeaders(idempotencyKey),
   });
 
 // ── Activity ──
-export const getActivities = (
-  params?: ActivityQueryParams
-): Promise<ActivityListResponse> => api.get("/activity", { params });
+export const getActivities = (params?: ActivityQueryParams): Promise<ActivityListResponse> =>
+  api.get("/activity", { params });
 
-export const getActivity = (id: string): Promise<Activity> =>
-  api.get(`/activity/${id}`);
+export const getActivity = (id: string): Promise<Activity> => api.get(`/activity/${id}`);
 
 // ── Recipients ──
 export const getRecipients = (): Promise<Recipient[]> => api.get("/recipients");
 
-export const getRecipient = (id: string): Promise<Recipient> =>
-  api.get(`/recipients/${id}`);
+export const getRecipient = (id: string): Promise<Recipient> => api.get(`/recipients/${id}`);
 
 export const createRecipient = (
   data: CreateRecipientPayload,
-  idempotencyKey?: string
+  idempotencyKey?: string,
 ): Promise<Recipient> =>
   api.post("/recipients", data, {
     headers: idempotencyHeaders(idempotencyKey),
   });
 
-export const updateRecipient = (
-  id: string,
-  data: CreateRecipientPayload
-): Promise<Recipient> => api.patch(`/recipients/${id}`, data);
+export const updateRecipient = (id: string, data: CreateRecipientPayload): Promise<Recipient> =>
+  api.patch(`/recipients/${id}`, data);
 
 export const addRecipientBank = (
   id: string,
   data: AddRecipientBankPayload,
-  idempotencyKey?: string
+  idempotencyKey?: string,
 ): Promise<Recipient> =>
   api.post(`/recipients/${id}/bank`, data, {
     headers: idempotencyHeaders(idempotencyKey),
@@ -268,28 +239,20 @@ export const listRecipientBanks = (id: string): Promise<BankDetails[]> =>
 export const updateRecipientBank = (
   recipientId: string,
   bankId: string,
-  data: UpdateRecipientBankPayload
-): Promise<BankDetails> =>
-  api.patch(`/recipients/${recipientId}/banks/${bankId}`, data);
+  data: UpdateRecipientBankPayload,
+): Promise<BankDetails> => api.patch(`/recipients/${recipientId}/banks/${bankId}`, data);
 
 export const setDefaultRecipientBank = (
   recipientId: string,
-  bankId: string
-): Promise<BankDetails> =>
-  api.post(`/recipients/${recipientId}/banks/${bankId}/default`);
+  bankId: string,
+): Promise<BankDetails> => api.post(`/recipients/${recipientId}/banks/${bankId}/default`);
 
-export const deleteRecipientBank = (
-  recipientId: string,
-  bankId: string
-): Promise<void> =>
+export const deleteRecipientBank = (recipientId: string, bankId: string): Promise<void> =>
   api.delete(`/recipients/${recipientId}/banks/${bankId}`);
 
-export const unlinkRecipient = (id: string): Promise<void> =>
-  api.delete(`/recipients/${id}`);
+export const unlinkRecipient = (id: string): Promise<void> => api.delete(`/recipients/${id}`);
 
-export const checkRecipientIdentity = (
-  data: CheckIdentityPayload
-): Promise<CheckIdentityResult> =>
+export const checkRecipientIdentity = (data: CheckIdentityPayload): Promise<CheckIdentityResult> =>
   api.post("/recipients/check-identity", data);
 
 export const resendRecipientKyc = (id: string): Promise<void> =>
@@ -300,7 +263,7 @@ export const listMyBanks = (): Promise<BankDetails[]> => api.get("/banks");
 
 export const addMyBank = (
   data: AddRecipientBankPayload,
-  idempotencyKey?: string
+  idempotencyKey?: string,
 ): Promise<BankDetails> =>
   api.post("/banks", data, {
     headers: idempotencyHeaders(idempotencyKey),
@@ -308,19 +271,18 @@ export const addMyBank = (
 
 export const updateMyBank = (
   bankId: string,
-  data: UpdateRecipientBankPayload
+  data: UpdateRecipientBankPayload,
 ): Promise<BankDetails> => api.patch(`/banks/${bankId}`, data);
 
 export const setDefaultMyBank = (bankId: string): Promise<BankDetails> =>
   api.post(`/banks/${bankId}/default`);
 
-export const deleteMyBank = (bankId: string): Promise<void> =>
-  api.delete(`/banks/${bankId}`);
+export const deleteMyBank = (bankId: string): Promise<void> => api.delete(`/banks/${bankId}`);
 
 // ── Transfers ──
 export const sendMoney = (
   data: SendMoneyPayload,
-  idempotencyKey?: string
+  idempotencyKey?: string,
 ): Promise<SendMoneyResponse> =>
   api.post("/transfers/send", data, {
     headers: idempotencyHeaders(idempotencyKey),
@@ -328,7 +290,7 @@ export const sendMoney = (
 
 export const sendToSelf = (
   data: SendToSelfPayload,
-  idempotencyKey?: string
+  idempotencyKey?: string,
 ): Promise<SendMoneyResponse> =>
   api.post("/transfers/send-to-self", data, {
     headers: idempotencyHeaders(idempotencyKey),
@@ -336,7 +298,7 @@ export const sendToSelf = (
 
 // ── Notifications ──
 export const getNotifications = (
-  params: NotificationFilters = {}
+  params: NotificationFilters = {},
 ): Promise<PaginatedNotifications> => api.get("/notifications", { params });
 
 export const getUnreadCount = (): Promise<{ count: number }> =>
@@ -345,44 +307,34 @@ export const getUnreadCount = (): Promise<{ count: number }> =>
 export const markNotificationAsRead = (id: string): Promise<Notification> =>
   api.patch(`/notifications/${id}/read`);
 
-export const markAllNotificationsAsRead = (): Promise<void> =>
-  api.patch("/notifications/read-all");
+export const markAllNotificationsAsRead = (): Promise<void> => api.patch("/notifications/read-all");
 
-export const deleteNotification = (id: string): Promise<void> =>
-  api.delete(`/notifications/${id}`);
+export const deleteNotification = (id: string): Promise<void> => api.delete(`/notifications/${id}`);
 
 // ── Crypto ──
-export const getPublicKey = (): Promise<PublicKeyResponse> =>
-  api.get("/crypto/public-key");
+export const getPublicKey = (): Promise<PublicKeyResponse> => api.get("/crypto/public-key");
 
 // ── Email availability ──
 // Public endpoint — used by the sign-up form before calling Clerk so a
 // duplicate email is caught before an unrecoverable Clerk account is
 // created.
-export const checkUserEmailAvailable = (
-  email: string
-): Promise<{ available: boolean }> =>
+export const checkUserEmailAvailable = (email: string): Promise<{ available: boolean }> =>
   api.get("/check-email", { params: { email } });
 
 // Authed — used by the recipient form; scope is per-user.
-export const checkRecipientEmailAvailable = (
-  email: string
-): Promise<{ available: boolean }> =>
+export const checkRecipientEmailAvailable = (email: string): Promise<{ available: boolean }> =>
   api.get("/recipients/check-email", { params: { email } });
 
 // ── Zynk (Indian KYC) ──
 export const submitIndianKycEncrypted = (
-  data: IndianKycEncryptedPayload
+  data: IndianKycEncryptedPayload,
 ): Promise<IndianKycResponse> => api.post("/zynk/indian-kyc", data);
 
 // ── Web Push Devices ──
 // NOTE: the server must expose POST /devices/register-web-push and
 // DELETE /devices/:id accepting the payload shapes defined in
 // types/web-push.ts. Until that lands, these calls will 404.
-export const registerWebPushDevice = (
-  data: WebPushRegistrationPayload
-): Promise<WebPushDevice> =>
+export const registerWebPushDevice = (data: WebPushRegistrationPayload): Promise<WebPushDevice> =>
   api.post("/devices/register-web-push", data);
 
-export const unregisterDevice = (id: string): Promise<void> =>
-  api.delete(`/devices/${id}`);
+export const unregisterDevice = (id: string): Promise<void> => api.delete(`/devices/${id}`);

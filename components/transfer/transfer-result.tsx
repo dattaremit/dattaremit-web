@@ -57,9 +57,7 @@ export function TransferResult({
             damping: 14,
           }}
           className={`flex size-16 items-center justify-center rounded-full ${
-            success
-              ? "bg-success/15 text-success"
-              : "bg-destructive/15 text-destructive"
+            success ? "bg-success/15 text-success" : "bg-destructive/15 text-destructive"
           }`}
         >
           <Icon className="size-8" strokeWidth={2.2} />
@@ -70,9 +68,7 @@ export function TransferResult({
             {title}
           </h2>
           {description && (
-            <p className="max-w-sm text-sm leading-relaxed text-muted-foreground">
-              {description}
-            </p>
+            <p className="max-w-sm text-sm leading-relaxed text-muted-foreground">{description}</p>
           )}
         </div>
 
@@ -88,11 +84,7 @@ export function TransferResult({
               Try again
             </Button>
           )}
-          <Button
-            asChild
-            variant={success ? "brand" : "default"}
-            className="flex-1"
-          >
+          <Button asChild variant={success ? "brand" : "default"} className="flex-1">
             <Link href={primaryHref}>{primaryLabel}</Link>
           </Button>
         </div>

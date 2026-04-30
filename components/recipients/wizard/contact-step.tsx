@@ -3,10 +3,7 @@
 import { useFormContext } from "react-hook-form";
 import { ArrowRight, Mail, User } from "lucide-react";
 
-import {
-  FormField,
-  FormItem,
-} from "@/components/ui/form";
+import { FormField, FormItem } from "@/components/ui/form";
 import { Button } from "@/components/ui/button";
 import { TextField } from "@/components/ui/text-field";
 import { PhoneInput } from "@/components/phone-input";
@@ -33,12 +30,9 @@ export function ContactStep({ onContinue, checking }: ContactStepProps) {
   return (
     <div className="space-y-6">
       <header className="space-y-1.5">
-        <h2 className="font-semibold text-2xl text-foreground">
-          Who are you sending to?
-        </h2>
+        <h2 className="font-semibold text-2xl text-foreground">Who are you sending to?</h2>
         <p className="text-sm text-muted-foreground">
-          We&rsquo;ll check if they&rsquo;re already verified so you can skip
-          KYC.
+          We&rsquo;ll check if they&rsquo;re already verified so you can skip KYC.
         </p>
       </header>
 
@@ -77,16 +71,9 @@ export function ContactStep({ onContinue, checking }: ContactStepProps) {
               label="Phone"
               value={form.getValues("phoneNumberPrefix") + field.value}
               onChangePhone={(fullPhone) => {
-                field.onChange(
-                  stripPhonePrefix(
-                    fullPhone,
-                    form.getValues("phoneNumberPrefix"),
-                  ),
-                );
+                field.onChange(stripPhonePrefix(fullPhone, form.getValues("phoneNumberPrefix")));
               }}
-              onChangeCountry={(dialCode) =>
-                form.setValue("phoneNumberPrefix", dialCode)
-              }
+              onChangeCountry={(dialCode) => form.setValue("phoneNumberPrefix", dialCode)}
               placeholder="9XXXXXXXXX"
               error={form.formState.errors.phoneNumber?.message}
             />
@@ -95,13 +82,7 @@ export function ContactStep({ onContinue, checking }: ContactStepProps) {
       />
 
       <div className="flex justify-end pt-2">
-        <Button
-          type="button"
-          variant="brand"
-          size="lg"
-          onClick={onContinue}
-          loading={checking}
-        >
+        <Button type="button" variant="brand" size="lg" onClick={onContinue} loading={checking}>
           Continue
           <ArrowRight />
         </Button>

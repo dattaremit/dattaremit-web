@@ -31,9 +31,7 @@ export function Stepper({ steps, activeIndex, className }: StepperProps) {
         <div className="text-[11px] font-medium uppercase tracking-[0.18em] text-brand">
           Step {Math.min(activeIndex + 1, total)} of {total}
         </div>
-        <div className="text-sm text-muted-foreground">
-          {steps[activeIndex]?.label}
-        </div>
+        <div className="text-sm text-muted-foreground">{steps[activeIndex]?.label}</div>
       </div>
 
       <div className="relative flex items-center gap-2">
@@ -42,13 +40,7 @@ export function Stepper({ steps, activeIndex, className }: StepperProps) {
           const done = idx < activeIndex;
           const isLast = idx === total - 1;
           return (
-            <div
-              key={step.id}
-              className={cn(
-                "flex items-center gap-2",
-                !isLast && "flex-1",
-              )}
-            >
+            <div key={step.id} className={cn("flex items-center gap-2", !isLast && "flex-1")}>
               <div
                 className={cn(
                   "relative flex size-6 shrink-0 items-center justify-center rounded-full border transition-colors",

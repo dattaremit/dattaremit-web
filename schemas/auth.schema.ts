@@ -1,20 +1,14 @@
 import * as yup from "yup";
 
 export const signInSchema = yup.object({
-  email: yup
-    .string()
-    .email("Please enter a valid email")
-    .required("Email is required"),
+  email: yup.string().email("Please enter a valid email").required("Email is required"),
   password: yup.string().required("Password is required"),
 });
 
 export type SignInFormData = yup.InferType<typeof signInSchema>;
 
 export const signUpSchema = yup.object({
-  email: yup
-    .string()
-    .email("Please enter a valid email")
-    .required("Email is required"),
+  email: yup.string().email("Please enter a valid email").required("Email is required"),
   password: yup
     .string()
     .required("Password is required")
@@ -32,15 +26,10 @@ export const signUpSchema = yup.object({
 export type SignUpFormData = yup.InferType<typeof signUpSchema>;
 
 export const forgotPasswordEmailSchema = yup.object({
-  email: yup
-    .string()
-    .email("Please enter a valid email")
-    .required("Email is required"),
+  email: yup.string().email("Please enter a valid email").required("Email is required"),
 });
 
-export type ForgotPasswordEmailFormData = yup.InferType<
-  typeof forgotPasswordEmailSchema
->;
+export type ForgotPasswordEmailFormData = yup.InferType<typeof forgotPasswordEmailSchema>;
 
 export const resetPasswordSchema = yup.object({
   password: yup

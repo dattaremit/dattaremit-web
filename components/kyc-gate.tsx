@@ -25,19 +25,14 @@ export function KycGate({ accountStatus, feature = "this feature" }: KycGateProp
         <div className="mx-auto mb-3 flex size-12 items-center justify-center rounded-2xl bg-warning/15 text-warning">
           <Clock className="size-6" />
         </div>
-        <h2 className="font-semibold text-2xl text-foreground">
-          Account is not approved yet
-        </h2>
+        <h2 className="font-semibold text-2xl text-foreground">Account is not approved yet</h2>
         <p className="mt-1 text-sm text-muted-foreground">
-          We&apos;ll unlock everything as soon as your verification goes
-          through.
+          We&apos;ll unlock everything as soon as your verification goes through.
         </p>
         <Button
           variant="outline"
           className="mt-5"
-          onClick={() =>
-            queryClient.invalidateQueries({ queryKey: queryKeys.account })
-          }
+          onClick={() => queryClient.invalidateQueries({ queryKey: queryKeys.account })}
         >
           <RefreshCw />
           Retry
@@ -51,17 +46,9 @@ export function KycGate({ accountStatus, feature = "this feature" }: KycGateProp
       <div className="mx-auto mb-3 flex size-12 items-center justify-center rounded-2xl bg-brand/15 text-brand">
         <ShieldCheck className="size-6" />
       </div>
-      <h2 className="font-semibold text-2xl text-foreground">
-        Verify your identity first
-      </h2>
-      <p className="mt-1 text-sm text-muted-foreground">
-        Complete KYC to unlock {feature}.
-      </p>
-      <Button
-        variant="brand"
-        className="mt-5"
-        onClick={() => router.push(ROUTES.KYC)}
-      >
+      <h2 className="font-semibold text-2xl text-foreground">Verify your identity first</h2>
+      <p className="mt-1 text-sm text-muted-foreground">Complete KYC to unlock {feature}.</p>
+      <Button variant="brand" className="mt-5" onClick={() => router.push(ROUTES.KYC)}>
         Complete KYC
         <ArrowRight />
       </Button>

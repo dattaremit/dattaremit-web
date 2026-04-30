@@ -38,8 +38,7 @@ export default function ReferralPage() {
       toast.success("Referral code applied!");
       router.push(ROUTES.EDIT_PROFILE);
     } catch (err: unknown) {
-      const message =
-        err instanceof Error ? err.message : "Invalid referral code";
+      const message = err instanceof Error ? err.message : "Invalid referral code";
       toast.error(message);
     }
   };
@@ -51,10 +50,7 @@ export default function ReferralPage() {
 
   return (
     <div className="mx-auto w-full max-w-md">
-      <Card
-        variant="elevated"
-        className="relative overflow-hidden p-8 sm:p-10"
-      >
+      <Card variant="elevated" className="relative overflow-hidden p-8 sm:p-10">
         <div
           aria-hidden="true"
           className="pointer-events-none absolute -top-24 left-1/2 size-64 -translate-x-1/2 rounded-full bg-brand/15 blur-3xl"
@@ -65,8 +61,7 @@ export default function ReferralPage() {
             <Gift className="size-6" />
           </div>
           <h1 className="font-semibold text-3xl leading-tight text-foreground">
-            Got a{" "}
-            <span className="text-brand">code</span>?
+            Got a <span className="text-brand">code</span>?
           </h1>
           <p className="max-w-sm text-sm leading-relaxed text-muted-foreground">
             Enter it now to claim your bonus when you complete sign up.

@@ -9,21 +9,12 @@ type StatCardProps = React.HTMLAttributes<HTMLDivElement> & {
   accent?: boolean;
 };
 
-export function StatCard({
-  label,
-  value,
-  hint,
-  icon,
-  accent,
-  className,
-  ...props
-}: StatCardProps) {
+export function StatCard({ label, value, hint, icon, accent, className, ...props }: StatCardProps) {
   return (
     <div
       className={cn(
         "group relative overflow-hidden rounded-2xl border border-border bg-card p-5 shadow-soft transition-all duration-300 hover:shadow-lift hover:-translate-y-0.5",
-        accent &&
-          "border-brand/30 bg-gradient-to-br from-brand-soft/40 via-card to-card",
+        accent && "border-brand/30 bg-gradient-to-br from-brand-soft/40 via-card to-card",
         className,
       )}
       {...props}
@@ -53,16 +44,12 @@ export function StatCard({
       </div>
       <div className="relative mt-3 flex items-baseline gap-2">
         <span
-          className={cn(
-            "font-semibold text-3xl leading-none tabular text-foreground sm:text-4xl",
-          )}
+          className={cn("font-semibold text-3xl leading-none tabular text-foreground sm:text-4xl")}
         >
           {value}
         </span>
       </div>
-      {hint && (
-        <p className="relative mt-2 text-xs text-muted-foreground">{hint}</p>
-      )}
+      {hint && <p className="relative mt-2 text-xs text-muted-foreground">{hint}</p>}
     </div>
   );
 }

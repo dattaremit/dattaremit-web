@@ -7,8 +7,7 @@ export const queryKeys = {
   },
   activities: {
     all: ["activities"] as const,
-    list: (params?: Record<string, unknown>) =>
-      ["activities", "list", params] as const,
+    list: (params?: Record<string, unknown>) => ["activities", "list", params] as const,
     detail: (id: string) => ["activities", id] as const,
   },
   recipients: {
@@ -23,8 +22,7 @@ export const queryKeys = {
   },
   notifications: {
     all: ["notifications"] as const,
-    list: (params?: Record<string, unknown>) =>
-      ["notifications", "list", params] as const,
+    list: (params?: Record<string, unknown>) => ["notifications", "list", params] as const,
     unreadCount: ["notifications", "unread-count"] as const,
   },
   exchangeRate: ["exchange-rate"] as const,

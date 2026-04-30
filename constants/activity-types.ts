@@ -17,7 +17,4 @@ export const KYC_TYPES: ActivityType[] = [
   "KYC_FAILED",
 ];
 
-export const ACCOUNT_TYPES: ActivityType[] = [
-  "ACCOUNT_APPROVED",
-  "ACCOUNT_ACTIVATED",
-];
+export const ACCOUNT_TYPES: ActivityType[] = ["ACCOUNT_APPROVED", "ACCOUNT_ACTIVATED"];

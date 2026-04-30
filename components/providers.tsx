@@ -3,11 +3,7 @@
 import { useEffect, useRef, useState } from "react";
 import { ClerkProvider, useAuth } from "@clerk/nextjs";
 import { ThemeProvider } from "next-themes";
-import {
-  QueryClient,
-  QueryClientProvider,
-  useQueryClient,
-} from "@tanstack/react-query";
+import { QueryClient, QueryClientProvider, useQueryClient } from "@tanstack/react-query";
 import { setTokenGetter } from "@/services/api";
 import { clearClientData } from "@/lib/clear-client-data";
 import { ROUTES } from "@/constants/routes";
@@ -37,13 +33,7 @@ function AuthTokenBridge({ children }: { children: React.ReactNode }) {
   return <>{children}</>;
 }
 
-export function Providers({
-  children,
-  nonce,
-}: {
-  children: React.ReactNode;
-  nonce?: string;
-}) {
+export function Providers({ children, nonce }: { children: React.ReactNode; nonce?: string }) {
   const [queryClient] = useState(
     () =>
       new QueryClient({
@@ -53,7 +43,7 @@ export function Providers({
             retry: 2,
           },
         },
-      })
+      }),
   );
 
   return (
@@ -65,12 +55,7 @@ export function Providers({
       signInForceRedirectUrl={ROUTES.ROOT}
       signUpForceRedirectUrl={ROUTES.ONBOARDING.PROFILE}
     >
-      <ThemeProvider
-        attribute="class"
-        defaultTheme="system"
-        enableSystem
-        disableTransitionOnChange
-      >
+      <ThemeProvider attribute="class" defaultTheme="system" enableSystem disableTransitionOnChange>
         <QueryClientProvider client={queryClient}>
           <AuthTokenBridge>
             <SentryUserContext />

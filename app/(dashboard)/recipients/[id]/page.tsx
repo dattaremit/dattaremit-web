@@ -51,26 +51,16 @@ import {
 import { ROUTES } from "@/constants/routes";
 import type { BankDetails } from "@/types/recipient";
 
-export default function RecipientDetailPage({
-  params,
-}: {
-  params: Promise<{ id: string }>;
-}) {
+export default function RecipientDetailPage({ params }: { params: Promise<{ id: string }> }) {
   const { id } = use(params);
   const router = useRouter();
   const { data: account } = useAccount();
   const { data: recipient, isLoading, error } = useRecipient(id);
-  const {
-    data: banks = [],
-    isLoading: banksLoading,
-    error: banksError,
-  } = useRecipientBanks(id);
+  const { data: banks = [], isLoading: banksLoading, error: banksError } = useRecipientBanks(id);
 
   const currentUserId = account?.user?.id ?? null;
   const canEditRecipient =
-    !!recipient?.createdByUserId &&
-    !!currentUserId &&
-    recipient.createdByUserId === currentUserId;
+    !!recipient?.createdByUserId && !!currentUserId && recipient.createdByUserId === currentUserId;
   const resendKyc = useResendRecipientKyc();
   const setDefaultBank = useSetDefaultRecipientBank();
   const deleteBank = useDeleteRecipientBank();
@@ -154,10 +144,7 @@ export default function RecipientDetailPage({
     <div className="space-y-7">
       <BackLink href={ROUTES.RECIPIENTS} />
 
-      <Card
-        variant="elevated"
-        className="relative overflow-hidden p-6 sm:p-8"
-      >
+      <Card variant="elevated" className="relative overflow-hidden p-6 sm:p-8">
         <div
           aria-hidden="true"
           className="pointer-events-none absolute -top-16 -right-16 size-64 rounded-full bg-brand/10 blur-3xl"
@@ -228,19 +215,15 @@ export default function RecipientDetailPage({
               Resend KYC
             </Button>
           )}
-          <Button
-            variant="outline"
-            size="sm"
-            onClick={() => setConfirmUnlink(true)}
-          >
+          <Button variant="outline" size="sm" onClick={() => setConfirmUnlink(true)}>
             <UserMinus />
             Remove from my list
           </Button>
         </div>
         {!canEditRecipient && (
           <p className="mt-3 text-xs text-muted-foreground">
-            Shared recipient — only the user who first added {recipient.firstName}{" "}
-            can edit their profile details.
+            Shared recipient — only the user who first added {recipient.firstName} can edit their
+            profile details.
           </p>
         )}
       </Card>
@@ -252,9 +235,7 @@ export default function RecipientDetailPage({
               <Banknote className="size-5" />
             </div>
             <div>
-              <h2 className="font-semibold text-xl text-foreground">
-                Bank accounts
-              </h2>
+              <h2 className="font-semibold text-xl text-foreground">Bank accounts</h2>
               <p className="text-sm text-muted-foreground">
                 {hasBanks
                   ? `${banks.length} account${banks.length > 1 ? "s" : ""} — default used by transfers unless specified.`
@@ -314,19 +295,13 @@ export default function RecipientDetailPage({
                   </DropdownMenuTrigger>
                   <DropdownMenuContent align="end">
                     {!bank.isDefault && (
-                      <DropdownMenuItem
-                        onClick={() => handleSetDefault(bank.id)}
-                      >
+                      <DropdownMenuItem onClick={() => handleSetDefault(bank.id)}>
                         <Check className="size-4" />
                         Set as default
                       </DropdownMenuItem>
                     )}
                     <DropdownMenuItem
-                      onClick={() =>
-                        router.push(
-                          `/send?recipient=${recipient.id}&bank=${bank.id}`,
-                        )
-                      }
+                      onClick={() => router.push(`/send?recipient=${recipient.id}&bank=${bank.id}`)}
                       disabled={!canSend}
                     >
                       <Send className="size-4" />
@@ -383,10 +358,7 @@ export default function RecipientDetailPage({
         )}
       </div>
 
-      <AlertDialog
-        open={!!bankToRemove}
-        onOpenChange={(open) => !open && setBankToRemove(null)}
-      >
+      <AlertDialog open={!!bankToRemove} onOpenChange={(open) => !open && setBankToRemove(null)}>
         <AlertDialogContent>
           <AlertDialogHeader>
             <AlertDialogTitle>Remove this bank?</AlertDialogTitle>
@@ -398,10 +370,7 @@ export default function RecipientDetailPage({
           </AlertDialogHeader>
           <AlertDialogFooter>
             <AlertDialogCancel>Cancel</AlertDialogCancel>
-            <AlertDialogAction
-              onClick={handleRemoveBank}
-              disabled={deleteBank.isPending}
-            >
+            <AlertDialogAction onClick={handleRemoveBank} disabled={deleteBank.isPending}>
               Remove
             </AlertDialogAction>
           </AlertDialogFooter>
@@ -413,17 +382,13 @@ export default function RecipientDetailPage({
           <AlertDialogHeader>
             <AlertDialogTitle>Remove from your list?</AlertDialogTitle>
             <AlertDialogDescription>
-              {recipient.firstName} will be removed from your recipients. The
-              recipient&rsquo;s profile is shared across users, so other senders
-              who have added them are unaffected.
+              {recipient.firstName} will be removed from your recipients. The recipient&rsquo;s
+              profile is shared across users, so other senders who have added them are unaffected.
             </AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter>
             <AlertDialogCancel>Keep</AlertDialogCancel>
-            <AlertDialogAction
-              onClick={handleUnlink}
-              disabled={unlinkRecipient.isPending}
-            >
+            <AlertDialogAction onClick={handleUnlink} disabled={unlinkRecipient.isPending}>
               Remove
             </AlertDialogAction>
           </AlertDialogFooter>
@@ -433,13 +398,7 @@ export default function RecipientDetailPage({
   );
 }
 
-function Detail({
-  label,
-  children,
-}: {
-  label: string;
-  children: React.ReactNode;
-}) {
+function Detail({ label, children }: { label: string; children: React.ReactNode }) {
   return (
     <div>
       <div className="text-[10px] font-medium uppercase tracking-[0.16em] text-muted-foreground">

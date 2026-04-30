@@ -5,15 +5,7 @@ import { useAuth } from "@clerk/nextjs";
 import { useRouter, usePathname } from "next/navigation";
 import Link from "next/link";
 import Image from "next/image";
-import {
-  Home,
-  Clock3,
-  CircleUser,
-  Send,
-  Users,
-  Bell,
-  Loader2,
-} from "lucide-react";
+import { Home, Clock3, CircleUser, Send, Users, Bell, Loader2 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { SidebarAccountDropdown } from "@/components/sidebar-account-dropdown";
 import { NotificationBell } from "@/components/notifications/notification-bell";
@@ -34,16 +26,10 @@ const tabs = [
 ];
 
 function isTabActive(tabHref: string, pathname: string) {
-  return tabHref === ROUTES.ROOT
-    ? pathname === ROUTES.ROOT
-    : pathname.startsWith(tabHref);
+  return tabHref === ROUTES.ROOT ? pathname === ROUTES.ROOT : pathname.startsWith(tabHref);
 }
 
-export default function DashboardLayout({
-  children,
-}: {
-  children: React.ReactNode;
-}) {
+export default function DashboardLayout({ children }: { children: React.ReactNode }) {
   const { isSignedIn, isLoaded } = useAuth();
   const router = useRouter();
   const pathname = usePathname();
@@ -90,9 +76,7 @@ export default function DashboardLayout({
             Couldn&apos;t load your account
           </h2>
           <p className="text-sm text-muted-foreground">
-            {error instanceof Error
-              ? error.message
-              : "Please try again in a moment."}
+            {error instanceof Error ? error.message : "Please try again in a moment."}
           </p>
         </div>
       </div>
@@ -117,9 +101,7 @@ export default function DashboardLayout({
       <aside className="sticky top-0 z-20 hidden h-screen w-72 shrink-0 flex-col border-r border-border bg-sidebar text-sidebar-foreground lg:flex">
         <div className="flex h-20 items-center gap-2.5 px-7">
           <Image src="/logo.png" alt="Dattapay" width={28} height={24} />
-          <span className="font-semibold text-xl text-sidebar-foreground">
-            Dattapay
-          </span>
+          <span className="font-semibold text-xl text-sidebar-foreground">Dattapay</span>
         </div>
 
         <nav className="flex-1 overflow-y-auto px-3">
@@ -191,20 +173,13 @@ export default function DashboardLayout({
                 href={tab.href}
                 className={cn(
                   "group relative flex flex-col items-center gap-1 py-2.5 text-[10px] font-medium uppercase tracking-wider transition-colors",
-                  active
-                    ? "text-foreground"
-                    : "text-muted-foreground hover:text-foreground",
+                  active ? "text-foreground" : "text-muted-foreground hover:text-foreground",
                 )}
               >
                 {active && (
                   <span className="absolute top-0 left-1/2 h-0.5 w-8 -translate-x-1/2 rounded-b-full bg-brand" />
                 )}
-                <Icon
-                  className={cn(
-                    "size-5 transition-transform",
-                    active && "scale-110",
-                  )}
-                />
+                <Icon className={cn("size-5 transition-transform", active && "scale-110")} />
                 <span>{tab.label}</span>
               </Link>
             );

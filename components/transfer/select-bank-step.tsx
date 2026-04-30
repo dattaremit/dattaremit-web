@@ -30,9 +30,7 @@ export function SelectBankStep({
   onBack,
 }: SelectBankStepProps) {
   // Default-first ordering — default bank is visually first and pre-selected.
-  const ordered = [...recipient.banks].sort(
-    (a, b) => Number(b.isDefault) - Number(a.isDefault),
-  );
+  const ordered = [...recipient.banks].sort((a, b) => Number(b.isDefault) - Number(a.isDefault));
 
   const activeId = selectedBankId ?? recipient.defaultBank?.id ?? ordered[0]?.id;
 
@@ -64,13 +62,7 @@ export function SelectBankStep({
           <ArrowLeft />
           Back
         </Button>
-        <Button
-          type="button"
-          variant="brand"
-          size="lg"
-          onClick={onContinue}
-          disabled={!activeId}
-        >
+        <Button type="button" variant="brand" size="lg" onClick={onContinue} disabled={!activeId}>
           Continue
           <ArrowRight />
         </Button>
@@ -102,9 +94,7 @@ function BankRadio({
         <div
           className={cn(
             "flex size-10 shrink-0 items-center justify-center rounded-xl transition-colors",
-            active
-              ? "bg-brand text-brand-foreground"
-              : "bg-muted text-muted-foreground",
+            active ? "bg-brand text-brand-foreground" : "bg-muted text-muted-foreground",
           )}
         >
           <Banknote className="size-5" />

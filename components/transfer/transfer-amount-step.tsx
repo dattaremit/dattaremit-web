@@ -3,10 +3,7 @@
 import { useForm, type Resolver } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 
-import {
-  transferAmountSchema,
-  type TransferAmountFormData,
-} from "@/schemas/transfer.schema";
+import { transferAmountSchema, type TransferAmountFormData } from "@/schemas/transfer.schema";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Form } from "@/components/ui/form";
@@ -30,9 +27,7 @@ export function TransferAmountStep({
   onContinue,
 }: TransferAmountStepProps) {
   const form = useForm<TransferAmountFormData>({
-    resolver: yupResolver(
-      transferAmountSchema,
-    ) as unknown as Resolver<TransferAmountFormData>,
+    resolver: yupResolver(transferAmountSchema) as unknown as Resolver<TransferAmountFormData>,
     defaultValues: { amount: "", note: "" },
   });
 
@@ -49,8 +44,7 @@ export function TransferAmountStep({
         eyebrow="Amount"
         title={
           <>
-            How much for{" "}
-            <span className="text-brand">{recipient.firstName}</span>?
+            How much for <span className="text-brand">{recipient.firstName}</span>?
           </>
         }
         subtitle={`Funds will arrive in ${destinationLabel}.`}
@@ -70,11 +64,7 @@ export function TransferAmountStep({
               label="Amount"
               inputMode="decimal"
               placeholder="100.00"
-              leading={
-                <span className="font-semibold text-base text-muted-foreground">
-                  $
-                </span>
-              }
+              leading={<span className="font-semibold text-base text-muted-foreground">$</span>}
               inputClassName="font-semibold text-2xl h-14 tabular pl-9"
             />
             <TextField

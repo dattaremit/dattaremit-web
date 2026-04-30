@@ -9,11 +9,7 @@ import { Card } from "@/components/ui/card";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Reveal, Stagger, StaggerItem } from "@/components/motion/reveal";
 import { useExchangeRate } from "@/hooks/api";
-import {
-  SEND_AMOUNT,
-  COMPETITOR_SPREADS,
-  DISCLAIMER_TEXT,
-} from "@/constants/welcome";
+import { SEND_AMOUNT, COMPETITOR_SPREADS, DISCLAIMER_TEXT } from "@/constants/welcome";
 import { ROUTES } from "@/constants/routes";
 import { cn } from "@/lib/utils";
 
@@ -23,9 +19,7 @@ export function WelcomeContent() {
 
   const dattaremit = COMPETITOR_SPREADS.find((p) => p.highlight);
   const dattaremitRecipientGets = dattaremit
-    ? (SEND_AMOUNT - dattaremit.fee) *
-      midMarketRate *
-      (1 - dattaremit.spreadPct / 100)
+    ? (SEND_AMOUNT - dattaremit.fee) * midMarketRate * (1 - dattaremit.spreadPct / 100)
     : SEND_AMOUNT * midMarketRate;
 
   const competitorMin = Math.min(
@@ -48,16 +42,13 @@ export function WelcomeContent() {
               Live · USD → INR
             </span>
             <h1 className="font-semibold text-5xl leading-[1.02] text-foreground sm:text-6xl lg:text-7xl">
-              Money that{" "}
-              <span className="text-brand">
-                moves
-              </span>
+              Money that <span className="text-brand">moves</span>
               <br />
               the way you do.
             </h1>
             <p className="max-w-lg text-base leading-relaxed text-muted-foreground sm:text-lg">
-              Send to India in under a minute. Real exchange rates, no hidden
-              spread, no Monday-morning waiting.
+              Send to India in under a minute. Real exchange rates, no hidden spread, no
+              Monday-morning waiting.
             </p>
             <div className="flex flex-col gap-3 sm:flex-row">
               <Button asChild variant="brand" size="xl">
@@ -95,13 +86,10 @@ export function WelcomeContent() {
           </span>
           <h2 className="font-semibold text-3xl leading-tight text-foreground sm:text-4xl">
             Send ${SEND_AMOUNT.toLocaleString()}.{" "}
-            <span className="text-brand">
-              Your family gets more.
-            </span>
+            <span className="text-brand">Your family gets more.</span>
           </h2>
           <p className="text-sm leading-relaxed text-muted-foreground">
-            Same amount sent. Different amount delivered. Numbers refresh as
-            the live rate moves.
+            Same amount sent. Different amount delivered. Numbers refresh as the live rate moves.
           </p>
         </div>
 
@@ -115,25 +103,21 @@ export function WelcomeContent() {
 
           <Stagger className="divide-y divide-border" staggerChildren={0.05}>
             {COMPETITOR_SPREADS.map((provider) => {
-              const effectiveRate =
-                midMarketRate * (1 - provider.spreadPct / 100);
+              const effectiveRate = midMarketRate * (1 - provider.spreadPct / 100);
               const recipientGets = (SEND_AMOUNT - provider.fee) * effectiveRate;
               return (
                 <StaggerItem key={provider.name}>
                   <div
                     className={cn(
                       "grid grid-cols-[1.4fr_1fr_1fr_1.2fr] items-center gap-2 px-5 py-4 text-sm transition-colors sm:px-7",
-                      provider.highlight &&
-                        "bg-gradient-to-r from-brand-soft/40 via-card to-card",
+                      provider.highlight && "bg-gradient-to-r from-brand-soft/40 via-card to-card",
                     )}
                   >
                     <div className="flex items-center gap-2">
                       <span
                         className={cn(
                           "font-semibold text-base sm:text-lg",
-                          provider.highlight
-                            ? "text-foreground"
-                            : "text-foreground/80",
+                          provider.highlight ? "text-foreground" : "text-foreground/80",
                         )}
                       >
                         {provider.name}
@@ -158,9 +142,7 @@ export function WelcomeContent() {
                           Free
                         </span>
                       ) : (
-                        <span className="text-muted-foreground">
-                          ${provider.fee.toFixed(2)}
-                        </span>
+                        <span className="text-muted-foreground">${provider.fee.toFixed(2)}</span>
                       )}
                     </div>
                     <div className="text-right tabular">
@@ -170,9 +152,7 @@ export function WelcomeContent() {
                         <span
                           className={cn(
                             "font-semibold text-lg sm:text-xl",
-                            provider.highlight
-                              ? "text-foreground"
-                              : "text-muted-foreground",
+                            provider.highlight ? "text-foreground" : "text-muted-foreground",
                           )}
                         >
                           ₹
@@ -189,9 +169,7 @@ export function WelcomeContent() {
           </Stagger>
 
           <div className="border-t border-border bg-muted/30 px-5 py-4 sm:px-7">
-            <p className="text-[11px] leading-relaxed text-muted-foreground">
-              {DISCLAIMER_TEXT}
-            </p>
+            <p className="text-[11px] leading-relaxed text-muted-foreground">{DISCLAIMER_TEXT}</p>
           </div>
         </Card>
 
@@ -212,17 +190,10 @@ export function WelcomeContent() {
       </section>
 
       <section className="flex flex-col items-center gap-5 rounded-3xl border border-brand/15 bg-gradient-to-br from-brand-soft/30 via-card to-card p-10 text-center shadow-soft sm:p-14">
-        <div
-          aria-hidden="true"
-          className="pointer-events-none absolute"
-        />
+        <div aria-hidden="true" className="pointer-events-none absolute" />
         <Sparkles className="size-6 text-brand" />
         <h2 className="font-semibold text-3xl leading-tight text-foreground sm:text-5xl">
-          Open an account in{" "}
-          <span className="text-brand">
-            two minutes
-          </span>
-          .
+          Open an account in <span className="text-brand">two minutes</span>.
         </h2>
         <p className="max-w-md text-sm leading-relaxed text-muted-foreground sm:text-base">
           No paperwork. No hidden fees. Send your first transfer the same day.
@@ -238,13 +209,7 @@ export function WelcomeContent() {
   );
 }
 
-function RateTile({
-  loading,
-  midMarketRate,
-}: {
-  loading: boolean;
-  midMarketRate: number;
-}) {
+function RateTile({ loading, midMarketRate }: { loading: boolean; midMarketRate: number }) {
   return (
     <div className="relative overflow-hidden rounded-3xl border border-border bg-card p-7 shadow-lift">
       <div
@@ -263,9 +228,7 @@ function RateTile({
         </div>
 
         <div className="flex items-baseline gap-3">
-          <span className="font-semibold text-base text-muted-foreground">
-            1 USD =
-          </span>
+          <span className="font-semibold text-base text-muted-foreground">1 USD =</span>
           {loading ? (
             <Skeleton className="h-12 w-32" />
           ) : (
@@ -284,9 +247,7 @@ function RateTile({
         <div className="flex flex-col gap-3 rounded-2xl border border-border bg-muted/40 p-4">
           <div className="flex items-center justify-between text-sm">
             <span className="text-muted-foreground">You send</span>
-            <span className="font-semibold text-xl tabular text-foreground">
-              $1,000
-            </span>
+            <span className="font-semibold text-xl tabular text-foreground">$1,000</span>
           </div>
           <div className="h-px bg-border" />
           <div className="flex items-center justify-between text-sm">
@@ -299,9 +260,7 @@ function RateTile({
 
         <div className="flex items-center justify-between text-xs text-muted-foreground">
           <span>Settlement</span>
-          <span className="font-semibold text-base text-foreground">
-            ~60 seconds
-          </span>
+          <span className="font-semibold text-base text-foreground">~60 seconds</span>
         </div>
       </div>
     </div>

@@ -14,9 +14,7 @@ describe("cn", () => {
   });
 
   it("preserves non-conflicting Tailwind classes", () => {
-    expect(cn("text-sm font-bold", "text-red-500")).toBe(
-      "text-sm font-bold text-red-500",
-    );
+    expect(cn("text-sm font-bold", "text-red-500")).toBe("text-sm font-bold text-red-500");
   });
 
   it("respects conditional class objects via clsx", () => {

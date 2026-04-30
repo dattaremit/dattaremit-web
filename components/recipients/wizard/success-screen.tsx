@@ -94,9 +94,7 @@ export function SuccessScreen({ recipient, wasShared }: SuccessScreenProps) {
               Linked to existing recipient
             </div>
           )}
-          <h2 className="font-semibold text-2xl text-foreground leading-snug">
-            {headline}
-          </h2>
+          <h2 className="font-semibold text-2xl text-foreground leading-snug">{headline}</h2>
           <p className="max-w-md text-sm text-muted-foreground">{body}</p>
         </div>
 

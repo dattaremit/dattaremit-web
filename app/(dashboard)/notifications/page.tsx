@@ -30,8 +30,7 @@ export default function NotificationsPage() {
         eyebrow="Alerts"
         title={
           <>
-            Stay in the{" "}
-            <span className="text-brand">loop</span>.
+            Stay in the <span className="text-brand">loop</span>.
           </>
         }
         subtitle="Updates about transfers, KYC, and your account."
@@ -46,9 +45,7 @@ export default function NotificationsPage() {
                 await markAllRead.mutateAsync();
                 toast.success("Marked all as read");
               } catch (err) {
-                toast.error(
-                  err instanceof Error ? err.message : "Failed to mark read",
-                );
+                toast.error(err instanceof Error ? err.message : "Failed to mark read");
               }
             }}
           >
@@ -71,16 +68,9 @@ export default function NotificationsPage() {
       {error && (
         <div className="rounded-2xl border border-destructive/40 bg-destructive/5 p-4 text-center text-sm">
           <p className="text-destructive">
-            {error instanceof Error
-              ? error.message
-              : "Failed to load notifications."}
+            {error instanceof Error ? error.message : "Failed to load notifications."}
           </p>
-          <Button
-            variant="outline"
-            size="sm"
-            className="mt-2"
-            onClick={() => refetch()}
-          >
+          <Button variant="outline" size="sm" className="mt-2" onClick={() => refetch()}>
             Retry
           </Button>
         </div>
@@ -127,36 +117,25 @@ function NotificationRow({
       )}
     >
       {!n.isRead && (
-        <span
-          aria-hidden="true"
-          className="mt-1.5 size-2 shrink-0 rounded-full bg-brand"
-        />
+        <span aria-hidden="true" className="mt-1.5 size-2 shrink-0 rounded-full bg-brand" />
       )}
       <div className="min-w-0 flex-1">
         <div className="flex items-center gap-2">
-          <span className="truncate font-medium text-foreground">
-            {n.title}
-          </span>
+          <span className="truncate font-medium text-foreground">{n.title}</span>
           {!n.isRead && (
             <Badge variant="default" className="h-5 text-[10px]">
               New
             </Badge>
           )}
         </div>
-        <p className="mt-1 text-sm leading-relaxed text-muted-foreground">
-          {n.body}
-        </p>
+        <p className="mt-1 text-sm leading-relaxed text-muted-foreground">{n.body}</p>
         <p className="mt-1 text-xs text-muted-foreground/70">
           {formatDistanceToNow(new Date(n.created_at), { addSuffix: true })}
         </p>
       </div>
       <div className="flex flex-col gap-1 opacity-70 transition-opacity group-hover:opacity-100">
         {!n.isRead && (
-          <Button
-            variant="ghost"
-            size="sm"
-            onClick={() => onRead().catch(() => {})}
-          >
+          <Button variant="ghost" size="sm" onClick={() => onRead().catch(() => {})}>
             Mark read
           </Button>
         )}

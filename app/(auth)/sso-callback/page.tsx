@@ -20,9 +20,7 @@ export default function SSOCallbackPage() {
         <p className="font-semibold text-2xl text-foreground">
           Almost <span className="text-brand">there</span>.
         </p>
-        <p className="text-sm text-muted-foreground">
-          Wrapping up your sign in…
-        </p>
+        <p className="text-sm text-muted-foreground">Wrapping up your sign in…</p>
       </div>
       <AuthenticateWithRedirectCallback />
     </div>

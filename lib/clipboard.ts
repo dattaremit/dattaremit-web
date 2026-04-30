@@ -3,10 +3,7 @@
  * if the clipboard still contains the same value. Prevents sensitive data
  * (account numbers, codes) from lingering after a copy action.
  */
-export async function copyWithAutoClear(
-  value: string,
-  clearAfterMs = 30_000,
-): Promise<void> {
+export async function copyWithAutoClear(value: string, clearAfterMs = 30_000): Promise<void> {
   if (typeof navigator === "undefined" || !navigator.clipboard) {
     throw new Error("Clipboard API unavailable.");
   }

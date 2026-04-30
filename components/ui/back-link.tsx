@@ -8,11 +8,7 @@ type BackLinkProps = {
   className?: string;
 };
 
-export function BackLink({
-  href,
-  label = "Back",
-  className,
-}: BackLinkProps) {
+export function BackLink({ href, label = "Back", className }: BackLinkProps) {
   return (
     <Link
       href={href}

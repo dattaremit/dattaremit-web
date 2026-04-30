@@ -8,10 +8,7 @@ import {
   setDefaultMyBank,
   updateMyBank,
 } from "@/services/api";
-import type {
-  AddRecipientBankPayload,
-  UpdateRecipientBankPayload,
-} from "@/types/recipient";
+import type { AddRecipientBankPayload, UpdateRecipientBankPayload } from "@/types/recipient";
 
 export function useMyBanks() {
   const { isSignedIn } = useAuth();
@@ -40,13 +37,8 @@ export function useAddMyBank() {
 export function useUpdateMyBank() {
   const invalidate = useMyBanksInvalidations();
   return useMutation({
-    mutationFn: ({
-      bankId,
-      data,
-    }: {
-      bankId: string;
-      data: UpdateRecipientBankPayload;
-    }) => updateMyBank(bankId, data),
+    mutationFn: ({ bankId, data }: { bankId: string; data: UpdateRecipientBankPayload }) =>
+      updateMyBank(bankId, data),
     onSuccess: () => invalidate(),
   });
 }

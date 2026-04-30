@@ -1,7 +1,4 @@
-import {
-  MIN_TRANSFER_CENTS,
-  MAX_TRANSFER_CENTS,
-} from "@/constants/limits";
+import { MIN_TRANSFER_CENTS, MAX_TRANSFER_CENTS } from "@/constants/limits";
 
 const AMOUNT_REGEX = /^\d+(\.\d{1,2})?$/;
 

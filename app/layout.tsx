@@ -29,9 +29,7 @@ export default async function RootLayout({
 
   return (
     <html lang="en" suppressHydrationWarning>
-      <body
-        className={`${poppins.variable} ${geistMono.variable} antialiased`}
-      >
+      <body className={`${poppins.variable} ${geistMono.variable} antialiased`}>
         <Providers nonce={nonce}>{children}</Providers>
       </body>
     </html>

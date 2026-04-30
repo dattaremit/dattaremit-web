@@ -1,8 +1,5 @@
 import { dollarsToCents } from "../money";
-import {
-  MIN_TRANSFER_CENTS,
-  MAX_TRANSFER_CENTS,
-} from "@/constants/limits";
+import { MIN_TRANSFER_CENTS, MAX_TRANSFER_CENTS } from "@/constants/limits";
 
 describe("dollarsToCents", () => {
   it("converts whole dollars to cents", () => {
@@ -28,15 +25,11 @@ describe("dollarsToCents", () => {
   });
 
   it("accepts the minimum allowed amount", () => {
-    expect(dollarsToCents(String(MIN_TRANSFER_CENTS / 100))).toBe(
-      MIN_TRANSFER_CENTS,
-    );
+    expect(dollarsToCents(String(MIN_TRANSFER_CENTS / 100))).toBe(MIN_TRANSFER_CENTS);
   });
 
   it("accepts the maximum allowed amount", () => {
-    expect(dollarsToCents(String(MAX_TRANSFER_CENTS / 100))).toBe(
-      MAX_TRANSFER_CENTS,
-    );
+    expect(dollarsToCents(String(MAX_TRANSFER_CENTS / 100))).toBe(MAX_TRANSFER_CENTS);
   });
 
   it("throws on negative numbers", () => {

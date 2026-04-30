@@ -5,11 +5,7 @@ import { Button } from "@/components/ui/button";
 import { AuroraBackground } from "@/components/ui/aurora-background";
 import { ROUTES } from "@/constants/routes";
 
-export default function MarketingLayout({
-  children,
-}: {
-  children: React.ReactNode;
-}) {
+export default function MarketingLayout({ children }: { children: React.ReactNode }) {
   return (
     <div className="relative flex min-h-screen flex-col bg-background">
       <AuroraBackground variant="marketing" />

@@ -9,10 +9,7 @@ import {
   subscribePush,
   unsubscribePush,
 } from "@/lib/web-push";
-import {
-  registerWebPushDevice,
-  unregisterDevice,
-} from "@/services/api";
+import { registerWebPushDevice, unregisterDevice } from "@/services/api";
 import { STORAGE_KEYS } from "@/constants/storage-keys";
 
 type Status = "unsupported" | "blocked" | "disabled" | "enabled";

@@ -34,8 +34,7 @@ export default function SendPage() {
   const sendMoney = useSendMoney();
   const { gate, stepUpElement } = useStepUp({
     title: "Confirm transfer",
-    description:
-      "We emailed you a 6-digit code. Enter it to authorize this send.",
+    description: "We emailed you a 6-digit code. Enter it to authorize this send.",
   });
 
   const {
@@ -53,9 +52,7 @@ export default function SendPage() {
     resetIdempotencyKey,
   } = useSendMoneyState<Step>(preselectedId ? "amount" : "select");
   const [selectedId, setSelectedId] = useState<string | null>(preselectedId);
-  const [selectedBankId, setSelectedBankId] = useState<string | null>(
-    preselectedBankId,
-  );
+  const [selectedBankId, setSelectedBankId] = useState<string | null>(preselectedBankId);
 
   const selected = useMemo<Recipient | undefined>(
     () => recipients?.find((r) => r.id === selectedId),
@@ -156,12 +153,10 @@ export default function SendPage() {
           <div className="mx-auto mb-3 flex size-12 items-center justify-center rounded-2xl bg-brand/15 text-brand">
             <Landmark className="size-6" />
           </div>
-          <h2 className="font-semibold text-2xl text-foreground">
-            Link a bank to send money
-          </h2>
+          <h2 className="font-semibold text-2xl text-foreground">Link a bank to send money</h2>
           <p className="mt-1 text-sm text-muted-foreground">
-            Connect your US bank via Plaid so we know where to pull the funds
-            from. Takes about a minute.
+            Connect your US bank via Plaid so we know where to pull the funds from. Takes about a
+            minute.
           </p>
           <Button asChild variant="brand" className="mt-5">
             <Link href={ROUTES.LINK_BANK}>

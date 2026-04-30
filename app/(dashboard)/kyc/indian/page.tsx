@@ -6,10 +6,7 @@ import { yupResolver } from "@hookform/resolvers/yup";
 import { CreditCard, Hash, ShieldCheck } from "lucide-react";
 import { toast } from "sonner";
 
-import {
-  indianKycSchema,
-  type IndianKycFormData,
-} from "@/schemas/indian-kyc.schema";
+import { indianKycSchema, type IndianKycFormData } from "@/schemas/indian-kyc.schema";
 import { useSubmitIndianKyc } from "@/hooks/api";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
@@ -36,9 +33,7 @@ export default function IndianKycPage() {
           eyebrow="Indian KYC"
           title={
             <>
-              Aadhar &{" "}
-              <span className="text-brand">PAN</span>
-              .
+              Aadhar & <span className="text-brand">PAN</span>.
             </>
           }
           subtitle="Encrypted in your browser before being sent. Verification takes 3–5 minutes."
@@ -57,16 +52,10 @@ export default function IndianKycPage() {
             onSubmit={form.handleSubmit(async (data) => {
               try {
                 await submit.mutateAsync(data);
-                toast.success(
-                  "Indian KYC submitted — verification in progress.",
-                );
+                toast.success("Indian KYC submitted — verification in progress.");
                 router.replace(ROUTES.KYC);
               } catch (err) {
-                toast.error(
-                  err instanceof Error
-                    ? err.message
-                    : "Failed to submit Indian KYC",
-                );
+                toast.error(err instanceof Error ? err.message : "Failed to submit Indian KYC");
               }
             })}
           >

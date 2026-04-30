@@ -16,17 +16,12 @@ export async function GET() {
 
     if (typeof rate !== "number" || !isFinite(rate) || rate <= 0) {
       logger.warn("Exchange rate unavailable from Yahoo Finance", { rate });
-      return NextResponse.json(
-        { success: false, message: "Rate unavailable" },
-        { status: 502 },
-      );
+      return NextResponse.json({ success: false, message: "Rate unavailable" }, { status: 502 });
     }
 
     const marketTime = quote.regularMarketTime;
     const updatedAt = marketTime
-      ? new Date(
-          typeof marketTime === "number" ? marketTime * 1000 : marketTime,
-        ).toISOString()
+      ? new Date(typeof marketTime === "number" ? marketTime * 1000 : marketTime).toISOString()
       : new Date().toISOString();
 
     return NextResponse.json(

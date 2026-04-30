@@ -49,13 +49,9 @@ export function SharedRecipientCard({
   confirming,
 }: SharedRecipientCardProps) {
   const { recipient, alreadyLinked } = match;
-  const initials = `${recipient.firstName[0] ?? ""}${
-    recipient.lastName[0] ?? ""
-  }`.toUpperCase();
+  const initials = `${recipient.firstName[0] ?? ""}${recipient.lastName[0] ?? ""}`.toUpperCase();
 
-  const kyc = recipient.kycStatus
-    ? KYC_META[recipient.kycStatus]
-    : KYC_META.PENDING;
+  const kyc = recipient.kycStatus ? KYC_META[recipient.kycStatus] : KYC_META.PENDING;
   const KycIcon = kyc.icon;
 
   return (
@@ -95,10 +91,7 @@ export function SharedRecipientCard({
                 <KycIcon className="size-3" />
                 {kyc.label}
               </Badge>
-              <Badge
-                variant={recipient.hasBankAccount ? "default" : "outline"}
-                className="gap-1"
-              >
+              <Badge variant={recipient.hasBankAccount ? "default" : "outline"} className="gap-1">
                 <Banknote className="size-3" />
                 {recipient.hasBankAccount ? "Bank linked" : "No bank yet"}
               </Badge>

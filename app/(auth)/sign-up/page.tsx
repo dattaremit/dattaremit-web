@@ -32,10 +32,7 @@ export default function SignUpPage() {
   });
 
   const emailValue = form.watch("email");
-  const { available, isChecking } = useCheckEmailAvailability(
-    emailValue ?? "",
-    "user",
-  );
+  const { available, isChecking } = useCheckEmailAvailability(emailValue ?? "", "user");
   const emailTaken = available === false;
 
   const onSubmit = async (data: SignUpFormData) => {
@@ -52,9 +49,7 @@ export default function SignUpPage() {
       setVerificationEmail(data.email);
       setPendingVerification(true);
     } catch (err: unknown) {
-      toast.error(
-        getClerkErrorMessage(err, "Sign up failed. Please try again."),
-      );
+      toast.error(getClerkErrorMessage(err, "Sign up failed. Please try again."));
     } finally {
       setLoading(false);
     }
@@ -71,10 +66,7 @@ export default function SignUpPage() {
         <>
           Open your
           <br />
-          <span className="text-brand">
-            account
-          </span>
-          .
+          <span className="text-brand">account</span>.
         </>
       }
       subtitle="Two minutes to set up. Send to 140+ countries from day one."
@@ -113,9 +105,7 @@ export default function SignUpPage() {
               </p>
             )}
             {isChecking && !emailTaken && (
-              <p className="mt-1.5 text-sm text-muted-foreground">
-                Checking availability…
-              </p>
+              <p className="mt-1.5 text-sm text-muted-foreground">Checking availability…</p>
             )}
           </div>
           <TextField

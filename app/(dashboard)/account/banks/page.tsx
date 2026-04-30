@@ -1,21 +1,10 @@
 "use client";
 
 import { useState } from "react";
-import {
-  Banknote,
-  Check,
-  MoreHorizontal,
-  Plus,
-  Trash2,
-} from "lucide-react";
+import { Banknote, Check, MoreHorizontal, Plus, Trash2 } from "lucide-react";
 import { toast } from "sonner";
 
-import {
-  useAddMyBank,
-  useDeleteMyBank,
-  useMyBanks,
-  useSetDefaultMyBank,
-} from "@/hooks/api";
+import { useAddMyBank, useDeleteMyBank, useMyBanks, useSetDefaultMyBank } from "@/hooks/api";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
@@ -29,12 +18,7 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import {
-  Dialog,
-  DialogContent,
-  DialogHeader,
-  DialogTitle,
-} from "@/components/ui/dialog";
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import {
   AlertDialog,
   AlertDialogAction,
@@ -75,9 +59,7 @@ export default function MyBanksPage() {
               <Banknote className="size-5" />
             </div>
             <div>
-              <h2 className="font-semibold text-xl text-foreground">
-                Saved banks
-              </h2>
+              <h2 className="font-semibold text-xl text-foreground">Saved banks</h2>
               <p className="text-sm text-muted-foreground">
                 {banks.length > 0
                   ? `${banks.length} account${banks.length > 1 ? "s" : ""}.`
@@ -98,8 +80,8 @@ export default function MyBanksPage() {
           </div>
         ) : banks.length === 0 ? (
           <div className="p-6 text-sm text-muted-foreground">
-            Add a bank to start sending to yourself or to receive saved-account
-            shortcuts when a friend pays you.
+            Add a bank to start sending to yourself or to receive saved-account shortcuts when a
+            friend pays you.
           </div>
         ) : (
           <ul className="divide-y divide-border">
@@ -139,9 +121,7 @@ export default function MyBanksPage() {
                             await setDefault.mutateAsync(bank.id);
                             toast.success("Default bank updated");
                           } catch (err) {
-                            toast.error(
-                              err instanceof Error ? err.message : "Failed",
-                            );
+                            toast.error(err instanceof Error ? err.message : "Failed");
                           }
                         }}
                       >
@@ -179,19 +159,14 @@ export default function MyBanksPage() {
                 toast.success("Bank added");
                 setAddOpen(false);
               } catch (err) {
-                toast.error(
-                  err instanceof Error ? err.message : "Failed to add bank",
-                );
+                toast.error(err instanceof Error ? err.message : "Failed to add bank");
               }
             }}
           />
         </DialogContent>
       </Dialog>
 
-      <AlertDialog
-        open={!!toDelete}
-        onOpenChange={(open) => !open && setToDelete(null)}
-      >
+      <AlertDialog open={!!toDelete} onOpenChange={(open) => !open && setToDelete(null)}>
         <AlertDialogContent>
           <AlertDialogHeader>
             <AlertDialogTitle>Remove this bank?</AlertDialogTitle>
@@ -211,9 +186,7 @@ export default function MyBanksPage() {
                   toast.success("Bank removed");
                   setToDelete(null);
                 } catch (err) {
-                  toast.error(
-                    err instanceof Error ? err.message : "Failed to remove",
-                  );
+                  toast.error(err instanceof Error ? err.message : "Failed to remove");
                 }
               }}
               disabled={deleteBank.isPending}

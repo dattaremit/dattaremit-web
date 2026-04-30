@@ -12,11 +12,7 @@ import { RecipientBankForm } from "@/components/recipients/recipient-bank-form";
 import { KycGate } from "@/components/kyc-gate";
 import { ApiError } from "@/services/api";
 
-export default function RecipientBankPage({
-  params,
-}: {
-  params: Promise<{ id: string }>;
-}) {
+export default function RecipientBankPage({ params }: { params: Promise<{ id: string }> }) {
   const { id } = use(params);
   const router = useRouter();
   const { data: recipient, isLoading } = useRecipient(id);
@@ -29,10 +25,7 @@ export default function RecipientBankPage({
     return (
       <div className="space-y-7">
         <BackLink href={`/recipients/${id}`} />
-        <KycGate
-          accountStatus={account.accountStatus}
-          feature="adding recipient banks"
-        />
+        <KycGate accountStatus={account.accountStatus} feature="adding recipient banks" />
       </div>
     );
   }
@@ -68,8 +61,7 @@ export default function RecipientBankPage({
             submitLabel="Add bank account"
             submitting={addBank.isPending}
             defaultValues={{
-              accountName:
-                `${recipient.firstName} ${recipient.lastName}`.trim(),
+              accountName: `${recipient.firstName} ${recipient.lastName}`.trim(),
             }}
             onSubmit={async (data) => {
               try {
@@ -80,19 +72,12 @@ export default function RecipientBankPage({
                 // Server signals a same-account duplicate via code so we
                 // can route the user to the existing bank instead of
                 // showing an opaque error.
-                if (
-                  err instanceof ApiError &&
-                  err.code === "BANK_ALREADY_LINKED"
-                ) {
-                  toast.info(
-                    "This account is already on this recipient. Opening it now.",
-                  );
+                if (err instanceof ApiError && err.code === "BANK_ALREADY_LINKED") {
+                  toast.info("This account is already on this recipient. Opening it now.");
                   router.push(`/recipients/${id}`);
                   return;
                 }
-                toast.error(
-                  err instanceof Error ? err.message : "Failed to save bank",
-                );
+                toast.error(err instanceof Error ? err.message : "Failed to save bank");
               }
             }}
           />

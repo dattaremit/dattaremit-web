@@ -10,11 +10,7 @@ import { PageHeader } from "@/components/ui/page-header";
 import { BackLink } from "@/components/ui/back-link";
 import { RecipientForm } from "@/components/recipients/recipient-form";
 
-export default function EditRecipientPage({
-  params,
-}: {
-  params: Promise<{ id: string }>;
-}) {
+export default function EditRecipientPage({ params }: { params: Promise<{ id: string }> }) {
   const { id } = use(params);
   const router = useRouter();
   const { data: recipient, isLoading } = useRecipient(id);
@@ -29,11 +25,7 @@ export default function EditRecipientPage({
           title={
             recipient ? (
               <>
-                Update{" "}
-                <span className="text-brand">
-                  {recipient.firstName}
-                </span>
-                .
+                Update <span className="text-brand">{recipient.firstName}</span>.
               </>
             ) : (
               "Edit recipient"
@@ -71,11 +63,7 @@ export default function EditRecipientPage({
                 toast.success("Recipient updated");
                 router.push(`/recipients/${id}`);
               } catch (err) {
-                toast.error(
-                  err instanceof Error
-                    ? err.message
-                    : "Failed to update recipient",
-                );
+                toast.error(err instanceof Error ? err.message : "Failed to update recipient");
               }
             }}
           />

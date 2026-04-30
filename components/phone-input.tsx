@@ -4,17 +4,9 @@ import { useMemo, useRef, useState } from "react";
 import { Check, ChevronDown } from "lucide-react";
 
 import { Label } from "@/components/ui/label";
-import {
-  Popover,
-  PopoverContent,
-  PopoverTrigger,
-} from "@/components/ui/popover";
+import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { cn } from "@/lib/utils";
-import {
-  COUNTRIES,
-  DEFAULT_COUNTRY_CODE,
-  getFlagEmoji,
-} from "@/constants/countries";
+import { COUNTRIES, DEFAULT_COUNTRY_CODE, getFlagEmoji } from "@/constants/countries";
 
 interface PhoneInputProps {
   label?: string;
@@ -26,9 +18,7 @@ interface PhoneInputProps {
   defaultCountryCode?: string;
 }
 
-const countriesByDialLength = [...COUNTRIES].sort(
-  (a, b) => b.dial.length - a.dial.length,
-);
+const countriesByDialLength = [...COUNTRIES].sort((a, b) => b.dial.length - a.dial.length);
 
 export function PhoneInput({
   label,
@@ -45,14 +35,11 @@ export function PhoneInput({
 
   const { selectedCountry, localNumber } = useMemo(() => {
     if (!value) {
-      const country =
-        COUNTRIES.find((c) => c.code === defaultCountryCode) || COUNTRIES[0];
+      const country = COUNTRIES.find((c) => c.code === defaultCountryCode) || COUNTRIES[0];
       return { selectedCountry: country, localNumber: "" };
     }
 
-    const matched = countriesByDialLength.find((c) =>
-      value.startsWith(c.dial),
-    );
+    const matched = countriesByDialLength.find((c) => value.startsWith(c.dial));
     if (matched) {
       return {
         selectedCountry: matched,
@@ -60,8 +47,7 @@ export function PhoneInput({
       };
     }
 
-    const country =
-      COUNTRIES.find((c) => c.code === defaultCountryCode) || COUNTRIES[0];
+    const country = COUNTRIES.find((c) => c.code === defaultCountryCode) || COUNTRIES[0];
     return { selectedCountry: country, localNumber: value };
   }, [value, defaultCountryCode]);
 
@@ -97,12 +83,8 @@ export function PhoneInput({
               aria-label="Select country"
               className="flex shrink-0 items-center gap-1.5 rounded-l-lg px-3 outline-none transition-colors hover:bg-accent/40"
             >
-              <span className="text-lg leading-none">
-                {getFlagEmoji(selectedCountry.code)}
-              </span>
-              <span className="text-sm font-medium">
-                {selectedCountry.dial}
-              </span>
+              <span className="text-lg leading-none">{getFlagEmoji(selectedCountry.code)}</span>
+              <span className="text-sm font-medium">{selectedCountry.dial}</span>
               <ChevronDown className="h-3.5 w-3.5 shrink-0 text-muted-foreground/70" />
             </button>
           </PopoverTrigger>
@@ -123,16 +105,10 @@ export function PhoneInput({
                       isSelected && "bg-brand/10",
                     )}
                   >
-                    <span className="text-lg leading-none">
-                      {getFlagEmoji(country.code)}
-                    </span>
+                    <span className="text-lg leading-none">{getFlagEmoji(country.code)}</span>
                     <span className="flex-1 text-left">{country.name}</span>
-                    <span className="text-muted-foreground">
-                      {country.dial}
-                    </span>
-                    {isSelected && (
-                      <Check className="size-3.5 shrink-0 text-brand" />
-                    )}
+                    <span className="text-muted-foreground">{country.dial}</span>
+                    {isSelected && <Check className="size-3.5 shrink-0 text-brand" />}
                   </button>
                 );
               })}
@@ -153,7 +129,11 @@ export function PhoneInput({
           placeholder={placeholder}
         />
       </div>
-      {error && (<p className="absolute top-full left-0 mt-0.5 text-xs leading-4 text-destructive">{error}</p>)}
+      {error && (
+        <p className="absolute top-full left-0 mt-0.5 text-xs leading-4 text-destructive">
+          {error}
+        </p>
+      )}
     </div>
   );
 }

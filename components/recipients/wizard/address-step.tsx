@@ -22,12 +22,9 @@ export function AddressStep({ onBack, onContinue }: AddressStepProps) {
   return (
     <div className="space-y-6">
       <header className="space-y-1.5">
-        <h2 className="font-semibold text-2xl text-foreground">
-          Their address in India
-        </h2>
+        <h2 className="font-semibold text-2xl text-foreground">Their address in India</h2>
         <p className="text-sm text-muted-foreground">
-          Used for KYC. Postal code precision matters — double-check before
-          continuing.
+          Used for KYC. Postal code precision matters — double-check before continuing.
         </p>
       </header>
 
@@ -40,18 +37,8 @@ export function AddressStep({ onBack, onContinue }: AddressStepProps) {
       />
 
       <div className="grid gap-4 sm:grid-cols-3">
-        <TextField
-          control={form.control}
-          name="city"
-          label="City"
-          placeholder="Mumbai"
-        />
-        <TextField
-          control={form.control}
-          name="state"
-          label="State"
-          placeholder="Maharashtra"
-        />
+        <TextField control={form.control} name="city" label="City" placeholder="Mumbai" />
+        <TextField control={form.control} name="state" label="State" placeholder="Maharashtra" />
         <TextField
           control={form.control}
           name="postalCode"
@@ -67,12 +54,7 @@ export function AddressStep({ onBack, onContinue }: AddressStepProps) {
           <ArrowLeft />
           Back
         </Button>
-        <Button
-          type="button"
-          variant="brand"
-          size="lg"
-          onClick={onContinue}
-        >
+        <Button type="button" variant="brand" size="lg" onClick={onContinue}>
           Review
           <ArrowRight />
         </Button>

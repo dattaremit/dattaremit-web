@@ -1,10 +1,7 @@
 "use client";
 
 import { X } from "lucide-react";
-import {
-  dismissBanner,
-  useNotificationBanner,
-} from "@/store/notification-banner-store";
+import { dismissBanner, useNotificationBanner } from "@/store/notification-banner-store";
 import { cn } from "@/lib/utils";
 
 export function InAppBanner() {
@@ -23,9 +20,7 @@ export function InAppBanner() {
         <div className="flex items-start gap-3 p-4">
           <div className="min-w-0 flex-1">
             <div className="truncate font-medium">{banner.title}</div>
-            <div className="mt-0.5 text-sm text-muted-foreground">
-              {banner.body}
-            </div>
+            <div className="mt-0.5 text-sm text-muted-foreground">{banner.body}</div>
           </div>
           <button
             className="shrink-0 rounded-md p-1 text-muted-foreground transition-colors hover:bg-accent hover:text-foreground"

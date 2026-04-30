@@ -27,10 +27,7 @@ type TextFieldProps<
   transform?: (value: string) => string;
   className?: string;
   inputClassName?: string;
-} & Omit<
-  React.ComponentProps<"input">,
-  "name" | "defaultValue" | "value" | "onChange" | "onBlur"
->;
+} & Omit<React.ComponentProps<"input">, "name" | "defaultValue" | "value" | "onChange" | "onBlur">;
 
 export function TextField<
   TFieldValues extends FieldValues = FieldValues,
@@ -54,9 +51,7 @@ export function TextField<
       render={({ field }) => (
         <FormItem className={className}>
           {label && (
-            <FormLabel className="text-sm font-medium text-foreground/90">
-              {label}
-            </FormLabel>
+            <FormLabel className="text-sm font-medium text-foreground/90">{label}</FormLabel>
           )}
           <FormControl>
             <div className="relative">
@@ -70,16 +65,10 @@ export function TextField<
                 value={field.value ?? ""}
                 onBlur={field.onBlur}
                 onChange={(e) =>
-                  field.onChange(
-                    transform ? transform(e.target.value) : e.target.value,
-                  )
+                  field.onChange(transform ? transform(e.target.value) : e.target.value)
                 }
                 ref={field.ref}
-                className={cn(
-                  leading && "pl-10",
-                  trailing && "pr-10",
-                  inputClassName,
-                )}
+                className={cn(leading && "pl-10", trailing && "pr-10", inputClassName)}
               />
               {trailing && (
                 <span className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground">

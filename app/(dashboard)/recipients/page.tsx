@@ -22,11 +22,7 @@ export default function RecipientsPage() {
         eyebrow="Recipients"
         title={
           <>
-            Your{" "}
-            <span className="text-brand">
-              circle
-            </span>
-            .
+            Your <span className="text-brand">circle</span>.
           </>
         }
         subtitle="People you can send money to."
@@ -42,12 +38,7 @@ export default function RecipientsPage() {
         }
       />
 
-      {!isActive && (
-        <KycGate
-          accountStatus={account?.accountStatus}
-          feature="adding recipients"
-        />
-      )}
+      {!isActive && <KycGate accountStatus={account?.accountStatus} feature="adding recipients" />}
 
       {isLoading && (
         <div className="space-y-3">
@@ -60,16 +51,9 @@ export default function RecipientsPage() {
       {error && (
         <div className="rounded-2xl border border-destructive/40 bg-destructive/5 p-4 text-sm">
           <p className="text-destructive">
-            {error instanceof Error
-              ? error.message
-              : "Failed to load recipients."}
+            {error instanceof Error ? error.message : "Failed to load recipients."}
           </p>
-          <Button
-            variant="outline"
-            size="sm"
-            className="mt-2"
-            onClick={() => refetch()}
-          >
+          <Button variant="outline" size="sm" className="mt-2" onClick={() => refetch()}>
             Retry
           </Button>
         </div>

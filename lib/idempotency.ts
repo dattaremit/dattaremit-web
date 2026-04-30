@@ -7,9 +7,7 @@
  */
 export function generateIdempotencyKey(): string {
   if (typeof crypto === "undefined" || typeof crypto.randomUUID !== "function") {
-    throw new Error(
-      "crypto.randomUUID is unavailable. A secure context (HTTPS) is required.",
-    );
+    throw new Error("crypto.randomUUID is unavailable. A secure context (HTTPS) is required.");
   }
   return crypto.randomUUID();
 }

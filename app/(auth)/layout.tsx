@@ -5,11 +5,7 @@ import Link from "next/link";
 
 import { AuroraBackground } from "@/components/ui/aurora-background";
 
-export default async function AuthLayout({
-  children,
-}: {
-  children: React.ReactNode;
-}) {
+export default async function AuthLayout({ children }: { children: React.ReactNode }) {
   const { userId } = await auth();
 
   if (userId) {
@@ -23,9 +19,7 @@ export default async function AuthLayout({
       <header className="relative z-20 flex h-16 items-center justify-between px-6 sm:px-10">
         <Link href="/" className="flex items-center gap-2.5">
           <Image src="/logo.png" alt="Dattapay" width={32} height={27} />
-          <span className="font-semibold text-xl text-foreground">
-            Dattapay
-          </span>
+          <span className="font-semibold text-xl text-foreground">Dattapay</span>
         </Link>
         <span className="hidden text-xs font-medium uppercase tracking-wider text-muted-foreground sm:block">
           Cross-border money, simply

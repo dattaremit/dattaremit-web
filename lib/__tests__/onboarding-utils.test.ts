@@ -41,23 +41,17 @@ describe("resolveOnboardingStep", () => {
   });
 
   it("returns 'blocked' when account is blocked", () => {
-    expect(
-      resolveOnboardingStep(makeAccount({ isBlocked: true })),
-    ).toBe("blocked");
+    expect(resolveOnboardingStep(makeAccount({ isBlocked: true }))).toBe("blocked");
   });
 
   it("returns 'waitlist' when account is on the waitlist", () => {
-    expect(
-      resolveOnboardingStep(makeAccount({ isOnWaitlist: true })),
-    ).toBe("waitlist");
+    expect(resolveOnboardingStep(makeAccount({ isOnWaitlist: true }))).toBe("waitlist");
   });
 
   it("prefers blocked over waitlist when both flags are true", () => {
-    expect(
-      resolveOnboardingStep(
-        makeAccount({ isBlocked: true, isOnWaitlist: true }),
-      ),
-    ).toBe("blocked");
+    expect(resolveOnboardingStep(makeAccount({ isBlocked: true, isOnWaitlist: true }))).toBe(
+      "blocked",
+    );
   });
 
   it("returns 'referral' when there is no user record yet", () => {
@@ -65,16 +59,12 @@ describe("resolveOnboardingStep", () => {
   });
 
   it("returns 'address' when user exists but has no addresses", () => {
-    expect(resolveOnboardingStep(makeAccount({ addresses: [] }))).toBe(
-      "address",
-    );
+    expect(resolveOnboardingStep(makeAccount({ addresses: [] }))).toBe("address");
   });
 
   it("returns 'address' when addresses field is missing", () => {
     expect(
-      resolveOnboardingStep(
-        makeAccount({ addresses: undefined as unknown as Address[] }),
-      ),
+      resolveOnboardingStep(makeAccount({ addresses: undefined as unknown as Address[] })),
     ).toBe("address");
   });
 

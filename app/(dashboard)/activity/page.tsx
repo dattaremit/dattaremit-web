@@ -19,11 +19,7 @@ import { PageHeader } from "@/components/ui/page-header";
 import { EmptyState } from "@/components/ui/empty-state";
 import { useActivities } from "@/hooks/api";
 import { cn } from "@/lib/utils";
-import {
-  TRANSFER_TYPES,
-  KYC_TYPES,
-  ACCOUNT_TYPES,
-} from "@/constants/activity-types";
+import { TRANSFER_TYPES, KYC_TYPES, ACCOUNT_TYPES } from "@/constants/activity-types";
 import { getActivityStatusVariant } from "@/constants/status-meta";
 import type { ActivityType, ActivityQueryParams } from "@/types/api";
 
@@ -40,18 +36,15 @@ const FILTER_TABS: { key: FilterTab; label: string }[] = [
 
 function getActivityIcon(type: ActivityType) {
   if (["DEPOSIT", "REFUND"].includes(type)) return ArrowDownLeft;
-  if (["WITHDRAWAL", "TRANSFER", "PAYMENT"].includes(type))
-    return ArrowUpRight;
+  if (["WITHDRAWAL", "TRANSFER", "PAYMENT"].includes(type)) return ArrowUpRight;
   if (type.startsWith("KYC_")) return ShieldCheck;
   if (type.startsWith("ACCOUNT_")) return UserCheck;
   return Clock3;
 }
 
 function getIconAccent(type: ActivityType) {
-  if (["DEPOSIT", "REFUND"].includes(type))
-    return "bg-success/15 text-success";
-  if (["WITHDRAWAL", "TRANSFER", "PAYMENT"].includes(type))
-    return "bg-brand/15 text-brand";
+  if (["DEPOSIT", "REFUND"].includes(type)) return "bg-success/15 text-success";
+  if (["WITHDRAWAL", "TRANSFER", "PAYMENT"].includes(type)) return "bg-brand/15 text-brand";
   if (type.startsWith("KYC_")) return "bg-accent text-foreground";
   return "bg-muted text-muted-foreground";
 }
@@ -73,12 +66,9 @@ export default function ActivityPage() {
   const filteredItems = (() => {
     if (!data?.items) return [];
     if (activeTab === "all") return data.items;
-    if (activeTab === "transfers")
-      return data.items.filter((a) => TRANSFER_TYPES.includes(a.type));
-    if (activeTab === "kyc")
-      return data.items.filter((a) => KYC_TYPES.includes(a.type));
-    if (activeTab === "account")
-      return data.items.filter((a) => ACCOUNT_TYPES.includes(a.type));
+    if (activeTab === "transfers") return data.items.filter((a) => TRANSFER_TYPES.includes(a.type));
+    if (activeTab === "kyc") return data.items.filter((a) => KYC_TYPES.includes(a.type));
+    if (activeTab === "account") return data.items.filter((a) => ACCOUNT_TYPES.includes(a.type));
     return data.items;
   })();
 
@@ -91,11 +81,7 @@ export default function ActivityPage() {
         eyebrow="Activity"
         title={
           <>
-            Your{" "}
-            <span className="text-brand">
-              ledger
-            </span>
-            .
+            Your <span className="text-brand">ledger</span>.
           </>
         }
         subtitle="Every transfer, KYC update, and account event in one place."

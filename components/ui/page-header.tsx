@@ -10,14 +10,7 @@ type PageHeaderProps = {
   className?: string;
 };
 
-export function PageHeader({
-  eyebrow,
-  title,
-  subtitle,
-  action,
-  back,
-  className,
-}: PageHeaderProps) {
+export function PageHeader({ eyebrow, title, subtitle, action, back, className }: PageHeaderProps) {
   return (
     <div className={cn("flex flex-col gap-3", className)}>
       {back && <div>{back}</div>}

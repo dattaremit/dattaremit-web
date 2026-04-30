@@ -7,8 +7,7 @@ export function useAddExternalAccount() {
   const queryClient = useQueryClient();
 
   return useMutation({
-    mutationFn: (payload: AddExternalAccountPayload) =>
-      addExternalAccount(payload),
+    mutationFn: (payload: AddExternalAccountPayload) => addExternalAccount(payload),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: queryKeys.account });
     },

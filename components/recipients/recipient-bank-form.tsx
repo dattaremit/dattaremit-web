@@ -3,10 +3,7 @@
 import { useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 
-import {
-  recipientBankSchema,
-  type RecipientBankFormData,
-} from "@/schemas/recipient.schema";
+import { recipientBankSchema, type RecipientBankFormData } from "@/schemas/recipient.schema";
 import { Form } from "@/components/ui/form";
 import { Button } from "@/components/ui/button";
 import { TextField } from "@/components/ui/text-field";
@@ -37,11 +34,7 @@ export function RecipientBankForm({
   return (
     <Form {...form}>
       <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-5">
-        <TextField
-          control={form.control}
-          name="accountName"
-          label="Account holder name"
-        />
+        <TextField control={form.control} name="accountName" label="Account holder name" />
         <div className="grid gap-3 sm:grid-cols-2">
           <TextField
             control={form.control}
@@ -58,13 +51,7 @@ export function RecipientBankForm({
           />
         </div>
 
-        <Button
-          type="submit"
-          variant="brand"
-          size="lg"
-          className="w-full"
-          loading={submitting}
-        >
+        <Button type="submit" variant="brand" size="lg" className="w-full" loading={submitting}>
           {submitLabel}
         </Button>
       </form>
