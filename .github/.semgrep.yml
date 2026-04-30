@@ -15,6 +15,9 @@ rules:
   - id: axios-call-without-catch
     patterns:
       - pattern: axios.$METHOD(...)
+      - metavariable-regex:
+          metavariable: $METHOD
+          regex: "^(get|post|put|patch|delete|head|options|request)$"
       - pattern-not: axios.$METHOD(...).catch(...)
       - pattern-not: |
           try {
@@ -54,7 +57,7 @@ rules:
     severity: WARNING
     paths:
       exclude:
-        - "lib/safe-storage.ts"
+        - "**/lib/safe-storage.ts"
 
   - id: bare-localstorage-access
     pattern: localStorage.$METHOD(...)
@@ -63,7 +66,7 @@ rules:
     severity: WARNING
     paths:
       exclude:
-        - "lib/safe-storage.ts"
+        - "**/lib/safe-storage.ts"
 
   # ── TypeScript safety ──────────────────────────────────────────────────────────
   - id: no-explicit-any-cast
