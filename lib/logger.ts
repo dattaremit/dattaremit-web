@@ -10,7 +10,7 @@ export const logger = {
   warn: (message: string, context?: Record<string, unknown>) =>
     Sentry.logger.warn(message, context),
   error: (message: string, context?: Record<string, unknown>) =>
-    Sentry.logger.error(message, context),
+    Sentry.captureMessage(message, { level: "error", extra: context }),
   fatal: (message: string, context?: Record<string, unknown>) =>
-    Sentry.logger.fatal(message, context),
+    Sentry.captureMessage(message, { level: "fatal", extra: context }),
 };
