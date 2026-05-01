@@ -1,36 +1,52 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# DattaRemit Web
+
+Customer-facing web app for the DattaRemit remittance platform. Next.js 16 (App Router) + React 19 + Tailwind CSS 4 + Clerk auth.
 
 ## Getting Started
 
-First, run the development server:
-
 ```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+npm install
+npm run dev      # http://localhost:3000
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+## Scripts
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+| Command | What it does |
+|---|---|
+| `npm run dev` | Start the Next.js dev server |
+| `npm run build` | Production build |
+| `npm run start` | Run the production build |
+| `npm run lint` / `npm run lint:fix` | ESLint |
+| `npm run type-check` | `tsc --noEmit` |
+| `npm run format` / `npm run format:check` | Prettier |
+| `npm run test` | Jest |
+| `npm run knip` | Dead-code/unused-export scan |
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+## Stack
 
-## Learn More
+- **Framework:** Next.js 16 (App Router) + React 19
+- **Auth:** Clerk (`@clerk/nextjs`); middleware in `proxy.ts`
+- **Data:** TanStack React Query v5 + Axios; centralized query keys in `constants/query-keys.ts`
+- **API:** Axios in `services/api.ts` with `x-auth-token` injection, response-envelope unwrapping, and idempotency-key support
+- **Forms:** React Hook Form + Yup
+- **UI:** shadcn/ui (Radix UI + Tailwind CSS 4) with CVA variants; fonts: Poppins (primary) and Geist Mono via `next/font/google`
+- **State:** Custom persisted stores using `useSyncExternalStore` + `localStorage` (theme, onboarding, notifications)
+- **Observability:** Sentry (`@sentry/nextjs`)
 
-To learn more about Next.js, take a look at the following resources:
+## Routing
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+| Group | Purpose |
+|---|---|
+| `app/(auth)/` | Sign-in / sign-up screens |
+| `app/(dashboard)/` | Authenticated user pages |
+| `app/(marketing)/` | Public landing/marketing pages |
+| `app/onboarding/` | First-time setup flows |
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+## Environment
 
-## Deploy on Vercel
+- `NEXT_PUBLIC_API_URL` — backend API base URL (defaults to `http://localhost:5000/api`)
+- Clerk env vars (publishable / secret keys)
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+## Path Alias
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+`@/*` maps to the project root (`tsconfig.json`).
