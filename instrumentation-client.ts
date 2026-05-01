@@ -21,6 +21,3 @@ Sentry.init({
 });
 
 export const onRouterTransitionStart = Sentry.captureRouterTransitionStart;
-
-// Debug test error — remove after confirming Sentry issue capture works
-Sentry.captureException(new Error("[Sentry Debug] Test error from instrumentation-client.ts"));
