@@ -25,8 +25,8 @@ function buildCsp(nonce: string): string {
   const api = apiOrigin();
 
   const scriptSrc = isDev
-    ? "'self' 'unsafe-eval' 'unsafe-inline'"
-    : `'self' 'nonce-${nonce}' 'strict-dynamic'`;
+    ? "'self' 'unsafe-eval' 'unsafe-inline' https://*.clerk.accounts.dev https://challenges.cloudflare.com"
+    : `'self' 'nonce-${nonce}' 'strict-dynamic' https://*.clerk.accounts.dev https://challenges.cloudflare.com`;
 
   const directives = [
     `default-src 'self'`,
