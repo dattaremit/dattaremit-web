@@ -122,8 +122,8 @@ export default function OnboardingLayout({ children }: { children: React.ReactNo
 
         <header className="relative z-10 flex h-16 items-center justify-between border-b border-border/60 bg-background/70 px-5 backdrop-blur-xl sm:px-8">
           <Link href="/" className="flex items-center gap-2.5">
-            <Image src="/logo.png" alt="Dattapay" width={26} height={22} />
-            <span className="font-semibold text-lg text-foreground">Dattapay</span>
+            <Image src="/logo.png" alt="Dattaremit" width={26} height={22} />
+            <span className="font-semibold text-lg text-foreground">Dattaremit</span>
           </Link>
           <AccountMenu />
         </header>
@@ -151,8 +151,8 @@ export default function OnboardingLayout({ children }: { children: React.ReactNo
 
       <header className="relative z-10 flex h-16 items-center justify-between border-b border-border/60 bg-background/70 px-5 backdrop-blur-xl sm:px-8">
         <Link href="/" className="flex items-center gap-2.5">
-          <Image src="/logo.png" alt="Dattapay" width={26} height={22} />
-          <span className="font-semibold text-lg text-foreground">Dattapay</span>
+          <Image src="/logo.png" alt="Dattaremit" width={26} height={22} />
+          <span className="font-semibold text-lg text-foreground">Dattaremit</span>
         </Link>
         <AccountMenu />
       </header>

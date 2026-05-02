@@ -12,7 +12,7 @@ export default function OnboardingBlockedPage() {
       <h1 className="text-2xl font-semibold text-foreground">Access not available</h1>
 
       <p className="max-w-sm text-base leading-6 text-muted-foreground">
-        This account isn&apos;t eligible for Dattapay at this time. If you think this is a mistake,
+        This account isn&apos;t eligible for Dattaremit at this time. If you think this is a mistake,
         please contact support.
       </p>
     </div>

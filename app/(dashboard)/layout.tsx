@@ -100,8 +100,8 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
 
       <aside className="sticky top-0 z-20 hidden h-screen w-72 shrink-0 flex-col border-r border-border bg-sidebar text-sidebar-foreground lg:flex">
         <div className="flex h-20 items-center gap-2.5 px-7">
-          <Image src="/logo.png" alt="Dattapay" width={28} height={24} />
-          <span className="font-semibold text-xl text-sidebar-foreground">Dattapay</span>
+          <Image src="/logo.png" alt="Dattaremit" width={28} height={24} />
+          <span className="font-semibold text-xl text-sidebar-foreground">Dattaremit</span>
         </div>
 
         <nav className="flex-1 overflow-y-auto px-3">
@@ -143,8 +143,8 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
       <main className="relative z-10 flex min-w-0 flex-1 flex-col">
         <header className="sticky top-0 z-20 flex h-14 items-center justify-between border-b border-border bg-background/70 px-5 backdrop-blur-xl lg:hidden">
           <Link href="/" className="flex items-center gap-2">
-            <Image src="/logo.png" alt="Dattapay" width={24} height={20} />
-            <span className="font-semibold text-lg">Dattapay</span>
+            <Image src="/logo.png" alt="Dattaremit" width={24} height={20} />
+            <span className="font-semibold text-lg">Dattaremit</span>
           </Link>
           <NotificationBell />
         </header>

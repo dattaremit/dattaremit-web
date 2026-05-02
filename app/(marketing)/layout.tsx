@@ -12,8 +12,8 @@ export default function MarketingLayout({ children }: { children: React.ReactNod
 
       <header className="relative z-20 flex h-16 items-center justify-between px-5 sm:px-10">
         <Link href="/" className="flex items-center gap-2.5">
-          <Image src="/logo.png" alt="Dattapay" width={28} height={24} />
-          <span className="font-semibold text-xl text-foreground">Dattapay</span>
+          <Image src="/logo.png" alt="Dattaremit" width={28} height={24} />
+          <span className="font-semibold text-xl text-foreground">Dattaremit</span>
         </Link>
         <div className="flex items-center gap-2">
           <Button asChild variant="ghost" size="sm">

@@ -18,8 +18,8 @@ export default async function AuthLayout({ children }: { children: React.ReactNo
 
       <header className="relative z-20 flex h-16 items-center justify-between px-6 sm:px-10">
         <Link href="/" className="flex items-center gap-2.5">
-          <Image src="/logo.png" alt="Dattapay" width={32} height={27} />
-          <span className="font-semibold text-xl text-foreground">Dattapay</span>
+          <Image src="/logo.png" alt="Dattaremit" width={32} height={27} />
+          <span className="font-semibold text-xl text-foreground">Dattaremit</span>
         </Link>
         <span className="hidden text-xs font-medium uppercase tracking-wider text-muted-foreground sm:block">
           Cross-border money, simply

@@ -16,8 +16,8 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "Dattapay",
-  description: "Dattapay - Financial Services",
+  title: "Dattaremit",
+  description: "Dattaremit - Financial Services",
 };
 
 export default async function RootLayout({
