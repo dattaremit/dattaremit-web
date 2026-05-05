@@ -195,12 +195,17 @@ export default function SendToSelfPage() {
                   loading={sendToSelf.isPending}
                   onClick={async () => {
                     setSendError(null);
+                    // Track failures via a local variable: setSendError() schedules
+                    // a state update, but the closure below would still see the
+                    // previous render's sendError, so we'd never navigate to the
+                    // result screen on first failure.
+                    let errorMessage: string | null = null;
                     const res = await gate(async () => {
                       let amountCents: number;
                       try {
                         amountCents = dollarsToCents(amount);
                       } catch (err) {
-                        setSendError(err instanceof Error ? err.message : "Invalid amount");
+                        errorMessage = err instanceof Error ? err.message : "Invalid amount";
                         return undefined;
                       }
                       try {
@@ -209,14 +214,15 @@ export default function SendToSelfPage() {
                           idempotencyKey,
                         });
                       } catch (err) {
-                        setSendError(err instanceof Error ? err.message : "Transfer failed");
+                        errorMessage = err instanceof Error ? err.message : "Transfer failed";
                         return undefined;
                       }
                     });
                     if (res) {
                       setTransactionId(res.transactionId);
                       setStep("result");
-                    } else if (sendError) {
+                    } else if (errorMessage) {
+                      setSendError(errorMessage);
                       setStep("result");
                     }
                   }}
