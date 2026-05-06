@@ -29,6 +29,14 @@ export async function GET() {
       // Backend already caches; honor that on this hop too.
       next: { revalidate: 60 },
       signal: AbortSignal.timeout(10_000),
+      headers: {
+        // Cloudflare in front of api.dattaremit.com bot-blocks Node's
+        // default User-Agent and returns 403. The longer-term fix is a
+        // Cloudflare WAF skip rule for our own web egress; for now we
+        // pass a generic browser UA so the request isn't dropped.
+        "User-Agent": "Mozilla/5.0 (compatible; DattaremitWebProxy/1.0)",
+        Accept: "application/json",
+      },
     });
 
     if (!upstream.ok) {
