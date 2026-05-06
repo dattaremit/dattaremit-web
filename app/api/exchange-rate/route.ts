@@ -1,37 +1,54 @@
 import { NextResponse } from "next/server";
-import YahooFinance from "yahoo-finance2";
 import { logger } from "@/lib/logger";
 
 export const revalidate = 60;
 
-const yahooFinance = new YahooFinance();
+const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL;
 
+interface ServerRateResponse {
+  success: boolean;
+  message?: string;
+  data?: { rate: number; updatedAt: string; stale: boolean };
+}
+
+/**
+ * Proxies the backend's /exchange-rate endpoint so the entire product
+ * (web, mobile via Zynk quotes, server-computed developer fee) reads
+ * from a single source — Wise's mid-market rate, configured server-side.
+ * Edge-cached for 60s to absorb burst traffic without re-hitting the
+ * backend; the server's own cache window is much longer (3h).
+ */
 export async function GET() {
-  try {
-    const quote = (await yahooFinance.quote("USDINR=X", {})) as {
-      regularMarketPrice?: number;
-      regularMarketTime?: Date | number;
-    };
-    const rate = quote?.regularMarketPrice;
+  if (!API_BASE_URL) {
+    logger.error("NEXT_PUBLIC_API_URL not configured for /api/exchange-rate proxy");
+    return NextResponse.json({ success: false, message: "Rate unavailable" }, { status: 502 });
+  }
 
-    if (typeof rate !== "number" || !isFinite(rate) || rate <= 0) {
-      logger.warn("Exchange rate unavailable from Yahoo Finance", { rate });
+  try {
+    const upstream = await fetch(`${API_BASE_URL}/exchange-rate`, {
+      // Backend already caches; honor that on this hop too.
+      next: { revalidate: 60 },
+      signal: AbortSignal.timeout(10_000),
+    });
+
+    if (!upstream.ok) {
+      logger.warn("Exchange rate upstream non-OK", { status: upstream.status });
       return NextResponse.json({ success: false, message: "Rate unavailable" }, { status: 502 });
     }
 
-    const marketTime = quote.regularMarketTime;
-    const updatedAt = marketTime
-      ? new Date(typeof marketTime === "number" ? marketTime * 1000 : marketTime).toISOString()
-      : new Date().toISOString();
+    const body = (await upstream.json()) as ServerRateResponse;
+    if (!body?.success || !body.data || typeof body.data.rate !== "number") {
+      return NextResponse.json({ success: false, message: "Rate unavailable" }, { status: 502 });
+    }
 
     return NextResponse.json(
       {
         success: true,
         data: {
-          rate,
-          updatedAt,
-          stale: false,
-          source: "yahoo-finance",
+          rate: body.data.rate,
+          updatedAt: body.data.updatedAt,
+          stale: body.data.stale,
+          source: "wise",
         },
       },
       {
@@ -41,7 +58,9 @@ export async function GET() {
       },
     );
   } catch (err) {
-    logger.error("Failed to fetch exchange rate", { error: String(err) });
+    logger.error("Failed to fetch exchange rate from backend", {
+      error: err instanceof Error ? err.message : String(err),
+    });
     return NextResponse.json(
       { success: false, message: "Failed to fetch exchange rate" },
       { status: 502 },
