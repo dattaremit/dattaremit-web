@@ -1,6 +1,6 @@
 import axios from "axios";
+import * as Sentry from "@sentry/nextjs";
 import { generateIdempotencyKey } from "@/lib/idempotency";
-import { logger } from "@/lib/logger";
 import type {
   ApiResponse,
   User,
@@ -123,17 +123,57 @@ api.interceptors.response.use(
   (error) => {
     if (axios.isAxiosError(error) && error.response) {
       const body = error.response.data as ApiResponse<unknown> | undefined;
-      logger.error("API request failed", {
-        status: error.response.status,
-        code: body?.code,
-        url: error.config?.url,
-      });
-      throw new ApiError(error.response.status, safeErrorMessage(error.response.status), {
+      const status = error.response.status;
+      const method = error.config?.method?.toUpperCase() ?? "UNKNOWN";
+      const url = error.config?.url ?? "unknown";
+      const requestId = (error.config?.headers?.["x-request-id"] as string | undefined) ?? "";
+      const apiError = new ApiError(status, safeErrorMessage(status), {
         code: body?.code,
         details: body?.data,
       });
+      Sentry.logger.error("API request failed", {
+        status,
+        code: body?.code,
+        url,
+        method,
+        request_id: requestId,
+      });
+      Sentry.captureException(apiError, {
+        level: "error",
+        tags: {
+          "http.method": method,
+          "http.url": url,
+          "http.status_code": String(status),
+          ...(body?.code ? { "http.code": body.code } : {}),
+          ...(requestId ? { request_id: requestId } : {}),
+        },
+        contexts: {
+          http: {
+            method,
+            url,
+            status_code: status,
+            request_id: requestId || undefined,
+          },
+        },
+      });
+      throw apiError;
     }
-    logger.error("Unexpected API error", { error: String(error) });
+    const method = axios.isAxiosError(error) ? error.config?.method?.toUpperCase() : undefined;
+    const url = axios.isAxiosError(error) ? error.config?.url : undefined;
+    Sentry.logger.error("Unexpected API error", {
+      error: String(error),
+      method,
+      url,
+      network_error: true,
+    });
+    Sentry.captureException(error, {
+      level: "error",
+      tags: {
+        network_error: "true",
+        ...(method ? { "http.method": method } : {}),
+        ...(url ? { "http.url": url } : {}),
+      },
+    });
     throw error;
   },
 );
