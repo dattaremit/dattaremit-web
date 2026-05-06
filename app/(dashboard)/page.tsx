@@ -89,7 +89,7 @@ export default function HomePage() {
                 ₹<span className="text-brand">{rate ? rate.toFixed(2) : "—"}</span>
               </>
             }
-            hint="USD → INR · live from Yahoo Finance"
+            hint="USD → INR · live mid-market rate"
             accent
             icon={<Sparkles className="size-4" />}
           />
