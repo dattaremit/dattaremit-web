@@ -15,6 +15,8 @@ import {
 import { toast } from "sonner";
 import { getClerkErrorMessage } from "@/utils/clerk-error";
 
+import Image from "next/image";
+
 import { AuthShell } from "@/components/ui/auth-shell";
 import { Form } from "@/components/ui/form";
 import { TextField } from "@/components/ui/text-field";
@@ -208,26 +210,24 @@ export default function ForgotPasswordPage() {
 
   return (
     <AuthShell
-      eyebrow="Forgot password"
       title={
-        <>
-          Reset your
-          <br />
-          <span className="text-brand">password</span>.
-        </>
+        <Image
+          src="/logo.png"
+          alt="Dattaremit"
+          width={140}
+          height={119}
+          priority
+          className="mx-auto block h-28 w-auto"
+        />
       }
       subtitle="Enter the email on your account and we'll send you a code to set a new password."
-      back={{ href: ROUTES.SIGN_IN, label: "Back to sign in" }}
       footer={
-        <span>
+        <div className="text-center">
           Remember your password?{" "}
-          <Link
-            href={ROUTES.SIGN_IN}
-            className="font-semibold text-foreground underline decoration-brand decoration-2 underline-offset-4 hover:decoration-foreground"
-          >
+          <Link href={ROUTES.SIGN_IN} className="font-semibold text-brand hover:text-foreground">
             Sign in
           </Link>
-        </span>
+        </div>
       }
     >
       <Form {...emailForm}>
