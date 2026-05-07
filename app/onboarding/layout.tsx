@@ -51,7 +51,6 @@ export default function OnboardingLayout({ children }: { children: React.ReactNo
     if (isLoading) return;
     if (error && !noProfile) return;
 
-    // Gate users before step-based routing: blocklist wins, then waitlist.
     if (isBlocked) {
       if (pathname !== ROUTES.ONBOARDING.BLOCKED) router.replace(ROUTES.ONBOARDING.BLOCKED);
       return;
@@ -61,8 +60,6 @@ export default function OnboardingLayout({ children }: { children: React.ReactNo
       return;
     }
 
-    // Off the gated paths — if we were on waitlist/blocked but the flag
-    // cleared (e.g. admin removed the block), bounce back to the normal flow.
     if (pathname === ROUTES.ONBOARDING.WAITLIST || pathname === ROUTES.ONBOARDING.BLOCKED) {
       router.replace(state.nextStep ? stepHref(state.nextStep) : ROUTES.ROOT);
       return;
@@ -80,7 +77,6 @@ export default function OnboardingLayout({ children }: { children: React.ReactNo
       return;
     }
 
-    // Referral is optional — allow advancing past it without being sent back.
     if (state.nextStep === "referral" && currentStep === "profile") {
       return;
     }
@@ -111,13 +107,17 @@ export default function OnboardingLayout({ children }: { children: React.ReactNo
     return <FullScreenLoader />;
   }
 
-  // Gated pages render inside the same shell but without the step indicator.
-  if (isGatedPath) {
-    return (
-      <div className="relative flex min-h-screen flex-col bg-background">
-        <AuroraBackground variant="dashboard" />
+  if (!isGatedPath && !stepKey) {
+    return <FullScreenLoader />;
+  }
 
-        <header className="relative z-10 flex h-16 items-center justify-between border-b border-border/60 bg-background/70 px-5 backdrop-blur-xl sm:px-8">
+  return (
+    <div className="flex min-h-screen">
+      {/* Left — form panel */}
+      <div className="relative flex w-full flex-col lg:w-2/3">
+        <AuroraBackground variant="auth" />
+
+        <div className="relative z-10 flex h-16 shrink-0 items-center justify-between px-8">
           <Link href="/" className="flex items-center gap-2.5">
             <Image src="/logo.png" alt="Dattaremit" width={26} height={22} />
             <span className="font-semibold text-lg text-foreground">Dattaremit</span>
@@ -129,57 +129,53 @@ export default function OnboardingLayout({ children }: { children: React.ReactNo
             <LogOut className="size-4" />
             Sign out
           </button>
-        </header>
+        </div>
 
-        <main className="relative z-10 flex flex-1 items-center justify-center px-5 py-10 sm:px-8 sm:py-16">
+        <main className="relative z-10 flex flex-1 items-center justify-center px-5 py-10 sm:px-10">
           <div className="w-full max-w-xl">
-            <div className="rounded-3xl border border-border bg-card/80 p-8 shadow-lift backdrop-blur-xl sm:p-12">
-              {children}
+            <div className="rounded-2xl border border-border/40 bg-card/70 shadow-lift backdrop-blur-md">
+              <AnimatePresence mode="wait">
+                <motion.div
+                  key={pathname}
+                  initial={{ opacity: 0, y: 12 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  exit={{ opacity: 0, y: -12 }}
+                  transition={{ duration: 0.35, ease: EASE_OUT_SMOOTH }}
+                  className="p-8 sm:p-10"
+                >
+                  {children}
+                </motion.div>
+              </AnimatePresence>
             </div>
           </div>
         </main>
       </div>
-    );
-  }
 
-  if (!stepKey) {
-    return <FullScreenLoader />;
-  }
-
-  return (
-    <div className="relative flex min-h-screen flex-col bg-background">
-      <AuroraBackground variant="dashboard" />
-
-      <header className="relative z-10 flex h-16 items-center justify-between border-b border-border/60 bg-background/70 px-5 backdrop-blur-xl sm:px-8">
-        <Link href="/" className="flex items-center gap-2.5">
-          <Image src="/logo.png" alt="Dattaremit" width={26} height={22} />
-          <span className="font-semibold text-lg text-foreground">Dattaremit</span>
-        </Link>
-        <button
-          onClick={() => signOut()}
-          className="flex items-center gap-2 text-sm font-medium text-muted-foreground transition-colors hover:text-foreground"
-        >
-          <LogOut className="size-4" />
-          Sign out
-        </button>
-      </header>
-
-      <main className="relative z-10 flex flex-1 items-center justify-center px-5 py-10 sm:px-8 sm:py-16">
-        <div className="w-full max-w-xl">
-          <AnimatePresence mode="wait">
-            <motion.div
-              key={pathname}
-              initial={{ opacity: 0, y: 12 }}
-              animate={{ opacity: 1, y: 0 }}
-              exit={{ opacity: 0, y: -12 }}
-              transition={{ duration: 0.35, ease: EASE_OUT_SMOOTH }}
-              className="rounded-3xl border border-border bg-card/80 p-6 shadow-lift backdrop-blur-xl sm:p-8"
-            >
-              {children}
-            </motion.div>
-          </AnimatePresence>
+      {/* Right — hero image panel */}
+      <div
+        className="sticky top-0 hidden h-screen overflow-hidden lg:block lg:w-1/3"
+        style={{ background: "linear-gradient(160deg, #1e1b4b 0%, #312e81 50%, #3730a3 100%)" }}
+      >
+        <Image
+          src="/auth.png"
+          alt="Send money instantly with DattaRemit"
+          fill
+          className="object-contain object-bottom"
+          priority
+        />
+        <div className="absolute bottom-0 left-0 right-0 z-20 bg-gradient-to-t from-black/85 via-black/50 to-transparent px-6 pb-10 pt-16">
+          <p className="text-4xl font-semibold leading-tight tracking-tight text-white">
+            Send money home,
+            <br />
+            <span className="text-brand-soft">instantly.</span>
+          </p>
+          <p className="mt-3 text-base font-medium italic leading-relaxed text-white/80">
+            Fast, secure and trusted international transfers,
+            <br />
+            right from your phone.
+          </p>
         </div>
-      </main>
+      </div>
     </div>
   );
 }
