@@ -2,7 +2,6 @@
 
 import { useSignIn } from "@clerk/nextjs";
 import { useRouter } from "next/navigation";
-import Image from "next/image";
 import Link from "next/link";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
@@ -12,6 +11,7 @@ import { toast } from "sonner";
 import { getClerkErrorMessage } from "@/utils/clerk-error";
 
 import { AuthShell } from "@/components/ui/auth-shell";
+import { AuthLogo } from "@/components/ui/auth-logo";
 import { Form } from "@/components/ui/form";
 import { TextField } from "@/components/ui/text-field";
 import { Button } from "@/components/ui/button";
@@ -125,16 +125,7 @@ export default function SignInPage() {
 
   return (
     <AuthShell
-      title={
-        <Image
-          src="/logo.png"
-          alt="Dattaremit"
-          width={140}
-          height={119}
-          priority
-          className="mx-auto block h-28 w-auto"
-        />
-      }
+      title={<AuthLogo />}
       footer={
         <div className="text-center">
           New here?{" "}

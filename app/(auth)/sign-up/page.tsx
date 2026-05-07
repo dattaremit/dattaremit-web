@@ -1,7 +1,6 @@
 "use client";
 
 import { useSignUp } from "@clerk/nextjs";
-import Image from "next/image";
 import Link from "next/link";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
@@ -11,6 +10,7 @@ import { toast } from "sonner";
 import { getClerkErrorMessage } from "@/utils/clerk-error";
 
 import { AuthShell } from "@/components/ui/auth-shell";
+import { AuthLogo } from "@/components/ui/auth-logo";
 import { OrDivider } from "@/components/or-divider";
 import { EmailVerificationForm } from "@/components/email-verification-form";
 import { Form } from "@/components/ui/form";
@@ -62,16 +62,7 @@ export default function SignUpPage() {
 
   return (
     <AuthShell
-      title={
-        <Image
-          src="/logo.png"
-          alt="Dattaremit"
-          width={140}
-          height={119}
-          priority
-          className="mx-auto block h-28 w-auto"
-        />
-      }
+      title={<AuthLogo />}
       footer={
         <div className="text-center">
           Already a customer?{" "}

@@ -4,7 +4,6 @@ import { useEffect } from "react";
 import { useAuth } from "@clerk/nextjs";
 import { usePathname, useRouter } from "next/navigation";
 import { LogOut } from "lucide-react";
-import Image from "next/image";
 import { motion, AnimatePresence } from "motion/react";
 
 import { useAccount } from "@/hooks/api";
@@ -19,6 +18,8 @@ import { ROUTES } from "@/constants/routes";
 import { EASE_OUT_SMOOTH } from "@/constants/motion";
 import { FullScreenLoader } from "@/components/ui/full-screen-loader";
 import { AuroraBackground } from "@/components/ui/aurora-background";
+import { HeroPanel } from "@/components/ui/hero-panel";
+import { AuthLogo } from "@/components/ui/auth-logo";
 import { useAppSignOut } from "@/hooks/use-app-sign-out";
 
 const STEP_FROM_PATH: Record<string, OnboardingStepKey> = {
@@ -138,14 +139,9 @@ export default function OnboardingLayout({ children }: { children: React.ReactNo
                   transition={{ duration: 0.35, ease: EASE_OUT_SMOOTH }}
                   className="p-8 sm:p-10"
                 >
-                  <Image
-                    src="/logo.png"
-                    alt="Dattaremit"
-                    width={140}
-                    height={119}
-                    priority
-                    className="mx-auto mb-6 block h-28 w-auto"
-                  />
+                  <div className="mb-6">
+                    <AuthLogo />
+                  </div>
                   {children}
                 </motion.div>
               </AnimatePresence>
@@ -154,31 +150,7 @@ export default function OnboardingLayout({ children }: { children: React.ReactNo
         </main>
       </div>
 
-      {/* Right — hero image panel */}
-      <div
-        className="sticky top-0 hidden h-screen overflow-hidden lg:block lg:w-1/3"
-        style={{ background: "linear-gradient(160deg, #1e1b4b 0%, #312e81 50%, #3730a3 100%)" }}
-      >
-        <Image
-          src="/auth.png"
-          alt="Send money instantly with DattaRemit"
-          fill
-          className="object-contain object-bottom"
-          priority
-        />
-        <div className="absolute bottom-0 left-0 right-0 z-20 bg-gradient-to-t from-black/85 via-black/50 to-transparent px-6 pb-10 pt-16">
-          <p className="text-4xl font-semibold leading-tight tracking-tight text-white">
-            Send money home,
-            <br />
-            <span className="text-brand-soft">instantly.</span>
-          </p>
-          <p className="mt-3 text-base font-medium italic leading-relaxed text-white/80">
-            Fast, secure and trusted international transfers,
-            <br />
-            right from your phone.
-          </p>
-        </div>
-      </div>
+      <HeroPanel />
     </div>
   );
 }

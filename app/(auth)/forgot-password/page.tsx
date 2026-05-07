@@ -15,9 +15,8 @@ import {
 import { toast } from "sonner";
 import { getClerkErrorMessage } from "@/utils/clerk-error";
 
-import Image from "next/image";
-
 import { AuthShell } from "@/components/ui/auth-shell";
+import { AuthLogo } from "@/components/ui/auth-logo";
 import { Form } from "@/components/ui/form";
 import { TextField } from "@/components/ui/text-field";
 import { Button } from "@/components/ui/button";
@@ -136,16 +135,7 @@ export default function ForgotPasswordPage() {
   if (step === "code") {
     return (
       <AuthShell
-        title={
-          <Image
-            src="/logo.png"
-            alt="Dattaremit"
-            width={140}
-            height={119}
-            priority
-            className="mx-auto block h-28 w-auto"
-          />
-        }
+        title={<AuthLogo />}
         subtitle={
           <>
             We sent a 6-digit code to <span className="font-medium text-foreground">{email}</span>.{" "}
@@ -177,19 +167,7 @@ export default function ForgotPasswordPage() {
 
   if (step === "password") {
     return (
-      <AuthShell
-        title={
-          <Image
-            src="/logo.png"
-            alt="Dattaremit"
-            width={140}
-            height={119}
-            priority
-            className="mx-auto block h-28 w-auto"
-          />
-        }
-        subtitle="Choose a strong password you haven't used before."
-      >
+      <AuthShell title={<AuthLogo />} subtitle="Choose a strong password you haven't used before.">
         <Form {...passwordForm}>
           <form onSubmit={passwordForm.handleSubmit(onSubmitPassword)} className="space-y-4">
             <TextField
@@ -219,16 +197,7 @@ export default function ForgotPasswordPage() {
 
   return (
     <AuthShell
-      title={
-        <Image
-          src="/logo.png"
-          alt="Dattaremit"
-          width={140}
-          height={119}
-          priority
-          className="mx-auto block h-28 w-auto"
-        />
-      }
+      title={<AuthLogo />}
       subtitle="Enter the email on your account and we'll send you a code to set a new password."
       footer={
         <div className="text-center">
