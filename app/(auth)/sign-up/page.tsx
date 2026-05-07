@@ -1,6 +1,7 @@
 "use client";
 
 import { useSignUp } from "@clerk/nextjs";
+import Image from "next/image";
 import Link from "next/link";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
@@ -61,25 +62,23 @@ export default function SignUpPage() {
 
   return (
     <AuthShell
-      eyebrow="Get started"
       title={
-        <>
-          Open your
-          <br />
-          <span className="text-brand">account</span>.
-        </>
+        <Image
+          src="/logo.png"
+          alt="Dattaremit"
+          width={140}
+          height={119}
+          priority
+          className="mx-auto block h-28 w-auto"
+        />
       }
-      subtitle="Two minutes to set up. Send to 140+ countries from day one."
       footer={
-        <span>
+        <div className="text-center">
           Already a customer?{" "}
-          <Link
-            href={ROUTES.SIGN_IN}
-            className="font-semibold text-foreground underline decoration-brand decoration-2 underline-offset-4 hover:decoration-foreground"
-          >
+          <Link href={ROUTES.SIGN_IN} className="font-semibold text-brand hover:text-foreground">
             Sign in
           </Link>
-        </span>
+        </div>
       }
     >
       <Form {...form}>

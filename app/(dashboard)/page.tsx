@@ -74,8 +74,8 @@ export default function HomePage() {
           </h1>
           <p className="max-w-xl text-sm leading-relaxed text-muted-foreground sm:text-base">
             {bothLinked
-              ? "Your accounts are connected. Send to anyone, anywhere — in minutes."
-              : "Finish setting up to start sending money across borders."}
+              ? "Your accounts are connected. Send money to India in minutes."
+              : "Finish setting up to start sending money to India."}
           </p>
         </div>
       </Reveal>

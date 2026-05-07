@@ -2,6 +2,7 @@
 
 import { useSignIn } from "@clerk/nextjs";
 import { useRouter } from "next/navigation";
+import Image from "next/image";
 import Link from "next/link";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
@@ -124,25 +125,23 @@ export default function SignInPage() {
 
   return (
     <AuthShell
-      eyebrow="Sign in"
       title={
-        <>
-          Welcome
-          <br />
-          <span className="text-brand">back</span>.
-        </>
+        <Image
+          src="/logo.png"
+          alt="Dattaremit"
+          width={140}
+          height={119}
+          priority
+          className="mx-auto block h-28 w-auto"
+        />
       }
-      subtitle="Sign in to send, track, and manage your transfers."
       footer={
-        <span>
+        <div className="text-center">
           New here?{" "}
-          <Link
-            href={ROUTES.SIGN_UP}
-            className="font-semibold text-foreground underline decoration-brand decoration-2 underline-offset-4 hover:decoration-foreground"
-          >
+          <Link href={ROUTES.SIGN_UP} className="font-semibold text-brand hover:text-foreground">
             Create an account
           </Link>
-        </span>
+        </div>
       }
     >
       <Form {...form}>
