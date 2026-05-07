@@ -16,11 +16,6 @@ export function PageHeader({ eyebrow, title, subtitle, action, back, className }
       {back && <div>{back}</div>}
       <div className="flex flex-col items-start justify-between gap-4 sm:flex-row sm:items-end">
         <div className="flex flex-col gap-2 min-w-0">
-          {eyebrow && (
-            <span className="inline-flex w-fit items-center gap-2 rounded-full border border-border bg-muted/60 px-2.5 py-1 text-[10px] font-medium uppercase tracking-[0.16em] text-muted-foreground">
-              {eyebrow}
-            </span>
-          )}
           <h1 className="font-semibold text-3xl leading-[1.05] text-foreground sm:text-4xl">
             {title}
           </h1>
