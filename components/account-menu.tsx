@@ -2,10 +2,9 @@
 
 import { useUser } from "@clerk/nextjs";
 import { useRouter } from "next/navigation";
-import { useTheme } from "next-themes";
 import { toast } from "sonner";
 import { useAppSignOut } from "@/hooks/use-app-sign-out";
-import { LogOut, Moon, Sun, UserPen, MapPin, ShieldCheck } from "lucide-react";
+import { LogOut, UserPen, MapPin, ShieldCheck } from "lucide-react";
 
 import { useAccount } from "@/hooks/api";
 import { ROUTES } from "@/constants/routes";
@@ -17,9 +16,6 @@ import {
   DropdownMenuItem,
   DropdownMenuLabel,
   DropdownMenuSeparator,
-  DropdownMenuSub,
-  DropdownMenuSubContent,
-  DropdownMenuSubTrigger,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 
@@ -44,7 +40,6 @@ export function AccountMenuItems({
   side?: "top" | "right" | "bottom" | "left";
 }) {
   const router = useRouter();
-  const { setTheme } = useTheme();
   const signOut = useAppSignOut();
   const { displayName, email, user, initials } = useAccountIdentity();
   const { data: account } = useAccount();
@@ -80,19 +75,6 @@ export function AccountMenuItems({
           </DropdownMenuItem>
         )}
       </DropdownMenuGroup>
-      <DropdownMenuSeparator />
-      <DropdownMenuSub>
-        <DropdownMenuSubTrigger>
-          <Sun className="dark:hidden" />
-          <Moon className="hidden dark:block" />
-          Theme
-        </DropdownMenuSubTrigger>
-        <DropdownMenuSubContent>
-          <DropdownMenuItem onClick={() => setTheme("light")}>Light</DropdownMenuItem>
-          <DropdownMenuItem onClick={() => setTheme("dark")}>Dark</DropdownMenuItem>
-          <DropdownMenuItem onClick={() => setTheme("system")}>System</DropdownMenuItem>
-        </DropdownMenuSubContent>
-      </DropdownMenuSub>
       <DropdownMenuSeparator />
       <DropdownMenuItem
         variant="destructive"

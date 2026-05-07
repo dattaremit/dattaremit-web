@@ -55,7 +55,7 @@ export function Providers({ children, nonce }: { children: React.ReactNode; nonc
       signInForceRedirectUrl={ROUTES.ROOT}
       signUpForceRedirectUrl={ROUTES.ONBOARDING.PROFILE}
     >
-      <ThemeProvider attribute="class" defaultTheme="system" enableSystem disableTransitionOnChange>
+      <ThemeProvider attribute="class" defaultTheme="light" disableTransitionOnChange>
         <QueryClientProvider client={queryClient}>
           <AuthTokenBridge>
             <SentryUserContext />

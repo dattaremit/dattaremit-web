@@ -8,17 +8,7 @@ import { Skeleton } from "@/components/ui/skeleton";
 import { Card } from "@/components/ui/card";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { toast } from "sonner";
-import {
-  Phone,
-  Calendar,
-  MapPin,
-  UserPen,
-  ChevronRight,
-  LogOut,
-  Sun,
-  ShieldCheck,
-} from "lucide-react";
-import { ThemeToggle } from "@/components/theme-toggle";
+import { Phone, Calendar, MapPin, UserPen, ChevronRight, LogOut, ShieldCheck } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { ROUTES } from "@/constants/routes";
 
@@ -120,9 +110,6 @@ export default function AccountPage() {
               accent
             />
           )}
-          <Row icon={<Sun className="size-4" />} label="Appearance">
-            <ThemeToggle />
-          </Row>
         </div>
       </Section>
 
