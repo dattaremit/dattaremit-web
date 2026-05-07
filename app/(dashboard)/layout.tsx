@@ -37,7 +37,7 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
 
   useEffect(() => {
     if (isLoaded && !isSignedIn) {
-      router.replace(ROUTES.WELCOME);
+      router.replace(ROUTES.SIGN_IN);
     }
   }, [isLoaded, isSignedIn, router]);
 
