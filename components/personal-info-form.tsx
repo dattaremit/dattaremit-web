@@ -84,7 +84,7 @@ export function PersonalInfoForm({
     form.reset({
       firstName: u.firstName || "",
       lastName: u.lastName || "",
-      phoneNumberPrefix: u.phoneNumberPrefix || "+880",
+      phoneNumberPrefix: u.phoneNumberPrefix || "+1",
       phoneNumber: u.phoneNumber || "",
       dateOfBirth: u.dateOfBirth ? u.dateOfBirth.substring(0, 10) : "",
     });

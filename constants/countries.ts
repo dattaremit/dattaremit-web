@@ -14,7 +14,4 @@ export function getFlagEmoji(countryCode: string): string {
 
 export const DEFAULT_COUNTRY_CODE = "US";
 
-export const COUNTRIES: Country[] = [
-  { code: "US", name: "United States", dial: "+1" },
-  { code: "IN", name: "India", dial: "+91" },
-];
+export const COUNTRIES: Country[] = [{ code: "US", name: "United States", dial: "+1" }];
