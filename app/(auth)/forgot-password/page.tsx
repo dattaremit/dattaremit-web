@@ -136,20 +136,27 @@ export default function ForgotPasswordPage() {
   if (step === "code") {
     return (
       <AuthShell
-        eyebrow="Verify email"
         title={
-          <>
-            Check your
-            <br />
-            <span className="text-brand">inbox</span>.
-          </>
+          <Image
+            src="/logo.png"
+            alt="Dattaremit"
+            width={140}
+            height={119}
+            priority
+            className="mx-auto block h-28 w-auto"
+          />
         }
         subtitle={
           <>
-            We sent a 6-digit code to <span className="font-medium text-foreground">{email}</span>.
+            We sent a 6-digit code to <span className="font-medium text-foreground">{email}</span>.{" "}
+            <button
+              onClick={() => setStep("email")}
+              className="font-semibold text-brand hover:text-foreground"
+            >
+              Use a different email
+            </button>
           </>
         }
-        back={{ href: ROUTES.FORGOT_PASSWORD, label: "Use a different email" }}
       >
         <OtpForm
           value={code}
@@ -171,13 +178,15 @@ export default function ForgotPasswordPage() {
   if (step === "password") {
     return (
       <AuthShell
-        eyebrow="New password"
         title={
-          <>
-            Set a new
-            <br />
-            <span className="text-brand">password</span>.
-          </>
+          <Image
+            src="/logo.png"
+            alt="Dattaremit"
+            width={140}
+            height={119}
+            priority
+            className="mx-auto block h-28 w-auto"
+          />
         }
         subtitle="Choose a strong password you haven't used before."
       >
