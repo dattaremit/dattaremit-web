@@ -5,7 +5,6 @@ import { useAuth } from "@clerk/nextjs";
 import { usePathname, useRouter } from "next/navigation";
 import { LogOut } from "lucide-react";
 import Image from "next/image";
-import Link from "next/link";
 import { motion, AnimatePresence } from "motion/react";
 
 import { useAccount } from "@/hooks/api";
@@ -117,11 +116,7 @@ export default function OnboardingLayout({ children }: { children: React.ReactNo
       <div className="relative flex w-full flex-col lg:w-2/3">
         <AuroraBackground variant="auth" />
 
-        <div className="relative z-10 flex h-16 shrink-0 items-center justify-between px-8">
-          <Link href="/" className="flex items-center gap-2.5">
-            <Image src="/logo.png" alt="Dattaremit" width={26} height={22} />
-            <span className="font-semibold text-lg text-foreground">Dattaremit</span>
-          </Link>
+        <div className="relative z-10 flex h-16 shrink-0 items-center justify-end px-8">
           <button
             onClick={() => signOut()}
             className="flex items-center gap-2 text-sm font-medium text-muted-foreground transition-colors hover:text-foreground"
@@ -143,6 +138,14 @@ export default function OnboardingLayout({ children }: { children: React.ReactNo
                   transition={{ duration: 0.35, ease: EASE_OUT_SMOOTH }}
                   className="p-8 sm:p-10"
                 >
+                  <Image
+                    src="/logo.png"
+                    alt="Dattaremit"
+                    width={140}
+                    height={119}
+                    priority
+                    className="mx-auto mb-6 block h-28 w-auto"
+                  />
                   {children}
                 </motion.div>
               </AnimatePresence>
