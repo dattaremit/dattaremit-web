@@ -14,12 +14,10 @@ import {
   stepHref,
   stepIndex,
   type OnboardingStepKey,
-  type IndicatorStepKey,
 } from "@/lib/onboarding-progress";
 import { ROUTES } from "@/constants/routes";
 import { EASE_OUT_SMOOTH } from "@/constants/motion";
 import { FullScreenLoader } from "@/components/ui/full-screen-loader";
-import { StepIndicator } from "@/components/onboarding/step-indicator";
 import { AuroraBackground } from "@/components/ui/aurora-background";
 import { AccountMenu } from "@/components/account-menu";
 
@@ -28,8 +26,6 @@ const STEP_FROM_PATH: Record<string, OnboardingStepKey> = {
   [ROUTES.ONBOARDING.PROFILE]: "profile",
   [ROUTES.ONBOARDING.ADDRESS]: "address",
 };
-
-const INDICATOR_STEPS: IndicatorStepKey[] = ["profile", "address"];
 
 export default function OnboardingLayout({ children }: { children: React.ReactNode }) {
   const router = useRouter();
@@ -104,7 +100,6 @@ export default function OnboardingLayout({ children }: { children: React.ReactNo
   ]);
 
   const stepKey = STEP_FROM_PATH[pathname];
-  const isIndicatorStep = !!stepKey && (INDICATOR_STEPS as OnboardingStepKey[]).includes(stepKey);
   const isGatedPath =
     pathname === ROUTES.ONBOARDING.WAITLIST ||
     pathname === ROUTES.ONBOARDING.BLOCKED ||
@@ -139,11 +134,9 @@ export default function OnboardingLayout({ children }: { children: React.ReactNo
     );
   }
 
-  if (!stepKey || !isIndicatorStep) {
+  if (!stepKey) {
     return <FullScreenLoader />;
   }
-
-  const indicatorStep = stepKey as IndicatorStepKey;
 
   return (
     <div className="relative flex min-h-screen flex-col bg-background">
@@ -157,9 +150,8 @@ export default function OnboardingLayout({ children }: { children: React.ReactNo
         <AccountMenu />
       </header>
 
-      <main className="relative z-10 flex flex-1 items-start justify-center px-5 py-10 sm:px-8 sm:py-16">
-        <div className="w-full max-w-xl space-y-7">
-          <StepIndicator current={indicatorStep} completed={state.completion} />
+      <main className="relative z-10 flex flex-1 items-center justify-center px-5 py-10 sm:px-8 sm:py-16">
+        <div className="w-full max-w-xl">
           <AnimatePresence mode="wait">
             <motion.div
               key={pathname}
