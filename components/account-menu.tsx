@@ -4,7 +4,7 @@ import { useUser } from "@clerk/nextjs";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
 import { useAppSignOut } from "@/hooks/use-app-sign-out";
-import { LogOut, UserPen, MapPin, ShieldCheck } from "lucide-react";
+import { LogOut, UserPen, MapPin, ShieldCheck, CircleUser } from "lucide-react";
 
 import { useAccount } from "@/hooks/api";
 import { ROUTES } from "@/constants/routes";
@@ -93,23 +93,16 @@ export function AccountMenuItems({
   );
 }
 
-/** Compact avatar-only trigger for top headers. */
+/** Compact icon-only trigger for top headers. */
 export function AccountMenu() {
-  const { user, displayName, initials } = useAccountIdentity();
-
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
         <button
           aria-label="Open account menu"
-          className="flex size-9 items-center justify-center rounded-full ring-2 ring-transparent transition-all hover:ring-brand/30 focus-visible:outline-none focus-visible:ring-brand/50"
+          className="flex size-9 items-center justify-center rounded-full bg-brand/10 text-brand ring-2 ring-transparent transition-all hover:bg-brand/20 hover:ring-brand/30 focus-visible:outline-none focus-visible:ring-brand/50"
         >
-          <Avatar size="sm" className="size-9">
-            <AvatarImage src={user?.imageUrl} alt={displayName} />
-            <AvatarFallback className="bg-brand/15 text-sm font-medium text-foreground">
-              {initials}
-            </AvatarFallback>
-          </Avatar>
+          <CircleUser className="size-5" />
         </button>
       </DropdownMenuTrigger>
       <AccountMenuItems align="end" side="bottom" />
