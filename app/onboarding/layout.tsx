@@ -3,6 +3,7 @@
 import { useEffect } from "react";
 import { useAuth } from "@clerk/nextjs";
 import { usePathname, useRouter } from "next/navigation";
+import { LogOut } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
 import { motion, AnimatePresence } from "motion/react";
@@ -19,7 +20,7 @@ import { ROUTES } from "@/constants/routes";
 import { EASE_OUT_SMOOTH } from "@/constants/motion";
 import { FullScreenLoader } from "@/components/ui/full-screen-loader";
 import { AuroraBackground } from "@/components/ui/aurora-background";
-import { AccountMenu } from "@/components/account-menu";
+import { useAppSignOut } from "@/hooks/use-app-sign-out";
 
 const STEP_FROM_PATH: Record<string, OnboardingStepKey> = {
   [ROUTES.ONBOARDING.REFERRAL]: "referral",
@@ -32,6 +33,7 @@ export default function OnboardingLayout({ children }: { children: React.ReactNo
   const pathname = usePathname();
   const { isLoaded, isSignedIn } = useAuth();
   const { data: account, isLoading, error } = useAccount();
+  const signOut = useAppSignOut();
 
   const noProfile = error instanceof ApiError && error.status === 404;
   const state = computeOnboardingState(noProfile ? null : account);
@@ -120,7 +122,13 @@ export default function OnboardingLayout({ children }: { children: React.ReactNo
             <Image src="/logo.png" alt="Dattaremit" width={26} height={22} />
             <span className="font-semibold text-lg text-foreground">Dattaremit</span>
           </Link>
-          <AccountMenu />
+          <button
+            onClick={() => signOut()}
+            className="flex items-center gap-2 text-sm font-medium text-muted-foreground transition-colors hover:text-foreground"
+          >
+            <LogOut className="size-4" />
+            Sign out
+          </button>
         </header>
 
         <main className="relative z-10 flex flex-1 items-center justify-center px-5 py-10 sm:px-8 sm:py-16">
@@ -147,7 +155,13 @@ export default function OnboardingLayout({ children }: { children: React.ReactNo
           <Image src="/logo.png" alt="Dattaremit" width={26} height={22} />
           <span className="font-semibold text-lg text-foreground">Dattaremit</span>
         </Link>
-        <AccountMenu />
+        <button
+          onClick={() => signOut()}
+          className="flex items-center gap-2 text-sm font-medium text-muted-foreground transition-colors hover:text-foreground"
+        >
+          <LogOut className="size-4" />
+          Sign out
+        </button>
       </header>
 
       <main className="relative z-10 flex flex-1 items-center justify-center px-5 py-10 sm:px-8 sm:py-16">
