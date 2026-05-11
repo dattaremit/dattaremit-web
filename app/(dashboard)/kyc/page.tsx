@@ -105,8 +105,8 @@ export default function KycPage() {
                 <div className="space-y-1">
                   <p className="font-semibold text-sm text-foreground">Verification & limits</p>
                   <p className="text-xs leading-5 text-muted-foreground">
-                    Add your SSN during verification to send up to $5,000 per day. Without SSN, you
-                    can send up to $2,999.99 per day. Weekly cap: $10,000.
+                    Add your SSN during verification to send up to $5,000 per day; without it, the
+                    daily cap is $2,999.99. The 7-day limit is $15,000 either way.
                   </p>
                 </div>
               </div>
