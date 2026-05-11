@@ -3,7 +3,7 @@ import { logger } from "@/lib/logger";
 
 export const revalidate = 60;
 
-const WISE_API_URL = process.env.WISE_API_URL ?? "https://api.wise.com";
+const WISE_API_URL = process.env.WISE_API_URL;
 const WISE_API_KEY = process.env.WISE_API_KEY;
 
 interface WiseRate {
@@ -20,8 +20,8 @@ interface WiseRate {
  * so a single Wise outage doesn't blank the homepage rate card.
  */
 export async function GET() {
-  if (!WISE_API_KEY) {
-    logger.error("WISE_API_KEY not configured for /api/exchange-rate");
+  if (!WISE_API_KEY || !WISE_API_URL) {
+    logger.error("WISE_API_KEY / WISE_API_URL not configured for /api/exchange-rate");
     return NextResponse.json({ success: false, message: "Rate unavailable" }, { status: 502 });
   }
 
