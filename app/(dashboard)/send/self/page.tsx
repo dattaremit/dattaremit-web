@@ -7,9 +7,10 @@ import { Send } from "lucide-react";
 import { AnimatePresence } from "motion/react";
 
 import { transferAmountSchema, type TransferAmountFormData } from "@/schemas/transfer.schema";
-import { useAccount, useSendToSelf } from "@/hooks/api";
+import { useAccount, useSendLimits, useSendToSelf } from "@/hooks/api";
 import { useSendMoneyState } from "@/hooks/use-send-money-state";
 import { dollarsToCents } from "@/lib/money";
+import { dailyCapFor, validateAmountAgainstLimits, weeklyRemaining } from "@/lib/send-limits";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Form } from "@/components/ui/form";
@@ -50,8 +51,16 @@ export default function SendToSelfPage() {
     resolver: yupResolver(transferAmountSchema) as unknown as Resolver<TransferAmountFormData>,
     defaultValues: { amount: "", note: "" },
   });
+  const { data: limits } = useSendLimits();
 
   const hasDepositAccount = !!account?.hasDepositAccount;
+  const limitsHint = limits
+    ? `$${weeklyRemaining(limits.past7DaysAmount).toLocaleString("en-US", {
+        maximumFractionDigits: 2,
+      })} left this week · daily cap $${dailyCapFor(limits.hasSsn).toLocaleString("en-US", {
+        maximumFractionDigits: 2,
+      })}`
+    : undefined;
 
   if (!hasDepositAccount) {
     return (
@@ -121,6 +130,11 @@ export default function SendToSelfPage() {
                 <form
                   className="space-y-5"
                   onSubmit={form.handleSubmit((data) => {
+                    const limitError = validateAmountAgainstLimits(data.amount, limits);
+                    if (limitError) {
+                      form.setError("amount", { message: limitError });
+                      return;
+                    }
                     setAmount(data.amount);
                     setNote(data.note ?? "");
                     setStep("review");
@@ -136,6 +150,7 @@ export default function SendToSelfPage() {
                       <span className="font-semibold text-base text-muted-foreground">$</span>
                     }
                     inputClassName="font-semibold text-2xl h-14 tabular pl-9"
+                    description={limitsHint}
                   />
                   <TextField
                     control={form.control}

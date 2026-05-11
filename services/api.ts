@@ -28,7 +28,12 @@ import type {
   CheckIdentityPayload,
   CheckIdentityResult,
 } from "@/types/recipient";
-import type { SendMoneyPayload, SendToSelfPayload, SendMoneyResponse } from "@/types/transfer";
+import type {
+  SendMoneyPayload,
+  SendToSelfPayload,
+  SendMoneyResponse,
+  SendLimits,
+} from "@/types/transfer";
 import type {
   Notification,
   NotificationFilters,
@@ -295,6 +300,8 @@ export const sendToSelf = (
   api.post("/transfers/send-to-self", data, {
     headers: idempotencyHeaders(idempotencyKey),
   });
+
+export const getSendLimits = (): Promise<SendLimits> => api.get("/transfers/limits");
 
 // ── Notifications ──
 export const getNotifications = (

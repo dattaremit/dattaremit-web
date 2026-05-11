@@ -23,3 +23,12 @@ export interface SendMoneyResponse {
   status: string;
   quote: TransferQuote;
 }
+
+export interface SendLimits {
+  /** Total `sendAmount` for the user's non-failed, non-simulated transfers in
+   * the trailing 7 days. Matches the value the server enforces against. */
+  past7DaysAmount: number;
+  /** True when Zynk captured an SSN during the user's hosted KYC. Unlocks
+   * the higher daily cap ($5,000 vs $2,999.99). */
+  hasSsn: boolean;
+}

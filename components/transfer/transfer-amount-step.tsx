@@ -9,6 +9,8 @@ import { Card } from "@/components/ui/card";
 import { Form } from "@/components/ui/form";
 import { PageHeader } from "@/components/ui/page-header";
 import { TextField } from "@/components/ui/text-field";
+import { useSendLimits } from "@/hooks/api";
+import { dailyCapFor, validateAmountAgainstLimits, weeklyRemaining } from "@/lib/send-limits";
 import type { BankDetails, Recipient } from "@/types/recipient";
 
 interface TransferAmountStepProps {
@@ -30,6 +32,7 @@ export function TransferAmountStep({
     resolver: yupResolver(transferAmountSchema) as unknown as Resolver<TransferAmountFormData>,
     defaultValues: { amount: "", note: "" },
   });
+  const { data: limits } = useSendLimits();
 
   const bank = selectedBank ?? recipient.defaultBank;
   const destinationLabel = bank?.label
@@ -37,6 +40,14 @@ export function TransferAmountStep({
     : bank?.bankName
       ? `their ${bank.bankName} account`
       : "their linked account";
+
+  const limitsHint = limits
+    ? `$${weeklyRemaining(limits.past7DaysAmount).toLocaleString("en-US", {
+        maximumFractionDigits: 2,
+      })} left this week · daily cap $${dailyCapFor(limits.hasSsn).toLocaleString("en-US", {
+        maximumFractionDigits: 2,
+      })}`
+    : undefined;
 
   return (
     <>
@@ -55,6 +66,11 @@ export function TransferAmountStep({
           <form
             className="space-y-6"
             onSubmit={form.handleSubmit((data) => {
+              const limitError = validateAmountAgainstLimits(data.amount, limits);
+              if (limitError) {
+                form.setError("amount", { message: limitError });
+                return;
+              }
               onContinue({ amount: data.amount, note: data.note ?? "" });
             })}
           >
@@ -66,6 +82,7 @@ export function TransferAmountStep({
               placeholder="100.00"
               leading={<span className="font-semibold text-base text-muted-foreground">$</span>}
               inputClassName="font-semibold text-2xl h-14 tabular pl-9"
+              description={limitsHint}
             />
             <TextField
               control={form.control}
