@@ -27,7 +27,7 @@ npm run dev      # http://localhost:3000
 - **Framework:** Next.js 16 (App Router) + React 19
 - **Auth:** Clerk (`@clerk/nextjs`); middleware in `proxy.ts`
 - **Data:** TanStack React Query v5 + Axios; centralized query keys in `constants/query-keys.ts`
-- **API:** Axios in `services/api.ts` with `x-auth-token` injection, response-envelope unwrapping, and idempotency-key support
+- **API:** Axios in `services/api.ts` with `x-auth-token` injection, response-envelope unwrapping, and idempotency-key support.
 - **Forms:** React Hook Form + Yup
 - **UI:** shadcn/ui (Radix UI + Tailwind CSS 4) with CVA variants; fonts: Poppins (primary) and Geist Mono via `next/font/google`
 - **State:** Custom persisted stores using `useSyncExternalStore` + `localStorage` (theme, onboarding, notifications)
