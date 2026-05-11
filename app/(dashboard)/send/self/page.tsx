@@ -1,10 +1,11 @@
 "use client";
 
+import { useEffect, useRef } from "react";
 import Link from "next/link";
 import { useForm, type Resolver } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { Send } from "lucide-react";
-import { AnimatePresence } from "motion/react";
+import { AnimatePresence, motion, useAnimation } from "motion/react";
 
 import { transferAmountSchema, type TransferAmountFormData } from "@/schemas/transfer.schema";
 import { useAccount, useSendLimits, useSendToSelf } from "@/hooks/api";
@@ -50,8 +51,41 @@ export default function SendToSelfPage() {
   const form = useForm<TransferAmountFormData>({
     resolver: yupResolver(transferAmountSchema) as unknown as Resolver<TransferAmountFormData>,
     defaultValues: { amount: "", note: "" },
+    // Re-run the resolver on every change so the red-border + Continue
+    // disabled state track the user as they type, not just on submit.
+    mode: "onChange",
   });
   const { data: limits } = useSendLimits();
+  const watchedAmount = form.watch("amount");
+  const amountError = form.formState.errors.amount?.message;
+  const hasAmountError = !!amountError;
+  const isInvalid = hasAmountError || !watchedAmount?.trim();
+
+  // Layer the SSN-tier / 7-day-cap check on top of yup's schema check.
+  useEffect(() => {
+    const limitError = validateAmountAgainstLimits(watchedAmount ?? "", limits);
+    const current = form.getFieldState("amount").error;
+    if (limitError) {
+      if (current?.type !== "limits") {
+        form.setError("amount", { type: "limits", message: limitError });
+      }
+    } else if (current?.type === "limits") {
+      form.clearErrors("amount");
+    }
+  }, [watchedAmount, limits, form]);
+
+  // Shake the input on the transition into the invalid state.
+  const controls = useAnimation();
+  const wasInvalidRef = useRef(false);
+  useEffect(() => {
+    if (hasAmountError && !wasInvalidRef.current) {
+      controls.start({
+        x: [0, -8, 8, -6, 6, 0],
+        transition: { duration: 0.3, ease: "easeInOut" },
+      });
+    }
+    wasInvalidRef.current = hasAmountError;
+  }, [hasAmountError, controls]);
 
   const hasDepositAccount = !!account?.hasDepositAccount;
   const limitsHint = limits
@@ -132,7 +166,7 @@ export default function SendToSelfPage() {
                   onSubmit={form.handleSubmit((data) => {
                     const limitError = validateAmountAgainstLimits(data.amount, limits);
                     if (limitError) {
-                      form.setError("amount", { message: limitError });
+                      form.setError("amount", { type: "limits", message: limitError });
                       return;
                     }
                     setAmount(data.amount);
@@ -140,25 +174,33 @@ export default function SendToSelfPage() {
                     setStep("review");
                   })}
                 >
-                  <TextField
-                    control={form.control}
-                    name="amount"
-                    label="Amount"
-                    inputMode="decimal"
-                    placeholder="100.00"
-                    leading={
-                      <span className="font-semibold text-base text-muted-foreground">$</span>
-                    }
-                    inputClassName="font-semibold text-2xl h-14 tabular pl-9"
-                    description={limitsHint}
-                  />
+                  <motion.div animate={controls}>
+                    <TextField
+                      control={form.control}
+                      name="amount"
+                      label="Amount"
+                      inputMode="decimal"
+                      placeholder="100.00"
+                      leading={
+                        <span className="font-semibold text-base text-muted-foreground">$</span>
+                      }
+                      inputClassName="font-semibold text-2xl h-14 tabular pl-9"
+                      description={limitsHint}
+                    />
+                  </motion.div>
                   <TextField
                     control={form.control}
                     name="note"
                     label="Note"
                     placeholder="What's it for?"
                   />
-                  <Button type="submit" variant="brand" size="lg" className="w-full">
+                  <Button
+                    type="submit"
+                    variant="brand"
+                    size="lg"
+                    className="w-full"
+                    disabled={isInvalid}
+                  >
                     Continue
                   </Button>
                 </form>
