@@ -11,7 +11,7 @@ import { transferAmountSchema, type TransferAmountFormData } from "@/schemas/tra
 import { useAccount, useSendLimits, useSendToSelf } from "@/hooks/api";
 import { useSendMoneyState } from "@/hooks/use-send-money-state";
 import { dollarsToCents } from "@/lib/money";
-import { dailyCapFor, validateAmountAgainstLimits, weeklyRemaining } from "@/lib/send-limits";
+import { dailyRemaining, validateAmountAgainstLimits, weeklyRemaining } from "@/lib/send-limits";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Form } from "@/components/ui/form";
@@ -59,7 +59,10 @@ export default function SendToSelfPage() {
   const watchedAmount = form.watch("amount");
   const amountError = form.formState.errors.amount?.message;
   const hasAmountError = !!amountError;
-  const isInvalid = hasAmountError || !watchedAmount?.trim();
+  // Gate Continue on `limits` being loaded — without it the cumulative
+  // daily-cap check short-circuits and a user could submit an amount that
+  // the server will then reject.
+  const isInvalid = hasAmountError || !watchedAmount?.trim() || !limits;
 
   // Layer the SSN-tier / 7-day-cap check on top of yup's schema check.
   useEffect(() => {
@@ -89,11 +92,11 @@ export default function SendToSelfPage() {
 
   const hasDepositAccount = !!account?.hasDepositAccount;
   const limitsHint = limits
-    ? `$${weeklyRemaining(limits.past7DaysAmount).toLocaleString("en-US", {
+    ? `$${dailyRemaining(limits.past24HoursAmount, limits.hasSsn).toLocaleString("en-US", {
         maximumFractionDigits: 2,
-      })} left this week · daily cap $${dailyCapFor(limits.hasSsn).toLocaleString("en-US", {
+      })} left today · $${weeklyRemaining(limits.past7DaysAmount).toLocaleString("en-US", {
         maximumFractionDigits: 2,
-      })}`
+      })} left this week`
     : undefined;
 
   if (!hasDepositAccount) {
