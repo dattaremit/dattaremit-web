@@ -1,6 +1,7 @@
 import type { NextConfig } from "next";
 import path from "path";
 import { withSentryConfig } from "@sentry/nextjs";
+import withBundleAnalyzer from "@next/bundle-analyzer";
 
 const securityHeaders = [
   { key: "Strict-Transport-Security", value: "max-age=63072000; includeSubDomains; preload" },
@@ -14,9 +15,22 @@ const securityHeaders = [
   },
 ];
 
+const bundleAnalyzer = withBundleAnalyzer({
+  enabled: process.env.ANALYZE === "true",
+});
+
 const nextConfig: NextConfig = {
   turbopack: {
     root: path.resolve(__dirname),
+  },
+  experimental: {
+    optimizePackageImports: ["lucide-react", "date-fns", "@radix-ui/react-icons", "motion"],
+  },
+  images: {
+    formats: ["image/avif", "image/webp"],
+  },
+  compiler: {
+    removeConsole: process.env.NODE_ENV === "production" ? { exclude: ["error"] } : false,
   },
   async headers() {
     return [
@@ -28,7 +42,7 @@ const nextConfig: NextConfig = {
   },
 };
 
-export default withSentryConfig(nextConfig, {
+export default withSentryConfig(bundleAnalyzer(nextConfig), {
   org: "complyremit",
   project: "dattaremit-webapp",
   authToken: process.env.SENTRY_AUTH_TOKEN,

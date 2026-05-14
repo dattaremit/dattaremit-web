@@ -11,6 +11,7 @@ import { toast } from "sonner";
 import { getClerkErrorMessage } from "@/utils/clerk-error";
 
 import { AuthShell } from "@/components/ui/auth-shell";
+import { AuthLogo } from "@/components/ui/auth-logo";
 import { Form } from "@/components/ui/form";
 import { TextField } from "@/components/ui/text-field";
 import { Button } from "@/components/ui/button";
@@ -124,25 +125,14 @@ export default function SignInPage() {
 
   return (
     <AuthShell
-      eyebrow="Sign in"
-      title={
-        <>
-          Welcome
-          <br />
-          <span className="text-brand">back</span>.
-        </>
-      }
-      subtitle="Sign in to send, track, and manage your transfers."
+      title={<AuthLogo />}
       footer={
-        <span>
+        <div className="text-center">
           New here?{" "}
-          <Link
-            href={ROUTES.SIGN_UP}
-            className="font-semibold text-foreground underline decoration-brand decoration-2 underline-offset-4 hover:decoration-foreground"
-          >
+          <Link href={ROUTES.SIGN_UP} className="font-semibold text-brand hover:text-foreground">
             Create an account
           </Link>
-        </span>
+        </div>
       }
     >
       <Form {...form}>

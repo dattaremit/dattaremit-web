@@ -37,7 +37,7 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
 
   useEffect(() => {
     if (isLoaded && !isSignedIn) {
-      router.replace(ROUTES.WELCOME);
+      router.replace(ROUTES.SIGN_IN);
     }
   }, [isLoaded, isSignedIn, router]);
 
@@ -99,15 +99,12 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
       />
 
       <aside className="sticky top-0 z-20 hidden h-screen w-72 shrink-0 flex-col border-r border-border bg-sidebar text-sidebar-foreground lg:flex">
-        <div className="flex h-20 items-center gap-2.5 px-7">
+        <div className="flex h-20 items-center gap-2.5 border-b border-sidebar-border px-7">
           <Image src="/logo.png" alt="Dattaremit" width={28} height={24} />
           <span className="font-semibold text-xl text-sidebar-foreground">Dattaremit</span>
         </div>
 
-        <nav className="flex-1 overflow-y-auto px-3">
-          <p className="px-3 pb-2 text-[10px] font-medium uppercase tracking-[0.18em] text-sidebar-foreground/40">
-            Workspace
-          </p>
+        <nav className="flex-1 overflow-y-auto px-3 pt-3">
           <ul className="flex flex-col gap-0.5">
             {tabs.map((tab) => {
               const active = isTabActive(tab.href, pathname);

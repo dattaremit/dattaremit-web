@@ -2,7 +2,7 @@ import type { OnboardingStep } from "@/store/onboarding-store";
 import { ROUTES } from "@/constants/routes";
 
 export const ONBOARDING_STEP_ROUTES: Record<OnboardingStep, string> = {
-  welcome: ROUTES.WELCOME,
+  welcome: ROUTES.SIGN_IN,
   auth: ROUTES.SIGN_IN,
   blocked: ROUTES.ONBOARDING.BLOCKED,
   waitlist: ROUTES.ONBOARDING.WAITLIST,

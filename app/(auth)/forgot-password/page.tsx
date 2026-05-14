@@ -16,6 +16,7 @@ import { toast } from "sonner";
 import { getClerkErrorMessage } from "@/utils/clerk-error";
 
 import { AuthShell } from "@/components/ui/auth-shell";
+import { AuthLogo } from "@/components/ui/auth-logo";
 import { Form } from "@/components/ui/form";
 import { TextField } from "@/components/ui/text-field";
 import { Button } from "@/components/ui/button";
@@ -134,20 +135,18 @@ export default function ForgotPasswordPage() {
   if (step === "code") {
     return (
       <AuthShell
-        eyebrow="Verify email"
-        title={
-          <>
-            Check your
-            <br />
-            <span className="text-brand">inbox</span>.
-          </>
-        }
+        title={<AuthLogo />}
         subtitle={
           <>
-            We sent a 6-digit code to <span className="font-medium text-foreground">{email}</span>.
+            We sent a 6-digit code to <span className="font-medium text-foreground">{email}</span>.{" "}
+            <button
+              onClick={() => setStep("email")}
+              className="font-semibold text-brand hover:text-foreground"
+            >
+              Use a different email
+            </button>
           </>
         }
-        back={{ href: ROUTES.FORGOT_PASSWORD, label: "Use a different email" }}
       >
         <OtpForm
           value={code}
@@ -168,17 +167,7 @@ export default function ForgotPasswordPage() {
 
   if (step === "password") {
     return (
-      <AuthShell
-        eyebrow="New password"
-        title={
-          <>
-            Set a new
-            <br />
-            <span className="text-brand">password</span>.
-          </>
-        }
-        subtitle="Choose a strong password you haven't used before."
-      >
+      <AuthShell title={<AuthLogo />} subtitle="Choose a strong password you haven't used before.">
         <Form {...passwordForm}>
           <form onSubmit={passwordForm.handleSubmit(onSubmitPassword)} className="space-y-4">
             <TextField
@@ -208,26 +197,15 @@ export default function ForgotPasswordPage() {
 
   return (
     <AuthShell
-      eyebrow="Forgot password"
-      title={
-        <>
-          Reset your
-          <br />
-          <span className="text-brand">password</span>.
-        </>
-      }
+      title={<AuthLogo />}
       subtitle="Enter the email on your account and we'll send you a code to set a new password."
-      back={{ href: ROUTES.SIGN_IN, label: "Back to sign in" }}
       footer={
-        <span>
+        <div className="text-center">
           Remember your password?{" "}
-          <Link
-            href={ROUTES.SIGN_IN}
-            className="font-semibold text-foreground underline decoration-brand decoration-2 underline-offset-4 hover:decoration-foreground"
-          >
+          <Link href={ROUTES.SIGN_IN} className="font-semibold text-brand hover:text-foreground">
             Sign in
           </Link>
-        </span>
+        </div>
       }
     >
       <Form {...emailForm}>

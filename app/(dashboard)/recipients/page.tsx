@@ -63,7 +63,7 @@ export default function RecipientsPage() {
         <EmptyState
           icon={<Users className="size-5" />}
           title="No recipients yet"
-          description="Add your first recipient to start sending money across borders."
+          description="Add your first recipient to start sending money to India."
           action={
             <Button asChild variant="brand">
               <Link href={ROUTES.RECIPIENTS_NEW}>

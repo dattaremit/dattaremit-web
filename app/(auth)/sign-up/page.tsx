@@ -10,6 +10,7 @@ import { toast } from "sonner";
 import { getClerkErrorMessage } from "@/utils/clerk-error";
 
 import { AuthShell } from "@/components/ui/auth-shell";
+import { AuthLogo } from "@/components/ui/auth-logo";
 import { OrDivider } from "@/components/or-divider";
 import { EmailVerificationForm } from "@/components/email-verification-form";
 import { Form } from "@/components/ui/form";
@@ -61,25 +62,14 @@ export default function SignUpPage() {
 
   return (
     <AuthShell
-      eyebrow="Get started"
-      title={
-        <>
-          Open your
-          <br />
-          <span className="text-brand">account</span>.
-        </>
-      }
-      subtitle="Two minutes to set up. Send to 140+ countries from day one."
+      title={<AuthLogo />}
       footer={
-        <span>
+        <div className="text-center">
           Already a customer?{" "}
-          <Link
-            href={ROUTES.SIGN_IN}
-            className="font-semibold text-foreground underline decoration-brand decoration-2 underline-offset-4 hover:decoration-foreground"
-          >
+          <Link href={ROUTES.SIGN_IN} className="font-semibold text-brand hover:text-foreground">
             Sign in
           </Link>
-        </span>
+        </div>
       }
     >
       <Form {...form}>

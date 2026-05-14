@@ -6,7 +6,6 @@ import { useAccount } from "@/hooks/api";
 import { useAppSignOut } from "@/hooks/use-app-sign-out";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Card } from "@/components/ui/card";
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { toast } from "sonner";
 import {
   Phone,
@@ -15,10 +14,9 @@ import {
   UserPen,
   ChevronRight,
   LogOut,
-  Sun,
   ShieldCheck,
+  CircleUser,
 } from "lucide-react";
-import { ThemeToggle } from "@/components/theme-toggle";
 import { cn } from "@/lib/utils";
 import { ROUTES } from "@/constants/routes";
 
@@ -44,12 +42,6 @@ export default function AccountPage() {
     clerkUser?.emailAddresses[0]?.emailAddress ||
     "";
   const email = serverUser?.email || clerkUser?.emailAddresses[0]?.emailAddress || "";
-  const initials = displayName
-    .split(" ")
-    .map((n) => n[0])
-    .join("")
-    .toUpperCase()
-    .slice(0, 2);
 
   return (
     <div className="space-y-10">
@@ -59,12 +51,9 @@ export default function AccountPage() {
           className="pointer-events-none absolute -top-16 -right-16 size-64 rounded-full bg-brand/15 blur-3xl"
         />
         <div className="relative flex flex-col items-center gap-4 text-center sm:flex-row sm:text-left">
-          <Avatar size="lg" className="size-20 ring-4 ring-brand/15">
-            <AvatarImage src={clerkUser?.imageUrl} alt={displayName} />
-            <AvatarFallback className="bg-brand/15 font-semibold text-2xl text-foreground">
-              {initials}
-            </AvatarFallback>
-          </Avatar>
+          <div className="flex size-20 shrink-0 items-center justify-center rounded-full bg-brand/15 text-brand ring-4 ring-brand/15">
+            <CircleUser className="size-10" />
+          </div>
           <div className="flex flex-col gap-1">
             <h1 className="font-semibold text-3xl leading-tight text-foreground">{displayName}</h1>
             <p className="text-sm text-muted-foreground">{email}</p>
@@ -120,9 +109,6 @@ export default function AccountPage() {
               accent
             />
           )}
-          <Row icon={<Sun className="size-4" />} label="Appearance">
-            <ThemeToggle />
-          </Row>
         </div>
       </Section>
 

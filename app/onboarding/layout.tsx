@@ -3,8 +3,7 @@
 import { useEffect } from "react";
 import { useAuth } from "@clerk/nextjs";
 import { usePathname, useRouter } from "next/navigation";
-import Image from "next/image";
-import Link from "next/link";
+import { LogOut } from "lucide-react";
 import { motion, AnimatePresence } from "motion/react";
 
 import { useAccount } from "@/hooks/api";
@@ -14,14 +13,14 @@ import {
   stepHref,
   stepIndex,
   type OnboardingStepKey,
-  type IndicatorStepKey,
 } from "@/lib/onboarding-progress";
 import { ROUTES } from "@/constants/routes";
 import { EASE_OUT_SMOOTH } from "@/constants/motion";
 import { FullScreenLoader } from "@/components/ui/full-screen-loader";
-import { StepIndicator } from "@/components/onboarding/step-indicator";
 import { AuroraBackground } from "@/components/ui/aurora-background";
-import { AccountMenu } from "@/components/account-menu";
+import { HeroPanel } from "@/components/ui/hero-panel";
+import { AuthLogo } from "@/components/ui/auth-logo";
+import { useAppSignOut } from "@/hooks/use-app-sign-out";
 
 const STEP_FROM_PATH: Record<string, OnboardingStepKey> = {
   [ROUTES.ONBOARDING.REFERRAL]: "referral",
@@ -29,13 +28,12 @@ const STEP_FROM_PATH: Record<string, OnboardingStepKey> = {
   [ROUTES.ONBOARDING.ADDRESS]: "address",
 };
 
-const INDICATOR_STEPS: IndicatorStepKey[] = ["profile", "address"];
-
 export default function OnboardingLayout({ children }: { children: React.ReactNode }) {
   const router = useRouter();
   const pathname = usePathname();
   const { isLoaded, isSignedIn } = useAuth();
   const { data: account, isLoading, error } = useAccount();
+  const signOut = useAppSignOut();
 
   const noProfile = error instanceof ApiError && error.status === 404;
   const state = computeOnboardingState(noProfile ? null : account);
@@ -53,7 +51,6 @@ export default function OnboardingLayout({ children }: { children: React.ReactNo
     if (isLoading) return;
     if (error && !noProfile) return;
 
-    // Gate users before step-based routing: blocklist wins, then waitlist.
     if (isBlocked) {
       if (pathname !== ROUTES.ONBOARDING.BLOCKED) router.replace(ROUTES.ONBOARDING.BLOCKED);
       return;
@@ -63,8 +60,6 @@ export default function OnboardingLayout({ children }: { children: React.ReactNo
       return;
     }
 
-    // Off the gated paths — if we were on waitlist/blocked but the flag
-    // cleared (e.g. admin removed the block), bounce back to the normal flow.
     if (pathname === ROUTES.ONBOARDING.WAITLIST || pathname === ROUTES.ONBOARDING.BLOCKED) {
       router.replace(state.nextStep ? stepHref(state.nextStep) : ROUTES.ROOT);
       return;
@@ -82,7 +77,6 @@ export default function OnboardingLayout({ children }: { children: React.ReactNo
       return;
     }
 
-    // Referral is optional — allow advancing past it without being sent back.
     if (state.nextStep === "referral" && currentStep === "profile") {
       return;
     }
@@ -104,7 +98,6 @@ export default function OnboardingLayout({ children }: { children: React.ReactNo
   ]);
 
   const stepKey = STEP_FROM_PATH[pathname];
-  const isIndicatorStep = !!stepKey && (INDICATOR_STEPS as OnboardingStepKey[]).includes(stepKey);
   const isGatedPath =
     pathname === ROUTES.ONBOARDING.WAITLIST ||
     pathname === ROUTES.ONBOARDING.BLOCKED ||
@@ -114,66 +107,50 @@ export default function OnboardingLayout({ children }: { children: React.ReactNo
     return <FullScreenLoader />;
   }
 
-  // Gated pages render inside the same shell but without the step indicator.
-  if (isGatedPath) {
-    return (
-      <div className="relative flex min-h-screen flex-col bg-background">
-        <AuroraBackground variant="dashboard" />
+  if (!isGatedPath && !stepKey) {
+    return <FullScreenLoader />;
+  }
 
-        <header className="relative z-10 flex h-16 items-center justify-between border-b border-border/60 bg-background/70 px-5 backdrop-blur-xl sm:px-8">
-          <Link href="/" className="flex items-center gap-2.5">
-            <Image src="/logo.png" alt="Dattaremit" width={26} height={22} />
-            <span className="font-semibold text-lg text-foreground">Dattaremit</span>
-          </Link>
-          <AccountMenu />
-        </header>
+  return (
+    <div className="flex min-h-screen">
+      {/* Left — form panel */}
+      <div className="relative flex w-full flex-col lg:w-2/3">
+        <AuroraBackground variant="auth" />
 
-        <main className="relative z-10 flex flex-1 items-center justify-center px-5 py-10 sm:px-8 sm:py-16">
+        <div className="relative z-10 flex h-16 shrink-0 items-center justify-end px-8">
+          <button
+            onClick={() => signOut()}
+            className="flex items-center gap-2 text-sm font-medium text-muted-foreground transition-colors hover:text-foreground"
+          >
+            <LogOut className="size-4" />
+            Sign out
+          </button>
+        </div>
+
+        <main className="relative z-10 flex flex-1 items-center justify-center px-5 py-10 sm:px-10">
           <div className="w-full max-w-xl">
-            <div className="rounded-3xl border border-border bg-card/80 p-8 shadow-lift backdrop-blur-xl sm:p-12">
-              {children}
+            <div className="rounded-2xl border border-border/40 bg-card/70 shadow-lift backdrop-blur-md">
+              <AnimatePresence mode="wait">
+                <motion.div
+                  key={pathname}
+                  initial={{ opacity: 0, y: 12 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  exit={{ opacity: 0, y: -12 }}
+                  transition={{ duration: 0.35, ease: EASE_OUT_SMOOTH }}
+                  className="p-8 sm:p-10"
+                >
+                  <div className="mb-6">
+                    <AuthLogo />
+                  </div>
+                  {children}
+                </motion.div>
+              </AnimatePresence>
             </div>
           </div>
         </main>
       </div>
-    );
-  }
 
-  if (!stepKey || !isIndicatorStep) {
-    return <FullScreenLoader />;
-  }
-
-  const indicatorStep = stepKey as IndicatorStepKey;
-
-  return (
-    <div className="relative flex min-h-screen flex-col bg-background">
-      <AuroraBackground variant="dashboard" />
-
-      <header className="relative z-10 flex h-16 items-center justify-between border-b border-border/60 bg-background/70 px-5 backdrop-blur-xl sm:px-8">
-        <Link href="/" className="flex items-center gap-2.5">
-          <Image src="/logo.png" alt="Dattaremit" width={26} height={22} />
-          <span className="font-semibold text-lg text-foreground">Dattaremit</span>
-        </Link>
-        <AccountMenu />
-      </header>
-
-      <main className="relative z-10 flex flex-1 items-start justify-center px-5 py-10 sm:px-8 sm:py-16">
-        <div className="w-full max-w-xl space-y-7">
-          <StepIndicator current={indicatorStep} completed={state.completion} />
-          <AnimatePresence mode="wait">
-            <motion.div
-              key={pathname}
-              initial={{ opacity: 0, y: 12 }}
-              animate={{ opacity: 1, y: 0 }}
-              exit={{ opacity: 0, y: -12 }}
-              transition={{ duration: 0.35, ease: EASE_OUT_SMOOTH }}
-              className="rounded-3xl border border-border bg-card/80 p-6 shadow-lift backdrop-blur-xl sm:p-8"
-            >
-              {children}
-            </motion.div>
-          </AnimatePresence>
-        </div>
-      </main>
+      <HeroPanel />
     </div>
   );
 }

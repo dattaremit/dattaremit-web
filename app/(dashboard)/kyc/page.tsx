@@ -4,7 +4,7 @@ import { useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { Mail, ShieldCheck } from "lucide-react";
+import { Info, Mail, ShieldCheck } from "lucide-react";
 
 import { queryKeys } from "@/constants/query-keys";
 import { ROUTES } from "@/constants/routes";
@@ -96,9 +96,21 @@ export default function KycPage() {
         </div>
         <div className="space-y-4 p-6">
           {canStartPrimary ? (
-            <p className="text-sm text-muted-foreground">
-              Click below to send a secure verification link to your email.
-            </p>
+            <>
+              <p className="text-sm text-muted-foreground">
+                Click below to send a secure verification link to your email.
+              </p>
+              <div className="flex items-start gap-3 rounded-xl border border-border/60 bg-muted/40 p-4">
+                <Info className="mt-0.5 size-4 shrink-0 text-brand" />
+                <div className="space-y-1">
+                  <p className="font-semibold text-sm text-foreground">Verification & limits</p>
+                  <p className="text-xs leading-5 text-muted-foreground">
+                    Add your SSN during verification to send up to $5,000 per day; without it, the
+                    daily cap is $2,999.99. The 7-day limit is $15,000 either way.
+                  </p>
+                </div>
+              </div>
+            </>
           ) : status === "PENDING" ? (
             <>
               <p className="text-sm text-muted-foreground">

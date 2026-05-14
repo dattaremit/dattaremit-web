@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { CheckCircle2, ArrowRight, Send, Sparkles, Landmark } from "lucide-react";
+import { CheckCircle2, ArrowRight, Send, Landmark } from "lucide-react";
 import { useAccount, useExchangeRate } from "@/hooks/api";
 import { ApiError } from "@/services/api";
 import { ROUTES } from "@/constants/routes";
@@ -54,15 +54,10 @@ export default function HomePage() {
     );
   }
 
-  const greeting = getGreeting();
-
   return (
     <div className="space-y-10">
       <Reveal>
         <div className="flex flex-col gap-3">
-          <span className="inline-flex w-fit items-center gap-2 rounded-full border border-border bg-muted/60 px-2.5 py-1 text-[10px] font-medium uppercase tracking-[0.16em] text-muted-foreground">
-            {greeting}
-          </span>
           <h1 className="font-semibold text-4xl leading-[1.05] text-foreground sm:text-5xl">
             {user?.firstName ? (
               <>
@@ -74,8 +69,8 @@ export default function HomePage() {
           </h1>
           <p className="max-w-xl text-sm leading-relaxed text-muted-foreground sm:text-base">
             {bothLinked
-              ? "Your accounts are connected. Send to anyone, anywhere — in minutes."
-              : "Finish setting up to start sending money across borders."}
+              ? "Your accounts are connected. Send money to India in minutes."
+              : "Finish setting up to start sending money to India."}
           </p>
         </div>
       </Reveal>
@@ -89,9 +84,8 @@ export default function HomePage() {
                 ₹<span className="text-brand">{rate ? rate.toFixed(2) : "—"}</span>
               </>
             }
-            hint="USD → INR · live from Yahoo Finance"
+            hint="USD → INR · live mid-market rate"
             accent
-            icon={<Sparkles className="size-4" />}
           />
         </StaggerItem>
       </Stagger>
@@ -191,13 +185,4 @@ function QuickAction({
       <ArrowRight className="size-4 text-muted-foreground transition-transform group-hover:translate-x-0.5 group-hover:text-foreground" />
     </Link>
   );
-}
-
-function getGreeting() {
-  const h = new Date().getHours();
-  if (h < 5) return "Late night";
-  if (h < 12) return "Good morning";
-  if (h < 17) return "Good afternoon";
-  if (h < 21) return "Good evening";
-  return "Good evening";
 }

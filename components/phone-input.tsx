@@ -76,45 +76,52 @@ export function PhoneInput({
           error && "border-destructive ring-[3px] ring-destructive/20",
         )}
       >
-        <Popover open={open} onOpenChange={setOpen}>
-          <PopoverTrigger asChild>
-            <button
-              type="button"
-              aria-label="Select country"
-              className="flex shrink-0 items-center gap-1.5 rounded-l-lg px-3 outline-none transition-colors hover:bg-accent/40"
-            >
-              <span className="text-lg leading-none">{getFlagEmoji(selectedCountry.code)}</span>
-              <span className="text-sm font-medium">{selectedCountry.dial}</span>
-              <ChevronDown className="h-3.5 w-3.5 shrink-0 text-muted-foreground/70" />
-            </button>
-          </PopoverTrigger>
-          <PopoverContent align="start" sideOffset={8} className="w-56 p-1">
-            <div role="listbox" className="flex flex-col">
-              {COUNTRIES.map((country) => {
-                const isSelected = selectedCountry.code === country.code;
-                return (
-                  <button
-                    key={country.code}
-                    role="option"
-                    aria-selected={isSelected}
-                    type="button"
-                    onClick={() => handleCountrySelect(country.code)}
-                    className={cn(
-                      "flex items-center gap-2 rounded-md px-2.5 py-2 text-sm outline-none transition-colors",
-                      "hover:bg-accent hover:text-accent-foreground focus-visible:bg-accent",
-                      isSelected && "bg-brand/10",
-                    )}
-                  >
-                    <span className="text-lg leading-none">{getFlagEmoji(country.code)}</span>
-                    <span className="flex-1 text-left">{country.name}</span>
-                    <span className="text-muted-foreground">{country.dial}</span>
-                    {isSelected && <Check className="size-3.5 shrink-0 text-brand" />}
-                  </button>
-                );
-              })}
-            </div>
-          </PopoverContent>
-        </Popover>
+        {COUNTRIES.length > 1 ? (
+          <Popover open={open} onOpenChange={setOpen}>
+            <PopoverTrigger asChild>
+              <button
+                type="button"
+                aria-label="Select country"
+                className="flex shrink-0 items-center gap-1.5 rounded-l-lg px-3 outline-none transition-colors hover:bg-accent/40"
+              >
+                <span className="text-lg leading-none">{getFlagEmoji(selectedCountry.code)}</span>
+                <span className="text-sm font-medium">{selectedCountry.dial}</span>
+                <ChevronDown className="h-3.5 w-3.5 shrink-0 text-muted-foreground/70" />
+              </button>
+            </PopoverTrigger>
+            <PopoverContent align="start" sideOffset={8} className="w-56 p-1">
+              <div role="listbox" className="flex flex-col">
+                {COUNTRIES.map((country) => {
+                  const isSelected = selectedCountry.code === country.code;
+                  return (
+                    <button
+                      key={country.code}
+                      role="option"
+                      aria-selected={isSelected}
+                      type="button"
+                      onClick={() => handleCountrySelect(country.code)}
+                      className={cn(
+                        "flex items-center gap-2 rounded-md px-2.5 py-2 text-sm outline-none transition-colors",
+                        "hover:bg-accent hover:text-accent-foreground focus-visible:bg-accent",
+                        isSelected && "bg-brand/10",
+                      )}
+                    >
+                      <span className="text-lg leading-none">{getFlagEmoji(country.code)}</span>
+                      <span className="flex-1 text-left">{country.name}</span>
+                      <span className="text-muted-foreground">{country.dial}</span>
+                      {isSelected && <Check className="size-3.5 shrink-0 text-brand" />}
+                    </button>
+                  );
+                })}
+              </div>
+            </PopoverContent>
+          </Popover>
+        ) : (
+          <div className="flex shrink-0 items-center gap-1.5 px-3">
+            <span className="text-lg leading-none">{getFlagEmoji(selectedCountry.code)}</span>
+            <span className="text-sm font-medium">{selectedCountry.dial}</span>
+          </div>
+        )}
 
         <div className="h-5 w-px shrink-0 bg-border" />
 
