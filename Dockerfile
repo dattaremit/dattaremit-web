@@ -13,8 +13,10 @@ RUN npm ci --no-audit --no-fund
 
 FROM base AS dev
 ENV NODE_ENV=development
-COPY --from=deps /app/node_modules ./node_modules
-COPY . .
+COPY --from=deps --chown=node:node /app/node_modules ./node_modules
+COPY --chown=node:node . .
+RUN chown node:node /app
+USER node
 EXPOSE 3000
 CMD ["npm", "run", "dev"]
 
