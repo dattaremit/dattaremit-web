@@ -22,6 +22,24 @@ npm run dev      # http://localhost:3000
 | `npm run test`                            | Jest                         |
 | `npm run knip`                            | Dead-code/unused-export scan |
 
+## Run with Docker
+
+```bash
+cp .env.example .env.local       # fill in real values
+
+# Dev (hot reload) — http://localhost:3000
+docker compose --env-file .env.local --profile dev up web-dev
+
+# Production-like build & run
+docker compose --env-file .env.local up --build web
+```
+
+`NEXT_PUBLIC_*` vars are inlined into the client bundle at build time, so they're wired as build args in `docker-compose.yml`. Compose interpolates `${...}` from `.env` by default — pass `--env-file .env.local` so those build args resolve from our local secrets file instead.
+
+> **Do not** use `docker build` + `docker run --env-file .env.local` for the production image. Runtime env vars cannot reach the already-built client bundle, so Clerk falls back to its hosted Account Portal sign-up page instead of our local `/sign-up`. Always build through `docker compose --env-file .env.local` (or pass every `NEXT_PUBLIC_*` value explicitly with `--build-arg`).
+
+`SENTRY_AUTH_TOKEN` is optional — if unset, the build skips source-map upload.
+
 ## Stack
 
 - **Framework:** Next.js 16 (App Router) + React 19
