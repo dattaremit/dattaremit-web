@@ -5,6 +5,8 @@ import { Send } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { PageHeader } from "@/components/ui/page-header";
+import { useExchangeRate } from "@/hooks/api/use-exchange-rate";
+import { computeInrPreview, formatInr } from "@/lib/money";
 import type { BankDetails, Recipient } from "@/types/recipient";
 
 interface ReviewTransferStepProps {
@@ -25,6 +27,8 @@ export function ReviewTransferStep({
   onConfirm,
 }: ReviewTransferStepProps) {
   const bank = selectedBank ?? recipient.defaultBank;
+  const { data: rateData } = useExchangeRate();
+  const inrPreview = computeInrPreview(amount, rateData?.rate);
   return (
     <>
       <PageHeader
@@ -55,6 +59,12 @@ export function ReviewTransferStep({
               {recipient.firstName} {recipient.lastName}
             </span>
           </p>
+          {inrPreview !== null && (
+            <p className="relative mt-3 text-sm text-muted-foreground">
+              They&rsquo;ll receive{" "}
+              <span className="font-semibold text-foreground tabular">{formatInr(inrPreview)}</span>
+            </p>
+          )}
         </div>
 
         <div className="space-y-3 p-6 text-sm">
@@ -65,6 +75,11 @@ export function ReviewTransferStep({
           </Row>
           <Row label="Recipient">{recipient.email}</Row>
           {note && <Row label="Note">{note}</Row>}
+          {rateData?.rate && (
+            <Row label="Exchange rate">
+              <span className="tabular">1 USD = ₹{rateData.rate.toFixed(2)}</span>
+            </Row>
+          )}
           <Row label="Estimated arrival">
             <span className="text-brand">~60 seconds</span>
           </Row>

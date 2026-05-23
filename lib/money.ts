@@ -23,3 +23,24 @@ export function dollarsToCents(value: string): number {
   }
   return cents;
 }
+
+const INR_FORMATTER = new Intl.NumberFormat("en-IN", {
+  maximumFractionDigits: 2,
+  minimumFractionDigits: 2,
+});
+
+export function formatInr(amount: number): string {
+  return `₹${INR_FORMATTER.format(amount)}`;
+}
+
+export function computeInrPreview(
+  usdInput: string,
+  rate: number | undefined | null,
+): number | null {
+  if (!rate || rate <= 0) return null;
+  const trimmed = usdInput.trim();
+  if (!trimmed || !AMOUNT_REGEX.test(trimmed)) return null;
+  const usd = parseFloat(trimmed);
+  if (!Number.isFinite(usd) || usd <= 0) return null;
+  return usd * rate;
+}
