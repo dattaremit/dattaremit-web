@@ -8,9 +8,9 @@ import { Send } from "lucide-react";
 import { AnimatePresence, motion, useAnimation } from "motion/react";
 
 import { transferAmountSchema, type TransferAmountFormData } from "@/schemas/transfer.schema";
-import { useAccount, useSendLimits, useSendToSelf } from "@/hooks/api";
+import { useAccount, useExchangeRate, useSendLimits, useSendToSelf } from "@/hooks/api";
 import { useSendMoneyState } from "@/hooks/use-send-money-state";
-import { dollarsToCents } from "@/lib/money";
+import { computeInrPreview, dollarsToCents, formatInr } from "@/lib/money";
 import { dailyRemaining, validateAmountAgainstLimits, weeklyRemaining } from "@/lib/send-limits";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
@@ -56,7 +56,10 @@ export default function SendToSelfPage() {
     mode: "onChange",
   });
   const { data: limits } = useSendLimits();
+  const { data: rateData } = useExchangeRate();
   const watchedAmount = form.watch("amount");
+  const inrPreview = computeInrPreview(watchedAmount ?? "", rateData?.rate);
+  const reviewInrPreview = computeInrPreview(amount, rateData?.rate);
   const amountError = form.formState.errors.amount?.message;
   const hasAmountError = !!amountError;
   // Gate Continue on `limits` being loaded — without it the cumulative
@@ -190,6 +193,16 @@ export default function SendToSelfPage() {
                       inputClassName="font-semibold text-2xl h-14 tabular pl-9"
                       description={limitsHint}
                     />
+                    {inrPreview !== null && !hasAmountError && (
+                      <div className="mt-2 flex items-baseline justify-between rounded-lg bg-brand-soft/30 px-3 py-2">
+                        <span className="text-xs font-medium uppercase tracking-wide text-muted-foreground">
+                          You&rsquo;ll receive
+                        </span>
+                        <span className="font-semibold text-base tabular text-foreground">
+                          {formatInr(inrPreview)}
+                        </span>
+                      </div>
+                    )}
                   </motion.div>
                   <TextField
                     control={form.control}
@@ -236,6 +249,14 @@ export default function SendToSelfPage() {
                   ${amount}
                 </p>
                 <p className="relative mt-2 text-sm text-muted-foreground">to your own account</p>
+                {reviewInrPreview !== null && (
+                  <p className="relative mt-3 text-sm text-muted-foreground">
+                    You&rsquo;ll receive{" "}
+                    <span className="font-semibold text-foreground tabular">
+                      {formatInr(reviewInrPreview)}
+                    </span>
+                  </p>
+                )}
               </div>
 
               {note && (
