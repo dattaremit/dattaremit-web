@@ -13,12 +13,21 @@ import { ROUTES } from "@/constants/routes";
 import { toast } from "sonner";
 
 import { Card } from "@/components/ui/card";
-import { Form, FormField, FormItem } from "@/components/ui/form";
+import {
+  Form,
+  FormControl,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
+} from "@/components/ui/form";
 import { Button } from "@/components/ui/button";
 import { TextField } from "@/components/ui/text-field";
+import { AddressAutocomplete } from "@/components/ui/address-autocomplete";
 import { PageHeader } from "@/components/ui/page-header";
 import { FormSkeletonLoader } from "@/components/ui/form-skeleton-loader";
 import { CountrySelector } from "@/components/country-selector";
+import { useAddressAutocomplete } from "@/hooks/use-address-autocomplete";
 import type { Country } from "@/constants/countries";
 
 export interface AddressFormProps {
@@ -59,6 +68,15 @@ export function AddressForm({
       addressLine1: "",
       postalCode: "",
     },
+  });
+
+  // Street autocomplete is US-only (matches mobile); other countries fall back
+  // to a plain text field.
+  const selectedCountry = form.watch("country");
+  const autocompleteEnabled = selectedCountry === "US";
+  const street = useAddressAutocomplete({
+    country: selectedCountry || undefined,
+    enabled: autocompleteEnabled,
   });
 
   const hasPopulated = useRef(false);
@@ -151,12 +169,58 @@ export function AddressForm({
           placeholder="Enter state"
         />
         <TextField control={form.control} name="city" label="City" placeholder="Enter city" />
-        <TextField
-          control={form.control}
-          name="addressLine1"
-          label="Street address"
-          placeholder="Enter street address"
-        />
+        {autocompleteEnabled ? (
+          <FormField
+            control={form.control}
+            name="addressLine1"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel className="text-sm font-medium text-foreground/90">
+                  Street address
+                </FormLabel>
+                <FormControl>
+                  <AddressAutocomplete
+                    id="addressLine1"
+                    name={field.name}
+                    value={field.value ?? ""}
+                    invalid={!!form.formState.errors.addressLine1}
+                    suggestions={street.suggestions}
+                    isLoading={street.isSearching}
+                    placeholder="Enter street address"
+                    onBlur={field.onBlur}
+                    onChange={(text) => {
+                      field.onChange(text);
+                      street.setQuery(text);
+                    }}
+                    onSelect={async (prediction) => {
+                      field.onChange(prediction.mainText);
+                      const components = await street.selectPrediction(prediction);
+                      if (!components) return;
+                      if (components.street)
+                        form.setValue("addressLine1", components.street, { shouldValidate: true });
+                      if (components.city)
+                        form.setValue("city", components.city, { shouldValidate: true });
+                      if (components.state)
+                        form.setValue("state", components.state, { shouldValidate: true });
+                      if (components.postalCode)
+                        form.setValue("postalCode", components.postalCode, {
+                          shouldValidate: true,
+                        });
+                    }}
+                  />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+        ) : (
+          <TextField
+            control={form.control}
+            name="addressLine1"
+            label="Street address"
+            placeholder="Enter street address"
+          />
+        )}
         <TextField
           control={form.control}
           name="postalCode"

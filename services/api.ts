@@ -45,6 +45,7 @@ import type {
   PublicKeyResponse,
 } from "@/types/indian-kyc";
 import type { WebPushRegistrationPayload, WebPushDevice } from "@/types/web-push";
+import type { AutocompletePrediction, AddressComponents } from "@/types/address";
 
 const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL ?? process.env.NEXT_PUBLIC_API_BASE_URL;
 
@@ -203,6 +204,22 @@ export const updateAddress = (id: string, data: UpdateAddressPayload): Promise<A
   api.put(`/addresses/${id}`, data);
 
 export const deleteAddress = (id: string): Promise<void> => api.delete(`/addresses/${id}`);
+
+// ── Google Maps (address autocomplete) ──
+export const addressAutocomplete = (params: {
+  input: string;
+  country?: string;
+  sessionToken?: string;
+  city?: string;
+  state?: string;
+  types?: string;
+}): Promise<AutocompletePrediction[]> => api.get("/google-maps/autocomplete", { params });
+
+export const getAddressPlaceDetails = (
+  placeId: string,
+  sessionToken?: string,
+): Promise<AddressComponents> =>
+  api.get("/google-maps/place-details", { params: { placeId, sessionToken } });
 
 // ── Referral ──
 export const validateReferralCode = (code: string): Promise<{ valid: boolean }> =>

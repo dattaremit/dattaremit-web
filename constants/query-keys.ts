@@ -29,4 +29,6 @@ export const queryKeys = {
   transferLimits: ["transfer", "limits"] as const,
   emailCheck: (scope: "user" | "recipient", email: string) =>
     ["check-email", scope, email] as const,
+  addressAutocomplete: (sessionToken: string, input: string) =>
+    ["address-autocomplete", sessionToken, input] as const,
 } as const;
