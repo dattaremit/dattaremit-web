@@ -20,6 +20,7 @@ import { useCheckRecipientIdentity, useCreateRecipient } from "@/hooks/api";
 import { recipientSchema, type RecipientFormData } from "@/schemas/recipient.schema";
 import type { CheckIdentityResult, Recipient } from "@/types/recipient";
 import safeStorage from "@/lib/safe-storage";
+import { COUNTRIES } from "@/constants/countries";
 
 type WizardStep = "contact" | "address" | "review" | "success";
 
@@ -60,6 +61,13 @@ function readDraft(): Partial<RecipientFormData> | null {
     if (Date.now() - savedAt > DRAFT_TTL_MS) {
       safeStorage.removeItem(DRAFT_KEY);
       return null;
+    }
+    // If the stored phone prefix isn't a supported country, drop just the
+    // phone fields and keep the rest of the draft. Without this, a stale
+    // prefix makes PhoneInput re-prepend it on every keystroke ("+91+91…").
+    if (values.phoneNumberPrefix && !COUNTRIES.some((c) => c.dial === values.phoneNumberPrefix)) {
+      const { phoneNumberPrefix: _p, phoneNumber: _n, ...rest } = values;
+      return rest;
     }
     return values;
   } catch {
@@ -103,7 +111,7 @@ export function NewRecipientWizard() {
       firstName: "",
       lastName: "",
       email: "",
-      phoneNumberPrefix: "+1",
+      phoneNumberPrefix: "+91",
       phoneNumber: "",
       addressLine1: "",
       city: "",

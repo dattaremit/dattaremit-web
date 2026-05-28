@@ -10,6 +10,7 @@ import { TextField } from "@/components/ui/text-field";
 import { PhoneInput } from "@/components/phone-input";
 import { useCheckEmailAvailability } from "@/hooks/api";
 import { stripPhonePrefix } from "@/lib/phone-utils";
+import { COUNTRIES } from "@/constants/countries";
 
 export interface RecipientFormProps {
   defaultValues?: Partial<RecipientFormData>;
