@@ -62,10 +62,14 @@ function readDraft(): Partial<RecipientFormData> | null {
       safeStorage.removeItem(DRAFT_KEY);
       return null;
     }
-    // If the stored phone prefix isn't a supported country, drop just the
-    // phone fields and keep the rest of the draft. Without this, a stale
-    // prefix makes PhoneInput re-prepend it on every keystroke ("+91+91…").
-    if (values.phoneNumberPrefix && !COUNTRIES.some((c) => c.dial === values.phoneNumberPrefix)) {
+    // Drop the phone pair if either side is corrupted: an unsupported prefix
+    // (drifted COUNTRIES list) or a phoneNumber containing anything other than
+    // digits (e.g. "+91+91…" from a previous cascade bug). The schema enforces
+    // digits-only on submit, so any non-digit content is corruption.
+    const prefixInvalid =
+      values.phoneNumberPrefix && !COUNTRIES.some((c) => c.dial === values.phoneNumberPrefix);
+    const phoneInvalid = typeof values.phoneNumber === "string" && /[^\d]/.test(values.phoneNumber);
+    if (prefixInvalid || phoneInvalid) {
       const { phoneNumberPrefix: _p, phoneNumber: _n, ...rest } = values;
       return rest;
     }
