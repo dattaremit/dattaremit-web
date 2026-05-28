@@ -103,7 +103,7 @@ export function NewRecipientWizard() {
       firstName: "",
       lastName: "",
       email: "",
-      phoneNumberPrefix: "+91",
+      phoneNumberPrefix: "+1",
       phoneNumber: "",
       addressLine1: "",
       city: "",
