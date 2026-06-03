@@ -5,17 +5,20 @@ export interface SendMoneyPayload {
   note?: string;
 }
 
-/** Which of the user's own Indian accounts a self-send lands in.
+/** Which of the user's own Indian accounts a self-send lands in (UI concept).
  *  "NRO" is the regular deposit account; "NRE" is the Non-Resident External
  *  account added via the NRE bank-details form. */
 export type SelfAccountType = "NRO" | "NRE";
 
+/** Wire value the server expects on `/transfers/send-to-self`. "OFFRAMP" is
+ *  the regular route (maps to the NRO selection); "NRE" pays out to the NRE
+ *  bank. The server defaults to "OFFRAMP" when omitted. */
+export type SelfPayoutType = "OFFRAMP" | "NRE";
+
 export interface SendToSelfPayload {
   amountCents: number;
   note?: string;
-  /** Destination account type. Defaults to "NRO" (the regular deposit
-   *  account) when omitted, matching prior behaviour. */
-  accountType?: SelfAccountType;
+  payoutType?: SelfPayoutType;
 }
 
 export interface TransferQuote {

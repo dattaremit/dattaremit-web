@@ -264,15 +264,14 @@ export const addDepositAccount = (
     headers: idempotencyHeaders(idempotencyKey),
   });
 
-// ── NRE Account ──
-// TODO(nre): replace this placeholder path with the real endpoint once it's
-// provided. Payload shape mirrors the regular deposit account for now.
-const NRE_ACCOUNT_ENDPOINT = "/zynk/nre-account";
+// ── NRE Deposit Account ──
+// Same payload shape as the regular deposit account; the server stores it as
+// the user's NRE bank (zynkNreDepositAccountId).
 export const addNreAccount = (
   data: AddDepositAccountPayload,
   idempotencyKey?: string,
 ): Promise<User> =>
-  api.post(NRE_ACCOUNT_ENDPOINT, data, {
+  api.post("/zynk/nre-deposit-account", data, {
     headers: idempotencyHeaders(idempotencyKey),
   });
 

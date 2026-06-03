@@ -115,7 +115,7 @@ export default function SendToSelfPage() {
   }, [hasAmountError, controls]);
 
   const hasDepositAccount = !!account?.hasDepositAccount;
-  const hasNreAccount = !!account?.hasNreAccount;
+  const hasNreBank = !!account?.hasNreBank;
 
   const handleAddNre = async (data: DepositAccountFormData) => {
     try {
@@ -194,7 +194,7 @@ export default function SendToSelfPage() {
         {step === "select-account" && (
           <StepTransition key="select-account">
             <SelectSelfAccountStep
-              hasNreAccount={hasNreAccount}
+              hasNreAccount={hasNreBank}
               selected={accountType}
               onSelect={setAccountType}
               onAddNre={() => setStep("add-nre")}
@@ -354,7 +354,12 @@ export default function SendToSelfPage() {
                       }
                       try {
                         return await sendToSelf.mutateAsync({
-                          payload: { amountCents, note: note || undefined, accountType },
+                          payload: {
+                            amountCents,
+                            note: note || undefined,
+                            // NRO selection routes via the regular OFFRAMP path.
+                            payoutType: accountType === "NRE" ? "NRE" : "OFFRAMP",
+                          },
                           idempotencyKey,
                         });
                       } catch (err) {
