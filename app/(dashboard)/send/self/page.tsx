@@ -1,15 +1,26 @@
 "use client";
 
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { useForm, type Resolver } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { Send } from "lucide-react";
 import { AnimatePresence, motion, useAnimation } from "motion/react";
+import { toast } from "sonner";
 
 import { transferAmountSchema, type TransferAmountFormData } from "@/schemas/transfer.schema";
-import { useAccount, useExchangeRate, useSendLimits, useSendToSelf } from "@/hooks/api";
+import type { DepositAccountFormData } from "@/schemas/deposit-account.schema";
+import {
+  useAccount,
+  useAddNreAccount,
+  useExchangeRate,
+  useSendLimits,
+  useSendToSelf,
+} from "@/hooks/api";
 import { useSendMoneyState } from "@/hooks/use-send-money-state";
+import { ApiError } from "@/services/api";
+import type { SelfAccountType } from "@/types/transfer";
 import { computeInrPreview, dollarsToCents, formatInr } from "@/lib/money";
 import { dailyRemaining, validateAmountAgainstLimits, weeklyRemaining } from "@/lib/send-limits";
 import { Button } from "@/components/ui/button";
@@ -19,15 +30,25 @@ import { TextField } from "@/components/ui/text-field";
 import { PageHeader } from "@/components/ui/page-header";
 import { BackLink } from "@/components/ui/back-link";
 import { TransferResult } from "@/components/transfer/transfer-result";
+import { SelectSelfAccountStep } from "@/components/transfer/select-self-account-step";
+import { AddNreAccountStep } from "@/components/transfer/add-nre-account-step";
 import { useStepUp } from "@/hooks/use-step-up";
 import { ROUTES } from "@/constants/routes";
 import { StepTransition } from "@/components/motion/step-transition";
 
-type Step = "amount" | "review" | "result";
+type Step = "select-account" | "add-nre" | "amount" | "review" | "result";
+
+const ACCOUNT_LABELS: Record<SelfAccountType, string> = {
+  NRO: "your regular account",
+  NRE: "your NRE account",
+};
 
 export default function SendToSelfPage() {
+  const router = useRouter();
   const { data: account } = useAccount();
   const sendToSelf = useSendToSelf();
+  const addNre = useAddNreAccount();
+  const [accountType, setAccountType] = useState<SelfAccountType>("NRO");
   const { gate, stepUpElement } = useStepUp({
     title: "Confirm transfer",
     description: "We emailed you a 6-digit code. Enter it to authorize moving funds.",
@@ -46,7 +67,7 @@ export default function SendToSelfPage() {
     setSendError,
     idempotencyKey,
     resetIdempotencyKey,
-  } = useSendMoneyState<Step>("amount");
+  } = useSendMoneyState<Step>("select-account");
 
   const form = useForm<TransferAmountFormData>({
     resolver: yupResolver(transferAmountSchema) as unknown as Resolver<TransferAmountFormData>,
@@ -94,6 +115,25 @@ export default function SendToSelfPage() {
   }, [hasAmountError, controls]);
 
   const hasDepositAccount = !!account?.hasDepositAccount;
+  const hasNreAccount = !!account?.hasNreAccount;
+
+  const handleAddNre = async (data: DepositAccountFormData) => {
+    try {
+      await addNre.mutateAsync({
+        accountName: data.accountName,
+        accountNumber: data.accountNumber,
+        ifsc: data.ifsc,
+      });
+      toast.success("NRE account added.");
+      // First-time NRE is now linked — proceed straight to the amount step
+      // with NRE selected. Re-entering the picker later shows it selectable.
+      setAccountType("NRE");
+      setStep("amount");
+    } catch (err) {
+      toast.error(err instanceof ApiError ? err.message : "Failed to add NRE account");
+    }
+  };
+
   const limitsHint = limits
     ? `$${dailyRemaining(limits.past24HoursAmount, limits.hasSsn).toLocaleString("en-US", {
         maximumFractionDigits: 2,
@@ -126,7 +166,7 @@ export default function SendToSelfPage() {
         <TransferResult
           status={sendError ? "error" : "success"}
           title={sendError ? "Transfer failed" : "Money on its way"}
-          description={sendError ?? `You moved $${amount} to your own account.`}
+          description={sendError ?? `You moved $${amount} to ${ACCOUNT_LABELS[accountType]}.`}
           transactionId={transactionId}
           onRetry={() => {
             setSendError(null);
@@ -141,11 +181,9 @@ export default function SendToSelfPage() {
   return (
     <div className="mx-auto w-full max-w-2xl space-y-7">
       {stepUpElement}
-      {step === "amount" ? (
-        <BackLink href="/" />
-      ) : (
+      {(step === "amount" || step === "review") && (
         <button
-          onClick={() => setStep("amount")}
+          onClick={() => setStep(step === "review" ? "amount" : "select-account")}
           className="group inline-flex items-center gap-1.5 self-start text-xs font-medium uppercase tracking-[0.16em] text-muted-foreground transition-colors hover:text-foreground"
         >
           ← Back
@@ -153,6 +191,29 @@ export default function SendToSelfPage() {
       )}
 
       <AnimatePresence mode="wait">
+        {step === "select-account" && (
+          <StepTransition key="select-account">
+            <SelectSelfAccountStep
+              hasNreAccount={hasNreAccount}
+              selected={accountType}
+              onSelect={setAccountType}
+              onAddNre={() => setStep("add-nre")}
+              onContinue={() => setStep("amount")}
+              onBack={() => router.push("/")}
+            />
+          </StepTransition>
+        )}
+
+        {step === "add-nre" && (
+          <StepTransition key="add-nre">
+            <AddNreAccountStep
+              onSubmit={handleAddNre}
+              onBack={() => setStep("select-account")}
+              isPending={addNre.isPending}
+            />
+          </StepTransition>
+        )}
+
         {step === "amount" && (
           <StepTransition key="amount">
             <PageHeader
@@ -162,7 +223,7 @@ export default function SendToSelfPage() {
                   Move to <span className="text-brand">yourself</span>.
                 </>
               }
-              subtitle="Funds go to your linked deposit account."
+              subtitle={`Funds go to ${ACCOUNT_LABELS[accountType]}.`}
             />
 
             <Card variant="elevated" className="p-6 sm:p-8">
@@ -248,7 +309,9 @@ export default function SendToSelfPage() {
                 <p className="relative mt-2 font-semibold text-5xl leading-none tabular text-foreground sm:text-6xl">
                   ${amount}
                 </p>
-                <p className="relative mt-2 text-sm text-muted-foreground">to your own account</p>
+                <p className="relative mt-2 text-sm text-muted-foreground">
+                  to {ACCOUNT_LABELS[accountType]}
+                </p>
                 {reviewInrPreview !== null && (
                   <p className="relative mt-3 text-sm text-muted-foreground">
                     You&rsquo;ll receive{" "}
@@ -291,7 +354,7 @@ export default function SendToSelfPage() {
                       }
                       try {
                         return await sendToSelf.mutateAsync({
-                          payload: { amountCents, note: note || undefined },
+                          payload: { amountCents, note: note || undefined, accountType },
                           idempotencyKey,
                         });
                       } catch (err) {

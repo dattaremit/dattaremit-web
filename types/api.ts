@@ -111,6 +111,11 @@ export interface Account {
   indianKycStatus?: IndianKycStatus;
   hasBankAccount?: boolean;
   hasDepositAccount?: boolean;
+  /** True if the user has a linked NRE deposit account. When false, the
+   *  self-send flow renders the "add NRE bank details" form before letting
+   *  the user pick NRE as a destination.
+   *  TODO(nre): the real account endpoint will populate this flag. */
+  hasNreAccount?: boolean;
   /** True if the server has created a Zynk payment entity for this user.
    *  Address submission triggers entity creation — if false, the address
    *  step is not actually complete (entity creation failed or is pending). */

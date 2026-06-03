@@ -5,9 +5,17 @@ export interface SendMoneyPayload {
   note?: string;
 }
 
+/** Which of the user's own Indian accounts a self-send lands in.
+ *  "NRO" is the regular deposit account; "NRE" is the Non-Resident External
+ *  account added via the NRE bank-details form. */
+export type SelfAccountType = "NRO" | "NRE";
+
 export interface SendToSelfPayload {
   amountCents: number;
   note?: string;
+  /** Destination account type. Defaults to "NRO" (the regular deposit
+   *  account) when omitted, matching prior behaviour. */
+  accountType?: SelfAccountType;
 }
 
 export interface TransferQuote {
