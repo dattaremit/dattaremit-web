@@ -147,6 +147,41 @@ export interface AddDepositAccountPayload {
   ifsc: string;
 }
 
+// ── NRE Bank Account ──
+
+/** Payload for POST /api/nre-bank-accounts (form-driven, stored locally — no
+ *  external Zynk account is created). Only the four core fields are required;
+ *  the rest default server-side (accountType=NRE, currency=INR,
+ *  accountStatus=ACTIVE, isPrimary=true). */
+export interface AddNreBankAccountPayload {
+  accountType?: string;
+  bankName: string;
+  branchName?: string;
+  accountHolderName: string;
+  accountNumber: string;
+  ifscCode: string;
+  swiftCode?: string;
+  currency?: string;
+  accountStatus?: string;
+  isPrimary?: boolean;
+}
+
+export interface NreBankAccount {
+  id: string;
+  accountType: string;
+  bankName: string | null;
+  branchName: string | null;
+  accountHolderName: string | null;
+  accountNumber: string | null;
+  ifscCode: string | null;
+  swiftCode: string | null;
+  currency: string;
+  accountStatus: string;
+  isPrimary: boolean;
+  created_at?: string;
+  updated_at?: string;
+}
+
 // ── Activity ──
 
 export type ActivityType =

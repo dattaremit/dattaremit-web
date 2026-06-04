@@ -15,6 +15,8 @@ import type {
   PlaidLinkToken,
   AddExternalAccountPayload,
   AddDepositAccountPayload,
+  AddNreBankAccountPayload,
+  NreBankAccount,
   Activity,
   ActivityListResponse,
   ActivityQueryParams,
@@ -264,16 +266,19 @@ export const addDepositAccount = (
     headers: idempotencyHeaders(idempotencyKey),
   });
 
-// ── NRE Deposit Account ──
-// Same payload shape as the regular deposit account; the server stores it as
-// the user's NRE bank (zynkNreDepositAccountId).
+// ── NRE Bank Account ──
+// Form-driven save into the dedicated nre_bank_accounts table (no external Zynk
+// account). One row per user — POST creates or replaces it.
 export const addNreAccount = (
-  data: AddDepositAccountPayload,
+  data: AddNreBankAccountPayload,
   idempotencyKey?: string,
-): Promise<User> =>
-  api.post("/zynk/nre-deposit-account", data, {
+): Promise<NreBankAccount> =>
+  api.post("/nre-bank-accounts", data, {
     headers: idempotencyHeaders(idempotencyKey),
   });
+
+export const getNreBankAccount = (): Promise<NreBankAccount | null> =>
+  api.get("/nre-bank-accounts");
 
 // ── Activity ──
 export const getActivities = (params?: ActivityQueryParams): Promise<ActivityListResponse> =>

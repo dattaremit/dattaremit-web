@@ -5,9 +5,9 @@ import { yupResolver } from "@hookform/resolvers/yup";
 import { ArrowLeft } from "lucide-react";
 
 import {
-  depositAccountSchema,
-  type DepositAccountFormData,
-} from "@/schemas/deposit-account.schema";
+  nreBankAccountSchema,
+  type NreBankAccountFormData,
+} from "@/schemas/nre-bank-account.schema";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Form } from "@/components/ui/form";
@@ -15,20 +15,26 @@ import { TextField } from "@/components/ui/text-field";
 import { PageHeader } from "@/components/ui/page-header";
 
 interface AddNreAccountStepProps {
-  onSubmit: (data: DepositAccountFormData) => Promise<void> | void;
+  onSubmit: (data: NreBankAccountFormData) => Promise<void> | void;
   onBack: () => void;
   isPending: boolean;
 }
 
 /**
- * First-time NRE payout: collect the user's NRE bank details. Reuses the
- * deposit-account schema (same fields) since the backend shape mirrors the
- * regular deposit account for now.
+ * First-time NRE payout: collect the user's NRE (Non-Resident External) bank
+ * details. Saved directly to the dedicated nre_bank_accounts table.
  */
 export function AddNreAccountStep({ onSubmit, onBack, isPending }: AddNreAccountStepProps) {
-  const form = useForm<DepositAccountFormData>({
-    resolver: yupResolver(depositAccountSchema),
-    defaultValues: { accountName: "", accountNumber: "", ifsc: "" },
+  const form = useForm<NreBankAccountFormData>({
+    resolver: yupResolver(nreBankAccountSchema),
+    defaultValues: {
+      bankName: "",
+      branchName: "",
+      accountHolderName: "",
+      accountNumber: "",
+      ifscCode: "",
+      swiftCode: "",
+    },
   });
 
   return (
@@ -48,7 +54,13 @@ export function AddNreAccountStep({ onSubmit, onBack, isPending }: AddNreAccount
           <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-5">
             <TextField
               control={form.control}
-              name="accountName"
+              name="bankName"
+              label="Bank name"
+              placeholder="e.g. HDFC Bank"
+            />
+            <TextField
+              control={form.control}
+              name="accountHolderName"
               label="Account holder name"
               placeholder="As per bank records"
             />
@@ -60,9 +72,22 @@ export function AddNreAccountStep({ onSubmit, onBack, isPending }: AddNreAccount
             />
             <TextField
               control={form.control}
-              name="ifsc"
+              name="ifscCode"
               label="IFSC code"
               placeholder="e.g. SBIN0001234"
+              transform={(v) => v.toUpperCase()}
+            />
+            <TextField
+              control={form.control}
+              name="branchName"
+              label="Branch name (optional)"
+              placeholder="e.g. Mumbai Main Branch"
+            />
+            <TextField
+              control={form.control}
+              name="swiftCode"
+              label="SWIFT / BIC code (optional)"
+              placeholder="e.g. HDFCINBB"
               transform={(v) => v.toUpperCase()}
             />
 

@@ -10,7 +10,7 @@ import { AnimatePresence, motion, useAnimation } from "motion/react";
 import { toast } from "sonner";
 
 import { transferAmountSchema, type TransferAmountFormData } from "@/schemas/transfer.schema";
-import type { DepositAccountFormData } from "@/schemas/deposit-account.schema";
+import type { NreBankAccountFormData } from "@/schemas/nre-bank-account.schema";
 import {
   useAccount,
   useAddNreAccount,
@@ -117,12 +117,15 @@ export default function SendToSelfPage() {
   const hasDepositAccount = !!account?.hasDepositAccount;
   const hasNreBank = !!account?.hasNreBank;
 
-  const handleAddNre = async (data: DepositAccountFormData) => {
+  const handleAddNre = async (data: NreBankAccountFormData) => {
     try {
       await addNre.mutateAsync({
-        accountName: data.accountName,
+        bankName: data.bankName,
+        branchName: data.branchName || undefined,
+        accountHolderName: data.accountHolderName,
         accountNumber: data.accountNumber,
-        ifsc: data.ifsc,
+        ifscCode: data.ifscCode,
+        swiftCode: data.swiftCode || undefined,
       });
       toast.success("NRE account added.");
       // First-time NRE is now linked — proceed straight to the amount step
