@@ -105,7 +105,7 @@ function AccountRadio({
       <Card
         variant={active ? "elevated" : "default"}
         className={cn(
-          "flex items-center gap-4 p-5 transition-all",
+          "flex flex-row items-center gap-4 p-5 transition-all",
           active
             ? "border-brand ring-2 ring-brand/25"
             : "hover:-translate-y-px hover:border-foreground/15 hover:shadow-lift",
@@ -154,7 +154,7 @@ function AddAccountCard({
     <button type="button" onClick={onAdd} className="block w-full text-left">
       <Card
         variant="default"
-        className="flex items-center gap-4 border-dashed p-5 transition-all hover:-translate-y-px hover:border-brand/40 hover:shadow-lift"
+        className="flex flex-row items-center gap-4 border-dashed p-5 transition-all hover:-translate-y-px hover:border-brand/40 hover:shadow-lift"
       >
         <div className="flex size-10 shrink-0 items-center justify-center rounded-xl bg-muted text-muted-foreground">
           {icon}
