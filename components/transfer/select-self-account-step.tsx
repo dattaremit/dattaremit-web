@@ -6,12 +6,24 @@ import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { PageHeader } from "@/components/ui/page-header";
 import { cn } from "@/lib/utils";
+import type { NreBankAccount } from "@/types/api";
 import type { SelfAccountType } from "@/types/transfer";
+
+/** Last-4 masked label for a linked NRE account, e.g.
+ *  "HDFC Bank •••• 9012 · HDFC0001234". Falls back gracefully when a field
+ *  is missing. */
+function nreAccountSummary(nre: NreBankAccount): string {
+  const last4 = nre.accountNumber ? nre.accountNumber.slice(-4) : null;
+  return [nre.bankName, last4 ? `•••• ${last4}` : null, nre.ifscCode].filter(Boolean).join(" · ");
+}
 
 interface SelectSelfAccountStepProps {
   /** Whether the user already has a linked NRE account. When false, picking
    *  NRE routes to the add-NRE form instead of selecting it. */
   hasNreAccount: boolean;
+  /** The linked NRE account, when loaded. Used to show the real bank details
+   *  (name, masked number, IFSC) instead of a generic label. */
+  nreAccount?: NreBankAccount | null;
   selected: SelfAccountType;
   onSelect: (type: SelfAccountType) => void;
   /** Called when the user wants to add NRE details for the first time. */
@@ -28,6 +40,7 @@ interface SelectSelfAccountStepProps {
  */
 export function SelectSelfAccountStep({
   hasNreAccount,
+  nreAccount,
   selected,
   onSelect,
   onAddNre,
@@ -59,7 +72,11 @@ export function SelectSelfAccountStep({
           <AccountRadio
             icon={<Landmark className="size-5" />}
             title="NRE account"
-            subtitle="Your linked Non-Resident External account"
+            subtitle={
+              nreAccount
+                ? nreAccountSummary(nreAccount)
+                : "Your linked Non-Resident External account"
+            }
             active={selected === "NRE"}
             onSelect={() => onSelect("NRE")}
           />

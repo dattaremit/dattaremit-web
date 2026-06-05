@@ -15,6 +15,7 @@ import {
   useAccount,
   useAddNreAccount,
   useExchangeRate,
+  useNreAccount,
   useSendLimits,
   useSendToSelf,
 } from "@/hooks/api";
@@ -48,6 +49,9 @@ export default function SendToSelfPage() {
   const { data: account } = useAccount();
   const sendToSelf = useSendToSelf();
   const addNre = useAddNreAccount();
+  // Only fetch the linked NRE bank once we know one exists, to show its real
+  // bank name / masked number / IFSC in the account picker.
+  const { data: nreAccount } = useNreAccount({ enabled: !!account?.hasNreBank });
   const [accountType, setAccountType] = useState<SelfAccountType>("NRO");
   const { gate, stepUpElement } = useStepUp({
     title: "Confirm transfer",
@@ -198,6 +202,7 @@ export default function SendToSelfPage() {
           <StepTransition key="select-account">
             <SelectSelfAccountStep
               hasNreAccount={hasNreBank}
+              nreAccount={nreAccount}
               selected={accountType}
               onSelect={setAccountType}
               onAddNre={() => setStep("add-nre")}

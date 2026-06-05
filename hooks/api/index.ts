@@ -8,7 +8,7 @@ export { useStartKyc } from "./use-start-kyc";
 export { usePlaidLinkToken } from "./use-plaid-link-token";
 export { useAddExternalAccount } from "./use-external-account";
 export { useAddDepositAccount } from "./use-deposit-account";
-export { useAddNreAccount } from "./use-nre-account";
+export { useAddNreAccount, useNreAccount } from "./use-nre-account";
 export { useActivities } from "./use-activities";
 export { useExchangeRate } from "./use-exchange-rate";
 
