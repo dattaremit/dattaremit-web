@@ -111,6 +111,10 @@ export interface Account {
   indianKycStatus?: IndianKycStatus;
   hasBankAccount?: boolean;
   hasDepositAccount?: boolean;
+  /** True if the user has a linked NRE deposit account. When false, the
+   *  self-send flow renders the "add NRE bank details" form before letting
+   *  the user pick NRE as a destination. */
+  hasNreBank?: boolean;
   /** True if the server has created a Zynk payment entity for this user.
    *  Address submission triggers entity creation — if false, the address
    *  step is not actually complete (entity creation failed or is pending). */
@@ -141,6 +145,41 @@ export interface AddDepositAccountPayload {
   accountName: string;
   accountNumber: string;
   ifsc: string;
+}
+
+// ── NRE Bank Account ──
+
+/** Payload for POST /api/nre-bank-accounts (form-driven, stored locally — no
+ *  external Zynk account is created). Only the four core fields are required;
+ *  the rest default server-side (accountType=NRE, currency=INR,
+ *  accountStatus=ACTIVE, isPrimary=true). */
+export interface AddNreBankAccountPayload {
+  accountType?: string;
+  bankName: string;
+  branchName?: string;
+  accountHolderName: string;
+  accountNumber: string;
+  ifscCode: string;
+  swiftCode?: string;
+  currency?: string;
+  accountStatus?: string;
+  isPrimary?: boolean;
+}
+
+export interface NreBankAccount {
+  id: string;
+  accountType: string;
+  bankName: string | null;
+  branchName: string | null;
+  accountHolderName: string | null;
+  accountNumber: string | null;
+  ifscCode: string | null;
+  swiftCode: string | null;
+  currency: string;
+  accountStatus: string;
+  isPrimary: boolean;
+  created_at?: string;
+  updated_at?: string;
 }
 
 // ── Activity ──
