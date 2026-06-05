@@ -111,6 +111,10 @@ export interface Account {
   indianKycStatus?: IndianKycStatus;
   hasBankAccount?: boolean;
   hasDepositAccount?: boolean;
+  /** Last 4 digits of the linked regular (NRO/savings) deposit account, for
+   *  display in the self-send picker. Null for accounts linked before this was
+   *  captured server-side. */
+  depositAccountLast4?: string | null;
   /** True if the user has a linked NRE deposit account. When false, the
    *  self-send flow renders the "add NRE bank details" form before letting
    *  the user pick NRE as a destination. */

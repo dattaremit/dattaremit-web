@@ -24,6 +24,10 @@ interface SelectSelfAccountStepProps {
   /** The linked NRE account, when loaded. Used to show the real bank details
    *  (name, masked number, IFSC) instead of a generic label. */
   nreAccount?: NreBankAccount | null;
+  /** Last 4 digits of the regular (NRO/savings) deposit account, when known.
+   *  Shown masked on the regular card; falls back to a generic label when
+   *  absent (e.g. accounts linked before it was captured). */
+  regularAccountLast4?: string | null;
   selected: SelfAccountType;
   onSelect: (type: SelfAccountType) => void;
   /** Called when the user wants to add NRE details for the first time. */
@@ -41,6 +45,7 @@ interface SelectSelfAccountStepProps {
 export function SelectSelfAccountStep({
   hasNreAccount,
   nreAccount,
+  regularAccountLast4,
   selected,
   onSelect,
   onAddNre,
@@ -63,7 +68,11 @@ export function SelectSelfAccountStep({
         <AccountRadio
           icon={<Wallet className="size-5" />}
           title="Regular account"
-          subtitle="Your linked NRO / savings deposit account"
+          subtitle={
+            regularAccountLast4
+              ? `•••• ${regularAccountLast4}`
+              : "Your linked NRO / savings deposit account"
+          }
           active={selected === "NRO"}
           onSelect={() => onSelect("NRO")}
         />

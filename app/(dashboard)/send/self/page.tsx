@@ -203,6 +203,7 @@ export default function SendToSelfPage() {
             <SelectSelfAccountStep
               hasNreAccount={hasNreBank}
               nreAccount={nreAccount}
+              regularAccountLast4={account?.depositAccountLast4}
               selected={accountType}
               onSelect={setAccountType}
               onAddNre={() => setStep("add-nre")}
