@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
+import { useRef, useState } from "react";
 import { useRouter } from "next/navigation";
 import { AnimatePresence } from "motion/react";
 import { toast } from "sonner";
@@ -19,8 +19,6 @@ import { SharedRecipientCard } from "@/components/recipients/shared-recipient-ca
 import { useCheckRecipientIdentity, useCreateRecipient } from "@/hooks/api";
 import { recipientSchema, type RecipientFormData } from "@/schemas/recipient.schema";
 import type { CheckIdentityResult, Recipient } from "@/types/recipient";
-import safeStorage from "@/lib/safe-storage";
-import { COUNTRIES } from "@/constants/countries";
 
 type WizardStep = "contact" | "address" | "review" | "success";
 
@@ -29,64 +27,6 @@ const STEPS: readonly StepperStep[] = [
   { id: "address", label: "Address" },
   { id: "review", label: "Review" },
 ];
-
-const DRAFT_KEY = "dattaremit:new-recipient-draft";
-// Drafts older than this are dropped on read. Without an expiry, a wizard
-// abandoned months ago could pre-fill stale contact info that now belongs
-// to a different person, or whose KYC has since changed.
-const DRAFT_TTL_MS = 7 * 24 * 60 * 60 * 1000;
-
-type StoredDraft = {
-  savedAt: number;
-  values: Partial<RecipientFormData>;
-};
-
-function readDraft(): Partial<RecipientFormData> | null {
-  const raw = safeStorage.getItem(DRAFT_KEY);
-  if (!raw) return null;
-  try {
-    const parsed = JSON.parse(raw) as Partial<StoredDraft> | Partial<RecipientFormData>;
-    if (
-      !parsed ||
-      typeof parsed !== "object" ||
-      typeof (parsed as StoredDraft).savedAt !== "number" ||
-      typeof (parsed as StoredDraft).values !== "object"
-    ) {
-      // Legacy format (raw values, pre-expiry) or anything malformed: clear it
-      // so we don't carry it forward and so the user starts fresh.
-      safeStorage.removeItem(DRAFT_KEY);
-      return null;
-    }
-    const { savedAt, values } = parsed as StoredDraft;
-    if (Date.now() - savedAt > DRAFT_TTL_MS) {
-      safeStorage.removeItem(DRAFT_KEY);
-      return null;
-    }
-    // Drop the phone pair if either side is corrupted: an unsupported prefix
-    // (drifted COUNTRIES list) or a phoneNumber containing anything other than
-    // digits (e.g. "+91+91…" from a previous cascade bug). The schema enforces
-    // digits-only on submit, so any non-digit content is corruption.
-    const prefixInvalid =
-      values.phoneNumberPrefix && !COUNTRIES.some((c) => c.dial === values.phoneNumberPrefix);
-    const phoneInvalid = typeof values.phoneNumber === "string" && /[^\d]/.test(values.phoneNumber);
-    if (prefixInvalid || phoneInvalid) {
-      const { phoneNumberPrefix: _p, phoneNumber: _n, ...rest } = values;
-      return rest;
-    }
-    return values;
-  } catch {
-    return null;
-  }
-}
-
-function writeDraft(values: Partial<RecipientFormData>) {
-  const payload: StoredDraft = { savedAt: Date.now(), values };
-  safeStorage.setItem(DRAFT_KEY, JSON.stringify(payload));
-}
-
-function clearDraft() {
-  safeStorage.removeItem(DRAFT_KEY);
-}
 
 type Match = Extract<CheckIdentityResult, { exists: true }>;
 
@@ -121,22 +61,9 @@ export function NewRecipientWizard() {
       city: "",
       state: "",
       postalCode: "",
-      ...(readDraft() ?? {}),
     },
     mode: "onBlur",
   });
-
-  // Persist form state to localStorage so a user who accidentally navigates
-  // away (or reloads) doesn't lose what they typed. Cleared on success.
-  // React Compiler can't memoize watch — that's fine here, the wizard is
-  // already a leaf-ish component and writes are cheap.
-  useEffect(() => {
-    // eslint-disable-next-line react-hooks/incompatible-library
-    const sub = form.watch((values) => {
-      writeDraft(values as Partial<RecipientFormData>);
-    });
-    return () => sub.unsubscribe();
-  }, [form]);
 
   const activeIndex = step === "success" ? STEPS.length - 1 : STEPS.findIndex((s) => s.id === step);
 
@@ -189,7 +116,6 @@ export function NewRecipientWizard() {
     const data = form.getValues();
     try {
       const recipient = await createRecipient.mutateAsync(data);
-      clearDraft();
       // The success screen MUST honor recipient.shared even when the user
       // never saw a match card. The check-identity result is cached on the
       // contact step, so a brand-new shared identity created by another user
@@ -209,7 +135,6 @@ export function NewRecipientWizard() {
   const handleMatchConfirm = async () => {
     if (!match) return;
     if (match.alreadyLinked) {
-      clearDraft();
       router.push(`/recipients/${match.recipient.id}`);
       return;
     }
