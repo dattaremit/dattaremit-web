@@ -8,7 +8,7 @@ import { PageHeader } from "@/components/ui/page-header";
 import { Skeleton } from "@/components/ui/skeleton";
 import { RecipientCard } from "@/components/recipients/recipient-card";
 import { SelfTransferCard } from "@/components/transfer/self-transfer-card";
-import type { Recipient } from "@/types/recipient";
+import { isRecipientReady, type Recipient } from "@/types/recipient";
 import type { IndianKycStatus } from "@/types/api";
 
 interface SelectRecipientStepProps {
@@ -28,9 +28,9 @@ export function SelectRecipientStep({
   onSelect,
   onAddRecipient,
 }: SelectRecipientStepProps) {
-  const eligible = recipients?.filter((r) => r.kycStatus === "APPROVED" && r.hasBankAccount);
+  const eligible = recipients?.filter((r) => isRecipientReady(r.kycStatus) && r.hasBankAccount);
   const pendingCount =
-    recipients?.filter((r) => r.kycStatus !== "APPROVED" || !r.hasBankAccount).length ?? 0;
+    recipients?.filter((r) => !isRecipientReady(r.kycStatus) || !r.hasBankAccount).length ?? 0;
 
   return (
     <>

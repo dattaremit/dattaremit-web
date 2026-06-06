@@ -6,7 +6,7 @@ import { ArrowRight, Check, Mail, Sparkles } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
 import { EASE_OUT_SMOOTH } from "@/constants/motion";
-import type { Recipient } from "@/types/recipient";
+import { isRecipientReady, type Recipient } from "@/types/recipient";
 
 interface SuccessScreenProps {
   recipient: Recipient;
@@ -15,11 +15,12 @@ interface SuccessScreenProps {
 
 /**
  * Animated completion screen with a contextual next-step CTA:
- *  - If the linked identity is already KYC-approved, push the user to add a bank.
+ *  - If the recipient is ready (KYC approved, or KYC not required), push the
+ *    user straight to add a bank (or send, if a bank already exists).
  *  - Otherwise, tell them what's in flight (KYC email) and point to the profile.
  */
 export function SuccessScreen({ recipient, wasShared }: SuccessScreenProps) {
-  const kycApproved = recipient.kycStatus === "APPROVED";
+  const ready = isRecipientReady(recipient.kycStatus);
   const hasBank = recipient.banks.length > 0;
   const name = recipient.firstName;
 
@@ -32,14 +33,14 @@ export function SuccessScreen({ recipient, wasShared }: SuccessScreenProps) {
   let primaryLabel: string;
   let primaryHref: string;
 
-  if (kycApproved && hasBank) {
+  if (ready && hasBank) {
     headline = `${name} is ready to receive money`;
-    body = `We reused their verified identity and linked bank, so you can send right now.`;
+    body = `Their identity and bank are set, so you can send right now.`;
     primaryLabel = "Send money now";
     primaryHref = `/send?recipient=${recipient.id}`;
-  } else if (kycApproved) {
-    headline = `${name} is verified — add a bank next`;
-    body = `Identity is already approved. Add their Indian bank account to unlock transfers.`;
+  } else if (ready) {
+    headline = `${name} is ready — add a bank next`;
+    body = `Add their Indian bank account to unlock transfers.`;
     primaryLabel = "Add bank account";
     primaryHref = `/recipients/${recipient.id}/bank`;
   } else if (kycEmailDelivered) {
@@ -98,13 +99,13 @@ export function SuccessScreen({ recipient, wasShared }: SuccessScreenProps) {
           <p className="max-w-md text-sm text-muted-foreground">{body}</p>
         </div>
 
-        {!kycApproved && kycEmailDelivered && (
+        {!ready && kycEmailDelivered && (
           <div className="flex items-center gap-2 rounded-full bg-muted/50 px-4 py-2 text-xs text-muted-foreground">
             <Mail className="size-3.5" />
             Sent to {recipient.email}
           </div>
         )}
-        {!kycApproved && !kycEmailDelivered && (
+        {!ready && !kycEmailDelivered && (
           <div className="flex items-center gap-2 rounded-full bg-destructive/10 px-4 py-2 text-xs text-destructive">
             <Mail className="size-3.5" />
             Email to {recipient.email} didn&rsquo;t send

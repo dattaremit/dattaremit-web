@@ -25,6 +25,7 @@ const KYC_META: Record<
   }
 > = {
   APPROVED: { label: "Identity verified", icon: CheckCircle2, variant: "default" },
+  NOT_REQUIRED: { label: "Ready", icon: CheckCircle2, variant: "default" },
   PENDING: { label: "KYC pending", icon: Clock, variant: "secondary" },
   REJECTED: { label: "KYC rejected", icon: XCircle, variant: "destructive" },
   FAILED: { label: "KYC failed", icon: XCircle, variant: "destructive" },

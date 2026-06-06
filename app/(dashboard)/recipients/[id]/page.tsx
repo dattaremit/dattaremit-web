@@ -49,7 +49,7 @@ import {
   AlertDialogTitle,
 } from "@/components/ui/alert-dialog";
 import { ROUTES } from "@/constants/routes";
-import type { BankDetails } from "@/types/recipient";
+import { isRecipientReady, type BankDetails } from "@/types/recipient";
 
 export default function RecipientDetailPage({ params }: { params: Promise<{ id: string }> }) {
   const { id } = use(params);
@@ -135,9 +135,13 @@ export default function RecipientDetailPage({ params }: { params: Promise<{ id: 
     );
   }
 
-  const kycApproved = recipient.kycStatus === "APPROVED";
+  // "Ready" = cleared to receive: KYC approved, or KYC not required for this
+  // recipient (created while recipient KYC was turned off). Both unlock adding a
+  // bank and sending; only genuine pending/failed KYC shows the wait UI.
+  const ready = isRecipientReady(recipient.kycStatus);
   const hasBanks = banks.length > 0;
-  const canSend = kycApproved && hasBanks;
+  const canSend = ready && hasBanks;
+  const kycLabel = recipient.kycStatus === "NOT_REQUIRED" ? "Ready" : recipient.kycStatus;
   const initials = `${recipient.firstName[0] ?? ""}${recipient.lastName[0] ?? ""}`;
 
   return (
@@ -164,14 +168,10 @@ export default function RecipientDetailPage({ params }: { params: Promise<{ id: 
           <div className="flex items-center gap-2">
             <Badge
               variant={
-                kycApproved
-                  ? "default"
-                  : recipient.kycStatus === "PENDING"
-                    ? "secondary"
-                    : "destructive"
+                ready ? "default" : recipient.kycStatus === "PENDING" ? "secondary" : "destructive"
               }
             >
-              {recipient.kycStatus}
+              {kycLabel}
             </Badge>
           </div>
         </div>
@@ -196,7 +196,7 @@ export default function RecipientDetailPage({ params }: { params: Promise<{ id: 
         </Detail>
 
         <div className="mt-6 flex flex-wrap gap-2">
-          {canEditRecipient && !kycApproved && (
+          {canEditRecipient && !ready && (
             <Button variant="outline" size="sm" asChild>
               <a href={`/recipients/${recipient.id}/edit`}>
                 <Pencil />
@@ -204,7 +204,7 @@ export default function RecipientDetailPage({ params }: { params: Promise<{ id: 
               </a>
             </Button>
           )}
-          {!kycApproved && (
+          {!ready && (
             <Button
               variant="outline"
               size="sm"
@@ -243,7 +243,7 @@ export default function RecipientDetailPage({ params }: { params: Promise<{ id: 
               </p>
             </div>
           </div>
-          {kycApproved && (
+          {ready && (
             <Button variant="outline" size="sm" asChild>
               <a href={`/recipients/${recipient.id}/bank`}>
                 <Plus />
@@ -322,7 +322,7 @@ export default function RecipientDetailPage({ params }: { params: Promise<{ id: 
           </ul>
         ) : (
           <div className="p-6">
-            {kycApproved ? (
+            {ready ? (
               <Button variant="brand" size="sm" asChild>
                 <a href={`/recipients/${recipient.id}/bank`}>
                   <LinkIcon />
@@ -351,7 +351,7 @@ export default function RecipientDetailPage({ params }: { params: Promise<{ id: 
         </Button>
         {!canSend && (
           <p className="text-center text-xs text-muted-foreground">
-            {kycApproved
+            {ready
               ? "Add a bank account to send money."
               : "Recipient must complete KYC before you can send money."}
           </p>

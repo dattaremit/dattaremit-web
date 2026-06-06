@@ -1,5 +1,15 @@
-export type RecipientKycStatus = "PENDING" | "APPROVED" | "REJECTED" | "FAILED";
+export type RecipientKycStatus = "PENDING" | "APPROVED" | "REJECTED" | "FAILED" | "NOT_REQUIRED";
 export type BankAccountType = "SAVINGS" | "CURRENT" | "NRE" | "NRO" | "OTHER";
+
+/**
+ * Whether a recipient is cleared to receive money — either their KYC was
+ * approved, or KYC isn't required for them (created while recipient KYC was
+ * turned off). Both states allow adding a bank and sending; neither shows the
+ * "waiting for KYC" UI.
+ */
+export function isRecipientReady(kycStatus: RecipientKycStatus | null | undefined): boolean {
+  return kycStatus === "APPROVED" || kycStatus === "NOT_REQUIRED";
+}
 
 export interface BankDetails {
   id: string;
