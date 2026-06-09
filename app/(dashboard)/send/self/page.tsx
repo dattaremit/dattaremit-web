@@ -295,7 +295,7 @@ export default function SendToSelfPage() {
                         {inrFeeLoss != null && (
                           <p className="mt-1 text-right text-xs text-muted-foreground">
                             You&rsquo;ll lose{" "}
-                            <span className="font-medium text-warning">
+                            <span className="font-medium text-destructive">
                               {formatInr(inrFeeLoss)}
                             </span>{" "}
                             ({formatRatePercent(nreFeeRate)} NRE fee)
@@ -360,7 +360,9 @@ export default function SendToSelfPage() {
                     {reviewFeeLoss != null && (
                       <span className="mt-1 block text-xs text-muted-foreground">
                         You&rsquo;ll lose{" "}
-                        <span className="font-medium text-warning">{formatInr(reviewFeeLoss)}</span>{" "}
+                        <span className="font-medium text-destructive">
+                          {formatInr(reviewFeeLoss)}
+                        </span>{" "}
                         ({formatRatePercent(nreFeeRate)} NRE fee)
                       </span>
                     )}
