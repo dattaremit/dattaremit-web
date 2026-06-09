@@ -95,12 +95,14 @@ export default function SendToSelfPage() {
   const nreFeeRate = accountType === "NRE" ? (selfFee?.nreFeeRate ?? 0) : 0;
   const watchedAmount = form.watch("amount");
   // Gross INR (USD × live rate). For NRE we show the NET amount — gross less
-  // the configured fee — since the server deducts the same fee from the payout.
-  const inrPreview = applyNreFee(
-    computeInrPreview(watchedAmount ?? "", rateData?.rate),
-    nreFeeRate,
-  );
-  const reviewInrPreview = applyNreFee(computeInrPreview(amount, rateData?.rate), nreFeeRate);
+  // the configured fee — since the server deducts the same fee from the payout,
+  // plus the rupee amount lost to the fee so the user sees the concrete cost.
+  const inrGross = computeInrPreview(watchedAmount ?? "", rateData?.rate);
+  const inrPreview = applyNreFee(inrGross, nreFeeRate);
+  const inrFeeLoss = inrGross != null && nreFeeRate > 0 ? inrGross * nreFeeRate : null;
+  const reviewGross = computeInrPreview(amount, rateData?.rate);
+  const reviewInrPreview = applyNreFee(reviewGross, nreFeeRate);
+  const reviewFeeLoss = reviewGross != null && nreFeeRate > 0 ? reviewGross * nreFeeRate : null;
   const amountError = form.formState.errors.amount?.message;
   const hasAmountError = !!amountError;
   // Gate Continue on `limits` being loaded — without it the cumulative
@@ -290,9 +292,13 @@ export default function SendToSelfPage() {
                             {formatInr(inrPreview)}
                           </span>
                         </div>
-                        {nreFeeRate > 0 && (
+                        {inrFeeLoss != null && (
                           <p className="mt-1 text-right text-xs text-muted-foreground">
-                            includes {formatRatePercent(nreFeeRate)} NRE fee
+                            You&rsquo;ll lose{" "}
+                            <span className="font-medium text-warning">
+                              {formatInr(inrFeeLoss)}
+                            </span>{" "}
+                            ({formatRatePercent(nreFeeRate)} NRE fee)
                           </p>
                         )}
                       </div>
@@ -351,9 +357,11 @@ export default function SendToSelfPage() {
                     <span className="font-semibold text-foreground tabular">
                       {formatInr(reviewInrPreview)}
                     </span>
-                    {nreFeeRate > 0 && (
+                    {reviewFeeLoss != null && (
                       <span className="mt-1 block text-xs text-muted-foreground">
-                        includes {formatRatePercent(nreFeeRate)} NRE fee
+                        You&rsquo;ll lose{" "}
+                        <span className="font-medium text-warning">{formatInr(reviewFeeLoss)}</span>{" "}
+                        ({formatRatePercent(nreFeeRate)} NRE fee)
                       </span>
                     )}
                   </p>
