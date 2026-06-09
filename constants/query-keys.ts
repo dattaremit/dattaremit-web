@@ -28,6 +28,7 @@ export const queryKeys = {
   },
   exchangeRate: ["exchange-rate"] as const,
   transferLimits: ["transfer", "limits"] as const,
+  selfFee: ["transfer", "self-fee"] as const,
   emailCheck: (scope: "user" | "recipient", email: string) =>
     ["check-email", scope, email] as const,
   addressAutocomplete: (sessionToken: string, input: string) =>

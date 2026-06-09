@@ -16,13 +16,20 @@ import {
   useAddNreAccount,
   useExchangeRate,
   useNreAccount,
+  useSelfFee,
   useSendLimits,
   useSendToSelf,
 } from "@/hooks/api";
 import { useSendMoneyState } from "@/hooks/use-send-money-state";
 import { ApiError } from "@/services/api";
 import type { SelfAccountType } from "@/types/transfer";
-import { computeInrPreview, dollarsToCents, formatInr } from "@/lib/money";
+import {
+  applyNreFee,
+  computeInrPreview,
+  dollarsToCents,
+  formatInr,
+  formatRatePercent,
+} from "@/lib/money";
 import { dailyRemaining, validateAmountAgainstLimits, weeklyRemaining } from "@/lib/send-limits";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
@@ -82,9 +89,18 @@ export default function SendToSelfPage() {
   });
   const { data: limits } = useSendLimits();
   const { data: rateData } = useExchangeRate();
+  const { data: selfFee } = useSelfFee();
+  // Fee fraction charged on NRE self-transfers (0.003 = 0.3%); only relevant
+  // when the user is sending to their NRE account.
+  const nreFeeRate = accountType === "NRE" ? (selfFee?.nreFeeRate ?? 0) : 0;
   const watchedAmount = form.watch("amount");
-  const inrPreview = computeInrPreview(watchedAmount ?? "", rateData?.rate);
-  const reviewInrPreview = computeInrPreview(amount, rateData?.rate);
+  // Gross INR (USD × live rate). For NRE we show the NET amount — gross less
+  // the configured fee — since the server deducts the same fee from the payout.
+  const inrPreview = applyNreFee(
+    computeInrPreview(watchedAmount ?? "", rateData?.rate),
+    nreFeeRate,
+  );
+  const reviewInrPreview = applyNreFee(computeInrPreview(amount, rateData?.rate), nreFeeRate);
   const amountError = form.formState.errors.amount?.message;
   const hasAmountError = !!amountError;
   // Gate Continue on `limits` being loaded — without it the cumulative
@@ -204,6 +220,7 @@ export default function SendToSelfPage() {
               hasNreAccount={hasNreBank}
               nreAccount={nreAccount}
               regularAccountLast4={account?.depositAccountLast4}
+              nreFeeRate={selfFee?.nreFeeRate ?? 0}
               selected={accountType}
               onSelect={setAccountType}
               onAddNre={() => setStep("add-nre")}
@@ -264,13 +281,20 @@ export default function SendToSelfPage() {
                       description={limitsHint}
                     />
                     {inrPreview !== null && !hasAmountError && (
-                      <div className="mt-2 flex items-baseline justify-between rounded-lg bg-brand-soft/30 px-3 py-2">
-                        <span className="text-xs font-medium uppercase tracking-wide text-muted-foreground">
-                          You&rsquo;ll receive
-                        </span>
-                        <span className="font-semibold text-base tabular text-foreground">
-                          {formatInr(inrPreview)}
-                        </span>
+                      <div className="mt-2 rounded-lg bg-brand-soft/30 px-3 py-2">
+                        <div className="flex items-baseline justify-between">
+                          <span className="text-xs font-medium uppercase tracking-wide text-muted-foreground">
+                            You&rsquo;ll receive
+                          </span>
+                          <span className="font-semibold text-base tabular text-foreground">
+                            {formatInr(inrPreview)}
+                          </span>
+                        </div>
+                        {nreFeeRate > 0 && (
+                          <p className="mt-1 text-right text-xs text-muted-foreground">
+                            includes {formatRatePercent(nreFeeRate)} NRE fee
+                          </p>
+                        )}
                       </div>
                     )}
                   </motion.div>
@@ -327,6 +351,11 @@ export default function SendToSelfPage() {
                     <span className="font-semibold text-foreground tabular">
                       {formatInr(reviewInrPreview)}
                     </span>
+                    {nreFeeRate > 0 && (
+                      <span className="mt-1 block text-xs text-muted-foreground">
+                        includes {formatRatePercent(nreFeeRate)} NRE fee
+                      </span>
+                    )}
                   </p>
                 )}
               </div>

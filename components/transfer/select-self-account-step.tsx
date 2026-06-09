@@ -8,6 +8,7 @@ import { PageHeader } from "@/components/ui/page-header";
 import { cn } from "@/lib/utils";
 import type { NreBankAccount } from "@/types/api";
 import type { SelfAccountType } from "@/types/transfer";
+import { NreFeeNotice } from "@/components/transfer/nre-fee-notice";
 
 /** Last-4 masked label for a linked NRE account, e.g.
  *  "HDFC Bank •••• 9012 · HDFC0001234". Falls back gracefully when a field
@@ -28,6 +29,9 @@ interface SelectSelfAccountStepProps {
    *  Shown masked on the regular card; falls back to a generic label when
    *  absent (e.g. accounts linked before it was captured). */
   regularAccountLast4?: string | null;
+  /** Fee fraction charged on NRE self-transfers (0.003 = 0.3%). When > 0 and
+   *  NRE is selected, a warning is shown so the user knows about the cut. */
+  nreFeeRate?: number;
   selected: SelfAccountType;
   onSelect: (type: SelfAccountType) => void;
   /** Called when the user wants to add NRE details for the first time. */
@@ -46,6 +50,7 @@ export function SelectSelfAccountStep({
   hasNreAccount,
   nreAccount,
   regularAccountLast4,
+  nreFeeRate,
   selected,
   onSelect,
   onAddNre,
@@ -96,6 +101,10 @@ export function SelectSelfAccountStep({
             subtitle="Add your Non-Resident External account details"
             onAdd={onAddNre}
           />
+        )}
+
+        {selected === "NRE" && hasNreAccount && nreFeeRate != null && (
+          <NreFeeNotice feeRate={nreFeeRate} />
         )}
       </div>
 

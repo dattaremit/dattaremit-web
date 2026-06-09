@@ -16,6 +16,7 @@ export { useExchangeRate } from "./use-exchange-rate";
 export { useSendMoney } from "./use-send-money";
 export { useSendToSelf } from "./use-send-to-self";
 export { useSendLimits } from "./use-send-limits";
+export { useSelfFee } from "./use-self-fee";
 
 // Recipients
 export { useRecipients } from "./use-recipients";

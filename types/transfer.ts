@@ -35,6 +35,13 @@ export interface SendMoneyResponse {
   quote: TransferQuote;
 }
 
+/** Fee applied when a user transfers to their own NRE account, as a fraction
+ *  of the payout (0.003 = 0.3%). Surfaced so the UI can warn the user how much
+ *  the cut costs before they confirm. 0 means no fee. */
+export interface SelfFee {
+  nreFeeRate: number;
+}
+
 export interface SendLimits {
   /** Total `sendAmount` for the user's non-failed, non-simulated transfers in
    * the trailing 24 hours. Used with the SSN-tier daily cap. */

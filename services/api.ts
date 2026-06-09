@@ -35,6 +35,7 @@ import type {
   SendToSelfPayload,
   SendMoneyResponse,
   SendLimits,
+  SelfFee,
 } from "@/types/transfer";
 import type {
   Notification,
@@ -375,6 +376,8 @@ export const sendToSelf = (
   });
 
 export const getSendLimits = (): Promise<SendLimits> => api.get("/transfers/limits");
+
+export const getSelfFee = (): Promise<SelfFee> => api.get("/transfers/self-fee");
 
 // ── Notifications ──
 export const getNotifications = (

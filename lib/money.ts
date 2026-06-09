@@ -33,6 +33,20 @@ export function formatInr(amount: number): string {
   return `₹${INR_FORMATTER.format(amount)}`;
 }
 
+/** Render a fee fraction as a trimmed percentage, e.g. 0.003 → "0.3%". */
+export function formatRatePercent(rate: number): string {
+  if (!Number.isFinite(rate)) return "—";
+  return `${parseFloat((rate * 100).toFixed(4))}%`;
+}
+
+/** Reduce a gross INR amount by an NRE fee fraction (0.003 = 0.3%). Returns the
+ *  input unchanged when there's no amount or no fee. */
+export function applyNreFee(gross: number | null, feeRate: number): number | null {
+  if (gross == null) return null;
+  if (!feeRate || feeRate <= 0) return gross;
+  return gross * (1 - feeRate);
+}
+
 export function computeInrPreview(
   usdInput: string,
   rate: number | undefined | null,
