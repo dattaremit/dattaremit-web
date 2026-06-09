@@ -15,6 +15,12 @@ Sentry.init({
       maskAllInputs: true,
       blockAllMedia: false,
     }),
+    // SECURITY NOTE (console capture & PII — no client fix needed): these
+    // integrations ship console output to Sentry, which could carry PII if
+    // someone logs a raw object. No fix is applied because current call sites
+    // log only structured, field-whitelisted data (see services/api.ts and
+    // lib/logger.ts) and replays already mask all text/inputs. The standing
+    // rule is to keep logs structured and never log raw payload objects.
     Sentry.consoleLoggingIntegration({ levels: ["info", "warn"] }),
     Sentry.captureConsoleIntegration({ levels: ["error"] }),
   ],
