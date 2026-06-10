@@ -1,13 +1,39 @@
 "use client";
 
 import { useState } from "react";
-import { Check, Copy, Gift, Share2, Users } from "lucide-react";
+import {
+  ArrowLeftRight,
+  Check,
+  Copy,
+  Gift,
+  Landmark,
+  Share2,
+  ShieldCheck,
+  UserPlus,
+  Users,
+} from "lucide-react";
+import type { LucideIcon } from "lucide-react";
 import { toast } from "sonner";
 import { useMyReferral } from "@/hooks/api";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Skeleton } from "@/components/ui/skeleton";
 import { ShareDialog } from "@/components/share-dialog";
+
+// Anonymized funnel rows — counts only, never who. Keys map to MyReferral fields.
+const MILESTONES: { key: keyof MyReferralMilestones; label: string; icon: LucideIcon }[] = [
+  { key: "completedKyc", label: "Verified ID", icon: ShieldCheck },
+  { key: "connectedBank", label: "Linked a bank", icon: Landmark },
+  { key: "addedRecipient", label: "Added a recipient", icon: UserPlus },
+  { key: "completedTransfer", label: "Sent a transfer", icon: ArrowLeftRight },
+];
+
+type MyReferralMilestones = {
+  completedKyc: number;
+  connectedBank: number;
+  addedRecipient: number;
+  completedTransfer: number;
+};
 
 export function ReferralCard() {
   const { data, isLoading, isError, refetch } = useMyReferral();
@@ -103,6 +129,41 @@ export function ReferralCard() {
             </span>
           </div>
         </div>
+
+        {totalReferrals > 0 && (
+          <div className="flex flex-col gap-2">
+            <span className="px-1 text-[10px] font-medium uppercase tracking-[0.18em] text-muted-foreground">
+              Their progress
+            </span>
+            <div className="grid grid-cols-2 gap-2">
+              {MILESTONES.map(({ key, label, icon: Icon }) => {
+                const count = data?.[key] ?? 0;
+                return (
+                  <div
+                    key={key}
+                    className="flex items-center gap-2.5 rounded-xl border border-border bg-background/60 px-3 py-2.5"
+                  >
+                    <span className="flex size-8 shrink-0 items-center justify-center rounded-full bg-muted text-muted-foreground">
+                      <Icon className="size-4" />
+                    </span>
+                    <div className="flex flex-col">
+                      <span className="text-base font-semibold leading-none text-foreground">
+                        {count}
+                        <span className="text-xs font-normal text-muted-foreground">
+                          {" "}
+                          / {totalReferrals}
+                        </span>
+                      </span>
+                      <span className="mt-0.5 text-[11px] leading-tight text-muted-foreground">
+                        {label}
+                      </span>
+                    </div>
+                  </div>
+                );
+              })}
+            </div>
+          </div>
+        )}
       </div>
     </Card>
   );
