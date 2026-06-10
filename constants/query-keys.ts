@@ -26,6 +26,7 @@ export const queryKeys = {
     list: (params?: Record<string, unknown>) => ["notifications", "list", params] as const,
     unreadCount: ["notifications", "unread-count"] as const,
   },
+  referral: ["referral", "me"] as const,
   exchangeRate: ["exchange-rate"] as const,
   transferLimits: ["transfer", "limits"] as const,
   selfFee: ["transfer", "self-fee"] as const,

@@ -231,6 +231,15 @@ export const validateReferralCode = (code: string): Promise<{ valid: boolean }> 
 export const reserveReferralCode = (code: string): Promise<{ reserved: boolean }> =>
   api.post("/referral/reserve", { code });
 
+// The current user's own referral code (generated on first call if absent)
+// plus how many people have signed up with it.
+export interface MyReferral {
+  referCode: string;
+  totalReferrals: number;
+}
+
+export const getMyReferral = (): Promise<MyReferral> => api.get("/referral/me");
+
 // ── Onboarding ──
 export const submitOnboardingAddress = (data: OnboardingAddressPayload): Promise<void> =>
   api.post("/onboarding/address", data);

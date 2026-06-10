@@ -6,6 +6,7 @@ import { useAccount } from "@/hooks/api";
 import { useAppSignOut } from "@/hooks/use-app-sign-out";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Card } from "@/components/ui/card";
+import { ReferralCard } from "@/components/referral-card";
 import { toast } from "sonner";
 import {
   Phone,
@@ -88,6 +89,10 @@ export default function AccountPage() {
           </div>
         </Section>
       ) : null}
+
+      <Section title="Refer & invite">
+        <ReferralCard />
+      </Section>
 
       <Section title="Preferences">
         <div className="overflow-hidden rounded-2xl border border-border bg-card shadow-soft">
