@@ -7,18 +7,12 @@ import { useMyReferral } from "@/hooks/api";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Skeleton } from "@/components/ui/skeleton";
-
-function buildShareMessage(code: string): { text: string; url?: string } {
-  const url = typeof window !== "undefined" ? window.location.origin : undefined;
-  const text = url
-    ? `Join me on Datta! Use my referral code ${code} when you sign up: ${url}`
-    : `Join me on Datta! Use my referral code ${code} when you sign up.`;
-  return { text, url };
-}
+import { ShareDialog } from "@/components/share-dialog";
 
 export function ReferralCard() {
   const { data, isLoading, isError, refetch } = useMyReferral();
   const [copied, setCopied] = useState(false);
+  const [shareOpen, setShareOpen] = useState(false);
 
   const code = data?.referCode ?? "";
   const totalReferrals = data?.totalReferrals ?? 0;
@@ -31,27 +25,6 @@ export function ReferralCard() {
       setTimeout(() => setCopied(false), 2000);
     } catch {
       toast.error("Couldn't copy. Please copy the code manually.");
-    }
-  };
-
-  const handleShare = async () => {
-    const { text, url } = buildShareMessage(code);
-    // Prefer the native share sheet on supported devices.
-    if (typeof navigator !== "undefined" && navigator.share) {
-      try {
-        await navigator.share({ title: "Join me on Datta", text, url });
-        return;
-      } catch (err) {
-        // User dismissed the share sheet — not an error worth surfacing.
-        if (err instanceof DOMException && err.name === "AbortError") return;
-      }
-    }
-    // Fallback: copy the invite message to the clipboard.
-    try {
-      await navigator.clipboard.writeText(text);
-      toast.success("Invite copied — paste it anywhere to share");
-    } catch {
-      toast.error("Sharing isn't available on this device.");
     }
   };
 
@@ -108,12 +81,14 @@ export function ReferralCard() {
                 <Copy className="size-4 shrink-0 text-muted-foreground" />
               )}
             </button>
-            <Button variant="brand" size="lg" onClick={handleShare} className="gap-2">
+            <Button variant="brand" size="lg" onClick={() => setShareOpen(true)} className="gap-2">
               <Share2 className="size-4" />
               Share
             </Button>
           </div>
         </div>
+
+        <ShareDialog open={shareOpen} onOpenChange={setShareOpen} code={code} />
 
         <div className="flex items-center gap-3 rounded-xl border border-border bg-muted/30 px-4 py-3">
           <span className="flex size-9 items-center justify-center rounded-full bg-background text-muted-foreground">
