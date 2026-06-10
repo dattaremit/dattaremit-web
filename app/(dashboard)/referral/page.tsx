@@ -6,6 +6,7 @@ import { Gift } from "lucide-react";
 import { toast } from "sonner";
 
 import { useValidateReferral } from "@/hooks/api";
+import { useStoredReferralCode } from "@/hooks/use-stored-referral-code";
 import { reserveReferralCode } from "@/services/api";
 import { STORAGE_KEYS } from "@/constants/storage-keys";
 import safeStorage from "@/lib/safe-storage";
@@ -18,8 +19,14 @@ import { Field, FieldLabel } from "@/components/ui/field";
 
 export default function ReferralPage() {
   const router = useRouter();
-  const [code, setCode] = useState("");
   const validateMutation = useValidateReferral();
+
+  // Prefill from a code captured off the invite link (?ref=…) by ReferralCapture,
+  // while letting the user override it. `edited` is null until they type, so the
+  // input shows the stored code first, then whatever they enter.
+  const storedCode = useStoredReferralCode();
+  const [edited, setEdited] = useState<string | null>(null);
+  const code = edited ?? storedCode;
 
   const handleApply = async () => {
     const trimmed = code.trim().toUpperCase();
@@ -28,7 +35,7 @@ export default function ReferralPage() {
       return;
     }
     if (!isValidReferralCode(trimmed)) {
-      toast.error("Referral codes are 4–20 letters and numbers");
+      toast.error("Please enter a valid referral code");
       return;
     }
 
@@ -76,7 +83,7 @@ export default function ReferralPage() {
               id="referral-code"
               placeholder="DATTAFRIEND"
               value={code}
-              onChange={(e) => setCode(e.target.value.toUpperCase())}
+              onChange={(e) => setEdited(e.target.value.toUpperCase())}
               disabled={validateMutation.isPending}
               className="text-center font-semibold text-lg tracking-[0.3em]"
             />

@@ -13,6 +13,8 @@ import { STORAGE_KEYS } from "@/constants/storage-keys";
 import { ROUTES } from "@/constants/routes";
 import { stripPhonePrefix } from "@/lib/phone-utils";
 import safeStorage from "@/lib/safe-storage";
+import { reserveReferralCode } from "@/services/api";
+import { isValidReferralCode } from "@/schemas/referral.schema";
 import { toast } from "sonner";
 
 import { Card } from "@/components/ui/card";
@@ -102,6 +104,19 @@ export function PersonalInfoForm({
           nationality: "US",
         });
       } else {
+        // Apply a referral code captured from the invite link (?ref=…) for users
+        // who never visited the optional referral step. Reserve it first so the
+        // create below consumes it into referredByCode. Best-effort: an invalid
+        // or already-used code must never block sign-up.
+        const referralCode = safeStorage.getItem(STORAGE_KEYS.REFERRAL_CODE);
+        if (referralCode && isValidReferralCode(referralCode.trim().toUpperCase())) {
+          try {
+            await reserveReferralCode(referralCode.trim().toUpperCase());
+          } catch {
+            // Invalid/self/expired code — proceed without a referral.
+          }
+        }
+
         await createUserMutation.mutateAsync({
           clerkUserId: clerkUser?.id || "",
           firstName: data.firstName,

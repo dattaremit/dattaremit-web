@@ -118,7 +118,7 @@ const CHANNELS: Channel[] = [
     ring: "",
     style: { backgroundColor: "#64748B" },
     href: ({ message }) =>
-      `mailto:?subject=${encodeURIComponent("Join me on Datta")}&body=${encodeURIComponent(message)}`,
+      `mailto:?subject=${encodeURIComponent("Join me on Dattaremit")}&body=${encodeURIComponent(message)}`,
   },
   {
     key: "sms",
@@ -172,7 +172,7 @@ export function ShareDialog({
   // url param) still convey it even when they strip custom text.
   const origin = typeof window !== "undefined" ? window.location.origin : "";
   const url = origin ? `${origin}/?ref=${encodeURIComponent(code)}` : "";
-  const caption = `Join me on Datta! Use my referral code ${code} when you sign up.`;
+  const caption = `Join me on Dattaremit! Use my referral code ${code} when you sign up.`;
   const message = url ? `${caption} ${url}` : caption;
 
   const handleCopy = async () => {
@@ -193,7 +193,7 @@ export function ShareDialog({
 
   const handleNativeShare = async () => {
     try {
-      await navigator.share({ title: "Join me on Datta", text: caption, url });
+      await navigator.share({ title: "Join me on Dattaremit", text: caption, url });
       onOpenChange(false);
     } catch (err) {
       if (err instanceof DOMException && err.name === "AbortError") return;

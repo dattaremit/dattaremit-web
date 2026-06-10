@@ -9,6 +9,7 @@ import { PageHeader } from "@/components/ui/page-header";
 import { reserveReferralCode, validateReferralCode, ApiError } from "@/services/api";
 import { STORAGE_KEYS } from "@/constants/storage-keys";
 import safeStorage from "@/lib/safe-storage";
+import { useStoredReferralCode } from "@/hooks/use-stored-referral-code";
 import { ROUTES } from "@/constants/routes";
 import { isValidReferralCode } from "@/schemas/referral.schema";
 
@@ -16,9 +17,14 @@ const STORAGE_KEY = STORAGE_KEYS.REFERRAL_CODE;
 
 export default function OnboardingReferralPage() {
   const router = useRouter();
-  const [code, setCode] = useState("");
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+
+  // Prefill from a code captured off the invite link (?ref=…) by ReferralCapture,
+  // while letting the user override it. `edited` is null until they type.
+  const storedCode = useStoredReferralCode();
+  const [edited, setEdited] = useState<string | null>(null);
+  const code = edited ?? storedCode;
 
   const goToProfile = () => router.replace(ROUTES.ONBOARDING.PROFILE);
 
@@ -29,7 +35,7 @@ export default function OnboardingReferralPage() {
       return;
     }
     if (!isValidReferralCode(trimmed)) {
-      setError("Referral codes are 4–20 letters and numbers");
+      setError("Please enter a valid referral code");
       return;
     }
 
@@ -79,7 +85,7 @@ export default function OnboardingReferralPage() {
           <Input
             value={code}
             onChange={(e) => {
-              setCode(e.target.value.toUpperCase());
+              setEdited(e.target.value.toUpperCase());
               if (error) setError(null);
             }}
             placeholder="Enter referral code"

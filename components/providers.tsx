@@ -10,6 +10,7 @@ import { ROUTES } from "@/constants/routes";
 import { Toaster } from "@/components/ui/sonner";
 import { InAppBanner } from "@/components/notifications/in-app-banner";
 import { PushListener } from "@/components/notifications/push-listener";
+import { ReferralCapture } from "@/components/referral-capture";
 import { SentryUserContext } from "@/components/sentry-user-context";
 
 function AuthTokenBridge({ children }: { children: React.ReactNode }) {
@@ -59,6 +60,7 @@ export function Providers({ children, nonce }: { children: React.ReactNode; nonc
         <QueryClientProvider client={queryClient}>
           <AuthTokenBridge>
             <SentryUserContext />
+            <ReferralCapture />
             {children}
             <PushListener />
             <InAppBanner />
