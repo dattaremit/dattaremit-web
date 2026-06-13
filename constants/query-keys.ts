@@ -30,6 +30,10 @@ export const queryKeys = {
   exchangeRate: ["exchange-rate"] as const,
   transferLimits: ["transfer", "limits"] as const,
   selfFee: ["transfer", "self-fee"] as const,
+  fee: {
+    regular: (amount: number) => ["fee", "regular", amount] as const,
+    nre: (amount: number) => ["fee", "nre", amount] as const,
+  },
   emailCheck: (scope: "user" | "recipient", email: string) =>
     ["check-email", scope, email] as const,
   addressAutocomplete: (sessionToken: string, input: string) =>
