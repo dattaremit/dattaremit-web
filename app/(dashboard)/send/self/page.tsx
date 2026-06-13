@@ -14,8 +14,9 @@ import type { NreBankAccountFormData } from "@/schemas/nre-bank-account.schema";
 import {
   useAccount,
   useAddNreAccount,
-  useExchangeRate,
   useNreAccount,
+  useNreFee,
+  useRegularFee,
   useSelfFee,
   useSendLimits,
   useSendToSelf,
@@ -23,13 +24,7 @@ import {
 import { useSendMoneyState } from "@/hooks/use-send-money-state";
 import { ApiError } from "@/services/api";
 import type { SelfAccountType } from "@/types/transfer";
-import {
-  applyNreFee,
-  computeInrPreview,
-  dollarsToCents,
-  formatInr,
-  formatRatePercent,
-} from "@/lib/money";
+import { dollarsToCents, formatInr } from "@/lib/money";
 import { dailyRemaining, validateAmountAgainstLimits, weeklyRemaining } from "@/lib/send-limits";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
@@ -88,23 +83,21 @@ export default function SendToSelfPage() {
     mode: "onChange",
   });
   const { data: limits } = useSendLimits();
-  const { data: rateData } = useExchangeRate();
+  // Still fetched for the account picker, which shows the NRE fee rate.
   const { data: selfFee } = useSelfFee();
-  // Fee fraction charged on NRE self-transfers (0.003 = 0.3%); only relevant
-  // when the user is sending to their NRE account.
-  const nreFeeRate = accountType === "NRE" ? (selfFee?.nreFeeRate ?? 0) : 0;
   const watchedAmount = form.watch("amount");
-  // Gross INR (USD × live rate). For NRE we show the NET amount — gross less
-  // the configured fee — since the server deducts the same fee from the payout,
-  // plus the rupee amount lost to the fee so the user sees the concrete cost.
-  const inrGross = computeInrPreview(watchedAmount ?? "", rateData?.rate);
-  const inrPreview = applyNreFee(inrGross, nreFeeRate);
-  const inrFeeLoss = inrGross != null && nreFeeRate > 0 ? inrGross * nreFeeRate : null;
-  const reviewGross = computeInrPreview(amount, rateData?.rate);
-  const reviewInrPreview = applyNreFee(reviewGross, nreFeeRate);
-  const reviewFeeLoss = reviewGross != null && nreFeeRate > 0 ? reviewGross * nreFeeRate : null;
   const amountError = form.formState.errors.amount?.message;
   const hasAmountError = !!amountError;
+  const isNre = accountType === "NRE";
+  // The server computes the receive amount (and, for NRE, the rupee fee taken)
+  // from the amount the user types. We run whichever quote matches the selected
+  // account; both stay idle while the field has an error.
+  const { data: regularFee } = useRegularFee(watchedAmount ?? "", !hasAmountError && !isNre);
+  const { data: nreFee } = useNreFee(watchedAmount ?? "", !hasAmountError && isNre);
+  // The form value carries over into the review step unchanged, so the same
+  // quote drives both the amount preview and the review summary.
+  const receiveAmount = (isNre ? nreFee?.receiveAmount : regularFee?.receiveAmount) ?? null;
+  const inrFeeLoss = isNre ? (nreFee?.nreFee ?? null) : null;
   // Gate Continue on `limits` being loaded — without it the cumulative
   // daily-cap check short-circuits and a user could submit an amount that
   // the server will then reject.
@@ -282,14 +275,14 @@ export default function SendToSelfPage() {
                       inputClassName="font-semibold text-2xl h-14 tabular pl-9"
                       description={limitsHint}
                     />
-                    {inrPreview !== null && !hasAmountError && (
+                    {receiveAmount !== null && !hasAmountError && (
                       <div className="mt-2 rounded-lg bg-brand-soft/30 px-3 py-2">
                         <div className="flex items-baseline justify-between">
                           <span className="text-xs font-medium uppercase tracking-wide text-muted-foreground">
                             You&rsquo;ll receive
                           </span>
                           <span className="font-semibold text-base tabular text-foreground">
-                            {formatInr(inrPreview)}
+                            {formatInr(receiveAmount)}
                           </span>
                         </div>
                         {inrFeeLoss != null && (
@@ -298,7 +291,7 @@ export default function SendToSelfPage() {
                             <span className="font-medium text-destructive">
                               {formatInr(inrFeeLoss)}
                             </span>{" "}
-                            ({formatRatePercent(nreFeeRate)} NRE fee)
+                            (NRE fee)
                           </p>
                         )}
                       </div>
@@ -351,19 +344,19 @@ export default function SendToSelfPage() {
                 <p className="relative mt-2 text-sm text-muted-foreground">
                   to {ACCOUNT_LABELS[accountType]}
                 </p>
-                {reviewInrPreview !== null && (
+                {receiveAmount !== null && (
                   <p className="relative mt-3 text-sm text-muted-foreground">
                     You&rsquo;ll receive{" "}
                     <span className="font-semibold text-foreground tabular">
-                      {formatInr(reviewInrPreview)}
+                      {formatInr(receiveAmount)}
                     </span>
-                    {reviewFeeLoss != null && (
+                    {inrFeeLoss != null && (
                       <span className="mt-1 block text-xs text-muted-foreground">
                         You&rsquo;ll lose{" "}
                         <span className="font-medium text-destructive">
-                          {formatInr(reviewFeeLoss)}
+                          {formatInr(inrFeeLoss)}
                         </span>{" "}
-                        ({formatRatePercent(nreFeeRate)} NRE fee)
+                        (NRE fee)
                       </span>
                     )}
                   </p>

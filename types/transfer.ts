@@ -42,6 +42,21 @@ export interface SelfFee {
   nreFeeRate: number;
 }
 
+/** Server-computed quote for a regular (non-NRE) transfer of a given USD
+ *  amount. `receiveAmount` is the INR the recipient gets, net of provider and
+ *  banking fees. Returned by `GET /fee/regular/:amount`. */
+export interface RegularFeeQuote {
+  receiveAmount: number;
+}
+
+/** Server-computed quote for an NRE self-transfer. `receiveAmount` is the net
+ *  INR after all fees; `nreFee` is the rupee amount taken as the NRE cut.
+ *  Returned by `GET /fee/nre/:amount`. */
+export interface NreFeeQuote {
+  receiveAmount: number;
+  nreFee: number;
+}
+
 export interface SendLimits {
   /** Total `sendAmount` for the user's non-failed, non-simulated transfers in
    * the trailing 24 hours. Used with the SSN-tier daily cap. */

@@ -11,9 +11,8 @@ import { Card } from "@/components/ui/card";
 import { Form } from "@/components/ui/form";
 import { PageHeader } from "@/components/ui/page-header";
 import { TextField } from "@/components/ui/text-field";
-import { useExchangeRate } from "@/hooks/api/use-exchange-rate";
-import { useSendLimits } from "@/hooks/api";
-import { computeInrPreview, formatInr } from "@/lib/money";
+import { useRegularFee, useSendLimits } from "@/hooks/api";
+import { formatInr } from "@/lib/money";
 import { dailyRemaining, validateAmountAgainstLimits, weeklyRemaining } from "@/lib/send-limits";
 import type { BankDetails, Recipient } from "@/types/recipient";
 
@@ -40,11 +39,12 @@ export function TransferAmountStep({
     mode: "onChange",
   });
   const { data: limits } = useSendLimits();
-  const { data: rateData } = useExchangeRate();
   const watchedAmount = form.watch("amount");
-  const inrPreview = computeInrPreview(watchedAmount ?? "", rateData?.rate);
   const amountError = form.formState.errors.amount?.message;
   const hasAmountError = !!amountError;
+  // Server computes the recipient's INR net of fees. Gated on the field being
+  // error-free so we don't quote an out-of-range amount.
+  const { data: feeQuote } = useRegularFee(watchedAmount ?? "", !hasAmountError);
   // Gate Continue on `limits` being loaded — without it the cumulative
   // daily-cap check in `validateAmountAgainstLimits` short-circuits and a
   // user could submit an amount that the server will then reject.
@@ -131,13 +131,13 @@ export function TransferAmountStep({
                 inputClassName="font-semibold text-2xl h-14 tabular pl-9"
                 description={limitsHint}
               />
-              {inrPreview !== null && !hasAmountError && (
+              {feeQuote && !hasAmountError && (
                 <div className="mt-2 flex items-baseline justify-between rounded-lg bg-brand-soft/30 px-3 py-2">
                   <span className="text-xs font-medium uppercase tracking-wide text-muted-foreground">
                     They&rsquo;ll receive
                   </span>
                   <span className="font-semibold text-base tabular text-foreground">
-                    {formatInr(inrPreview)}
+                    {formatInr(feeQuote.receiveAmount)}
                   </span>
                 </div>
               )}
