@@ -50,6 +50,12 @@ export const personalInfoSchema = yup.object({
       const age = yearsSince(value);
       return age !== null && age <= MAX_AGE;
     }),
+  // "US" = US citizen (off-ramp to own Indian bank, no Indian KYC). "IN" =
+  // Indian national / NRI (NRE flow, Indian KYC required).
+  nationality: yup
+    .string()
+    .required("Citizenship is required")
+    .oneOf(["US", "IN"], "Select your citizenship"),
 });
 
 export type PersonalInfoFormData = yup.InferType<typeof personalInfoSchema>;

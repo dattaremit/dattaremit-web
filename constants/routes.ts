@@ -5,6 +5,7 @@ export const ROUTES = {
   FORGOT_PASSWORD: "/forgot-password",
   SSO_CALLBACK: "/sso-callback",
   ACCOUNT: "/account",
+  ACCOUNT_BANKS: "/account/banks",
   EDIT_PROFILE: "/edit-profile",
   EDIT_ADDRESSES: "/edit-addresses",
   SEND: "/send",

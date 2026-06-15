@@ -247,6 +247,8 @@ export default function SendPage() {
             <SelectRecipientStep
               indianKycStatus={account?.indianKycStatus ?? "NONE"}
               hasDepositAccount={!!account?.hasDepositAccount}
+              isUsCitizen={account?.user?.nationality === "US"}
+              hasUserBank={!!account?.hasUserBank}
               recipients={recipients}
               isLoading={isLoading}
               onSelect={(r) => advanceFromSelect(r)}

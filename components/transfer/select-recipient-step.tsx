@@ -14,6 +14,8 @@ import type { IndianKycStatus } from "@/types/api";
 interface SelectRecipientStepProps {
   indianKycStatus: IndianKycStatus;
   hasDepositAccount: boolean;
+  isUsCitizen: boolean;
+  hasUserBank: boolean;
   recipients: Recipient[] | undefined;
   isLoading: boolean;
   onSelect: (recipient: Recipient) => void;
@@ -23,6 +25,8 @@ interface SelectRecipientStepProps {
 export function SelectRecipientStep({
   indianKycStatus,
   hasDepositAccount,
+  isUsCitizen,
+  hasUserBank,
   recipients,
   isLoading,
   onSelect,
@@ -45,7 +49,12 @@ export function SelectRecipientStep({
       />
 
       <div className="space-y-3">
-        <SelfTransferCard indianKycStatus={indianKycStatus} hasDepositAccount={hasDepositAccount} />
+        <SelfTransferCard
+          indianKycStatus={indianKycStatus}
+          hasDepositAccount={hasDepositAccount}
+          isUsCitizen={isUsCitizen}
+          hasUserBank={hasUserBank}
+        />
         <Button variant="outline" size="lg" className="w-full" onClick={onAddRecipient}>
           <UserPlus />
           Add Recipient

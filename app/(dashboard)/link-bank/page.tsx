@@ -65,8 +65,13 @@ export default function LinkBankPage() {
   }
 
   const hasBankAccount = !!account?.hasBankAccount;
-  const hasDepositAccount = !!account?.hasDepositAccount;
-  const allLinked = hasBankAccount && hasDepositAccount;
+  // US citizens off-ramp to a locally-saved Indian bank (no Zynk deposit
+  // account, no Indian KYC) → "my banks". NRIs link a Zynk-backed deposit
+  // account through the KYC-gated receive flow. Strict "US" mirrors the
+  // server's isUsCitizen (null/other → NRI path, fail-closed).
+  const isUsCitizen = account?.user?.nationality === "US";
+  const hasIndianBank = isUsCitizen ? !!account?.hasUserBank : !!account?.hasDepositAccount;
+  const allLinked = hasBankAccount && hasIndianBank;
 
   return (
     <div className="space-y-8">
@@ -141,24 +146,26 @@ export default function LinkBankPage() {
 
             <SetupCard
               icon={
-                hasDepositAccount ? (
+                hasIndianBank ? (
                   <CheckCircle2 className="size-5" />
                 ) : (
                   <Landmark className="size-5" />
                 )
               }
-              done={hasDepositAccount}
+              done={hasIndianBank}
               title="Your Indian bank"
               description="Add your own Indian bank account so you can send money to yourself."
               step="02"
             >
-              {hasDepositAccount ? (
+              {hasIndianBank ? (
                 <p className="text-sm font-medium text-success">Account linked</p>
               ) : (
                 <Button
                   variant="brand"
                   size="lg"
-                  onClick={() => router.push(ROUTES.LINK_BANK_RECEIVE)}
+                  onClick={() =>
+                    router.push(isUsCitizen ? ROUTES.ACCOUNT_BANKS : ROUTES.LINK_BANK_RECEIVE)
+                  }
                 >
                   Add Indian bank
                   <ArrowRight />
