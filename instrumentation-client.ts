@@ -1,4 +1,5 @@
 import * as Sentry from "@sentry/nextjs";
+import { scrubAuthFromSentryEvent } from "@/lib/sentry-scrub";
 
 Sentry.init({
   dsn: process.env.NEXT_PUBLIC_SENTRY_DSN,
@@ -9,6 +10,9 @@ Sentry.init({
   replaysSessionSampleRate: 0.1,
   replaysOnErrorSampleRate: 1.0,
   enableLogs: true,
+  // Strip request headers + auth credentials (e.g. x-auth-token) from every
+  // event before it leaves the client. See SECURITY_FINDINGS.md #1.
+  beforeSend: scrubAuthFromSentryEvent,
   integrations: [
     Sentry.replayIntegration({
       maskAllText: true,
