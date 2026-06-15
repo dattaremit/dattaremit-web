@@ -64,6 +64,10 @@ export interface CreateRecipientPayload {
   city: string;
   state: string;
   postalCode: string;
+  // Required when creating a brand-new recipient; omitted on the edit flow,
+  // which reuses this payload shape but never collects KYC identity docs.
+  aadhaarNumber?: string;
+  panNumber?: string;
 }
 
 export interface AddRecipientBankPayload {

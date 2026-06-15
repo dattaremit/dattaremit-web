@@ -42,6 +42,30 @@ export const recipientSchema = yup.object({
 
 export type RecipientFormData = yup.InferType<typeof recipientSchema>;
 
+// Aadhaar (12 digits) and PAN (ABCDE1234F). Collected only by the new-recipient
+// wizard, so they live on an extended schema rather than the base recipientSchema
+// — the edit form reuses the base schema and must not require these.
+const AADHAAR_REGEX = /^\d{12}$/;
+const PAN_REGEX = /^[A-Z]{5}[0-9]{4}[A-Z]$/;
+
+export const newRecipientSchema = recipientSchema.concat(
+  yup.object({
+    aadhaarNumber: yup
+      .string()
+      .trim()
+      .required("Aadhaar number is required")
+      .matches(AADHAAR_REGEX, "Aadhaar number must be exactly 12 digits"),
+    panNumber: yup
+      .string()
+      .trim()
+      .uppercase()
+      .required("PAN is required")
+      .matches(PAN_REGEX, "PAN must be like ABCDE1234F"),
+  }),
+);
+
+export type NewRecipientFormData = yup.InferType<typeof newRecipientSchema>;
+
 const IFSC_REGEX = /^[A-Z]{4}0[A-Z0-9]{6}$/;
 
 export const recipientBankSchema = yup.object({

@@ -1,14 +1,14 @@
 "use client";
 
 import { useFormContext } from "react-hook-form";
-import { ArrowRight, Mail, User } from "lucide-react";
+import { ArrowRight, CreditCard, Fingerprint, Mail, User } from "lucide-react";
 
 import { FormField, FormItem } from "@/components/ui/form";
 import { Button } from "@/components/ui/button";
 import { TextField } from "@/components/ui/text-field";
 import { PhoneInput } from "@/components/phone-input";
 import { stripPhonePrefix } from "@/lib/phone-utils";
-import type { RecipientFormData } from "@/schemas/recipient.schema";
+import type { NewRecipientFormData } from "@/schemas/recipient.schema";
 
 interface ContactStepProps {
   onContinue: () => void;
@@ -25,7 +25,7 @@ interface ContactStepProps {
  * list → Open recipient" card instead of blocking with a passive error.
  */
 export function ContactStep({ onContinue, checking }: ContactStepProps) {
-  const form = useFormContext<RecipientFormData>();
+  const form = useFormContext<NewRecipientFormData>();
 
   return (
     <div className="space-y-6">
@@ -80,6 +80,33 @@ export function ContactStep({ onContinue, checking }: ContactStepProps) {
           </FormItem>
         )}
       />
+
+      <div className="grid gap-4 sm:grid-cols-2">
+        <TextField
+          control={form.control}
+          name="aadhaarNumber"
+          label="Aadhaar number"
+          placeholder="123412341234"
+          inputMode="numeric"
+          maxLength={12}
+          leading={<Fingerprint className="size-4" />}
+          transform={(v) => v.replace(/\D/g, "").slice(0, 12)}
+        />
+        <TextField
+          control={form.control}
+          name="panNumber"
+          label="PAN"
+          placeholder="ABCDE1234F"
+          maxLength={10}
+          leading={<CreditCard className="size-4" />}
+          transform={(v) =>
+            v
+              .toUpperCase()
+              .replace(/[^A-Z0-9]/g, "")
+              .slice(0, 10)
+          }
+        />
+      </div>
 
       <div className="flex justify-end pt-2">
         <Button type="button" variant="brand" size="lg" onClick={onContinue} loading={checking}>
