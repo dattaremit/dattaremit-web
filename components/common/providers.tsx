@@ -10,8 +10,8 @@ import { ROUTES } from "@/constants/routes";
 import { Toaster } from "@/components/ui/sonner";
 import { InAppBanner } from "@/components/notifications/in-app-banner";
 import { PushListener } from "@/components/notifications/push-listener";
-import { ReferralCapture } from "@/components/referral-capture";
-import { SentryUserContext } from "@/components/sentry-user-context";
+import { ReferralCapture } from "@/components/referral/referral-capture";
+import { SentryUserContext } from "@/components/common/sentry-user-context";
 
 function AuthTokenBridge({ children }: { children: React.ReactNode }) {
   const { getToken, isLoaded, isSignedIn } = useAuth();

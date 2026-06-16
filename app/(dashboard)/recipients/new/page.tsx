@@ -4,7 +4,7 @@ import { useAccount } from "@/hooks/api";
 import { PageHeader } from "@/components/ui/page-header";
 import { BackLink } from "@/components/ui/back-link";
 import { NewRecipientWizard } from "@/components/recipients/new-recipient-wizard";
-import { KycGate } from "@/components/kyc-gate";
+import { KycGate } from "@/components/kyc/kyc-gate";
 import { ROUTES } from "@/constants/routes";
 
 export default function NewRecipientPage() {

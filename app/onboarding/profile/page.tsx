@@ -1,7 +1,7 @@
 "use client";
 
 import { Suspense } from "react";
-import { PersonalInfoForm } from "@/components/personal-info-form";
+import { PersonalInfoForm } from "@/components/onboarding/personal-info-form";
 import { OnboardingFormFallback } from "@/components/ui/onboarding-form-fallback";
 import { useOnboardingRouter } from "@/hooks/use-onboarding-router";
 

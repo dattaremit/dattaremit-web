@@ -8,7 +8,7 @@ import { Skeleton } from "@/components/ui/skeleton";
 import { PageHeader } from "@/components/ui/page-header";
 import { EmptyState } from "@/components/ui/empty-state";
 import { RecipientCard } from "@/components/recipients/recipient-card";
-import { KycGate } from "@/components/kyc-gate";
+import { KycGate } from "@/components/kyc/kyc-gate";
 import { ROUTES } from "@/constants/routes";
 
 export default function RecipientsPage() {

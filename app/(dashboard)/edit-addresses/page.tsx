@@ -1,5 +1,5 @@
 import { Suspense } from "react";
-import { AddressForm } from "@/components/address-form";
+import { AddressForm } from "@/components/forms/address-form";
 import { Skeleton } from "@/components/ui/skeleton";
 
 function LoadingFallback() {

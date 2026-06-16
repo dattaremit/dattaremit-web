@@ -1,7 +1,7 @@
 "use client";
 
 import { Suspense } from "react";
-import { AddressForm } from "@/components/address-form";
+import { AddressForm } from "@/components/forms/address-form";
 import { COUNTRIES } from "@/constants/countries";
 import { OnboardingFormFallback } from "@/components/ui/onboarding-form-fallback";
 import { useOnboardingRouter } from "@/hooks/use-onboarding-router";

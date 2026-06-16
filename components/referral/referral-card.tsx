@@ -18,7 +18,7 @@ import { useMyReferral } from "@/hooks/api";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Skeleton } from "@/components/ui/skeleton";
-import { ShareDialog } from "@/components/share-dialog";
+import { ShareDialog } from "@/components/referral/share-dialog";
 
 // Anonymized funnel rows — counts only, never who. Keys map to MyReferral fields.
 const MILESTONES: { key: keyof MyReferralMilestones; label: string; icon: LucideIcon }[] = [

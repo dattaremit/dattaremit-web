@@ -39,7 +39,7 @@ import {
 import { TextField } from "@/components/ui/text-field";
 import { PageHeader } from "@/components/ui/page-header";
 import { FormSkeletonLoader } from "@/components/ui/form-skeleton-loader";
-import { PhoneInput } from "@/components/phone-input";
+import { PhoneInput } from "@/components/forms/phone-input";
 
 export interface PersonalInfoFormProps {
   nextHrefOnCreate?: string;

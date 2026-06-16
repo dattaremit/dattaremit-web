@@ -14,7 +14,7 @@ import { dollarsToCents } from "@/lib/money";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { StepTransition } from "@/components/motion/step-transition";
-import { KycGate } from "@/components/kyc-gate";
+import { KycGate } from "@/components/kyc/kyc-gate";
 import { TransferResult } from "@/components/transfer/transfer-result";
 import { SelectRecipientStep } from "@/components/transfer/select-recipient-step";
 import { SelectBankStep } from "@/components/transfer/select-bank-step";

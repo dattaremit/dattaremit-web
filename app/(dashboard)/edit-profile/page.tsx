@@ -1,5 +1,5 @@
 import { Suspense } from "react";
-import { PersonalInfoForm } from "@/components/personal-info-form";
+import { PersonalInfoForm } from "@/components/onboarding/personal-info-form";
 import { Skeleton } from "@/components/ui/skeleton";
 
 function LoadingFallback() {
