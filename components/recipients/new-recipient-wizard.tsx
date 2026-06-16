@@ -17,7 +17,7 @@ import { ReviewStep } from "@/components/recipients/wizard/review-step";
 import { SuccessScreen } from "@/components/recipients/wizard/success-screen";
 import { SharedRecipientCard } from "@/components/recipients/shared-recipient-card";
 import { useCheckRecipientIdentity, useCreateRecipient } from "@/hooks/api";
-import { recipientSchema, type RecipientFormData } from "@/schemas/recipient.schema";
+import { newRecipientSchema, type NewRecipientFormData } from "@/schemas/recipient.schema";
 import type { CheckIdentityResult, Recipient } from "@/types/recipient";
 
 type WizardStep = "contact" | "address" | "review" | "success";
@@ -49,14 +49,16 @@ export function NewRecipientWizard() {
     result: CheckIdentityResult;
   } | null>(null);
 
-  const form = useForm<RecipientFormData>({
-    resolver: yupResolver(recipientSchema) as unknown as Resolver<RecipientFormData>,
+  const form = useForm<NewRecipientFormData>({
+    resolver: yupResolver(newRecipientSchema) as unknown as Resolver<NewRecipientFormData>,
     defaultValues: {
       firstName: "",
       lastName: "",
       email: "",
       phoneNumberPrefix: "+91",
       phoneNumber: "",
+      aadhaarNumber: "",
+      panNumber: "",
       addressLine1: "",
       city: "",
       state: "",
@@ -74,6 +76,8 @@ export function NewRecipientWizard() {
       "email",
       "phoneNumberPrefix",
       "phoneNumber",
+      "aadhaarNumber",
+      "panNumber",
     ]);
     if (!ok) return;
 

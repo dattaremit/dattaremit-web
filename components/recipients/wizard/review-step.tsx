@@ -4,7 +4,7 @@ import { useFormContext } from "react-hook-form";
 import { ArrowLeft, CheckCircle2, MapPin, Pencil, UserRound } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
-import type { RecipientFormData } from "@/schemas/recipient.schema";
+import type { NewRecipientFormData } from "@/schemas/recipient.schema";
 
 interface ReviewStepProps {
   onBack: () => void;
@@ -25,9 +25,11 @@ export function ReviewStep({
   onEditAddress,
   submitting,
 }: ReviewStepProps) {
-  const { getValues } = useFormContext<RecipientFormData>();
+  const { getValues } = useFormContext<NewRecipientFormData>();
   const v = getValues();
   const name = `${v.firstName ?? ""} ${v.lastName ?? ""}`.trim() || "—";
+  // Aadhaar is sensitive — show only the last 4 digits in the review summary.
+  const aadhaarMasked = v.aadhaarNumber ? `•••• •••• ${v.aadhaarNumber.slice(-4)}` : "—";
 
   return (
     <div className="space-y-6">
@@ -44,6 +46,8 @@ export function ReviewStep({
         <Row label="Phone">
           {v.phoneNumberPrefix} {v.phoneNumber}
         </Row>
+        <Row label="Aadhaar">{aadhaarMasked}</Row>
+        <Row label="PAN">{v.panNumber ?? "—"}</Row>
       </ReviewCard>
 
       <ReviewCard icon={<MapPin className="size-4" />} title="Address" onEdit={onEditAddress}>
