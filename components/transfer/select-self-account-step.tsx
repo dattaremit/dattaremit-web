@@ -32,6 +32,10 @@ interface SelectSelfAccountStepProps {
   /** Fee fraction charged on NRE self-transfers (0.003 = 0.3%). When > 0 and
    *  NRE is selected, a warning is shown so the user knows about the cut. */
   nreFeeRate?: number;
+  /** Whether the NRE option is offered at all. Defaults on; callers may hide it
+   *  for account types that have no NRE path. US citizens DO get it — Credible
+   *  identifies them by their US KYC docs, not PAN/Aadhaar. */
+  allowNre?: boolean;
   selected: SelfAccountType;
   onSelect: (type: SelfAccountType) => void;
   /** Called when the user wants to add NRE details for the first time. */
@@ -51,6 +55,7 @@ export function SelectSelfAccountStep({
   nreAccount,
   regularAccountLast4,
   nreFeeRate,
+  allowNre = true,
   selected,
   onSelect,
   onAddNre,
@@ -82,28 +87,29 @@ export function SelectSelfAccountStep({
           onSelect={() => onSelect("NRO")}
         />
 
-        {hasNreAccount ? (
-          <AccountRadio
-            icon={<Landmark className="size-5" />}
-            title="NRE account"
-            subtitle={
-              nreAccount
-                ? nreAccountSummary(nreAccount)
-                : "Your linked Non-Resident External account"
-            }
-            active={selected === "NRE"}
-            onSelect={() => onSelect("NRE")}
-          />
-        ) : (
-          <AddAccountCard
-            icon={<Landmark className="size-5" />}
-            title="NRE account"
-            subtitle="Add your Non-Resident External account details"
-            onAdd={onAddNre}
-          />
-        )}
+        {allowNre &&
+          (hasNreAccount ? (
+            <AccountRadio
+              icon={<Landmark className="size-5" />}
+              title="NRE account"
+              subtitle={
+                nreAccount
+                  ? nreAccountSummary(nreAccount)
+                  : "Your linked Non-Resident External account"
+              }
+              active={selected === "NRE"}
+              onSelect={() => onSelect("NRE")}
+            />
+          ) : (
+            <AddAccountCard
+              icon={<Landmark className="size-5" />}
+              title="NRE account"
+              subtitle="Add your Non-Resident External account details"
+              onAdd={onAddNre}
+            />
+          ))}
 
-        {selected === "NRE" && hasNreAccount && nreFeeRate != null && (
+        {allowNre && selected === "NRE" && hasNreAccount && nreFeeRate != null && (
           <NreFeeNotice feeRate={nreFeeRate} />
         )}
       </div>

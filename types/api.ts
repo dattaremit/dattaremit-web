@@ -32,6 +32,9 @@ export interface User {
   phoneNumber: string;
   dateOfBirth: string;
   accountStatus: string;
+  /** "US" = US citizen (off-ramp self-transfer, no Indian KYC). "IN" = Indian
+   *  national / NRI (NRE flow, Indian KYC required). */
+  nationality?: string | null;
   zynkExternalAccountId?: string | null;
   zynkDepositAccountId?: string | null;
   achPushEnabled?: boolean;
@@ -111,6 +114,10 @@ export interface Account {
   indianKycStatus?: IndianKycStatus;
   hasBankAccount?: boolean;
   hasDepositAccount?: boolean;
+  /** True if the user has any locally-saved bank in bank_details (the off-ramp
+   *  destination for US citizens, who have no Zynk deposit account). Drives the
+   *  "Indian bank linked" state for the US-citizen off-ramp flow. */
+  hasUserBank?: boolean;
   /** Last 4 digits of the linked regular (NRO/savings) deposit account, for
    *  display in the self-send picker. Null for accounts linked before this was
    *  captured server-side. */

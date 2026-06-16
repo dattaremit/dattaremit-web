@@ -29,6 +29,13 @@ import {
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { DateSelect } from "@/components/ui/date-select";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 import { TextField } from "@/components/ui/text-field";
 import { PageHeader } from "@/components/ui/page-header";
 import { FormSkeletonLoader } from "@/components/ui/form-skeleton-loader";
@@ -73,6 +80,7 @@ export function PersonalInfoForm({
       phoneNumberPrefix: "+1",
       phoneNumber: "",
       dateOfBirth: "",
+      nationality: "US",
     },
   });
 
@@ -89,6 +97,7 @@ export function PersonalInfoForm({
       phoneNumberPrefix: u.phoneNumberPrefix || "+1",
       phoneNumber: u.phoneNumber || "",
       dateOfBirth: u.dateOfBirth ? u.dateOfBirth.substring(0, 10) : "",
+      nationality: u.nationality === "IN" ? "IN" : "US",
     });
   }, [account, form]);
 
@@ -101,7 +110,7 @@ export function PersonalInfoForm({
           phoneNumberPrefix: data.phoneNumberPrefix,
           phoneNumber: data.phoneNumber,
           dateOfBirth: data.dateOfBirth,
-          nationality: "US",
+          nationality: data.nationality,
         });
       } else {
         // Apply a referral code captured from the invite link (?ref=…) for users
@@ -125,7 +134,7 @@ export function PersonalInfoForm({
           phoneNumberPrefix: data.phoneNumberPrefix,
           phoneNumber: data.phoneNumber,
           dateOfBirth: data.dateOfBirth,
-          nationality: "US",
+          nationality: data.nationality,
         });
 
         safeStorage.removeItem(STORAGE_KEYS.REFERRAL_CODE);
@@ -220,6 +229,28 @@ export function PersonalInfoForm({
                   invalid={!!fieldState.error}
                 />
               </FormControl>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+
+        <FormField
+          control={form.control}
+          name="nationality"
+          render={({ field, fieldState }) => (
+            <FormItem className="flex flex-col">
+              <FormLabel>Citizenship</FormLabel>
+              <Select value={field.value} onValueChange={field.onChange}>
+                <FormControl>
+                  <SelectTrigger aria-invalid={!!fieldState.error}>
+                    <SelectValue placeholder="Select your citizenship" />
+                  </SelectTrigger>
+                </FormControl>
+                <SelectContent>
+                  <SelectItem value="US">United States citizen</SelectItem>
+                  <SelectItem value="IN">Indian national (NRI)</SelectItem>
+                </SelectContent>
+              </Select>
               <FormMessage />
             </FormItem>
           )}

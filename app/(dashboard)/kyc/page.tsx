@@ -63,6 +63,10 @@ export default function KycPage() {
   const indianStatus = account?.indianKycStatus ?? "NONE";
   const indianStatusLabel = INDIAN_KYC_STATUS_LABEL[indianStatus] ?? "Not started";
   const canStartPrimary = status === "INITIAL" || status === "REJECTED";
+  // US citizens off-ramp to their own Indian bank without Indian KYC, so the
+  // PAN/Aadhaar card is irrelevant to them. Strict "US" match mirrors the
+  // server's isUsCitizen (anything else, incl. null, still needs KYC).
+  const isUsCitizen = account?.user?.nationality === "US";
 
   return (
     <div className="space-y-8">
@@ -153,47 +157,49 @@ export default function KycPage() {
         </div>
       </Card>
 
-      <Card variant="elevated" className="overflow-hidden">
-        <div className="flex flex-wrap items-start justify-between gap-3 border-b border-border p-6">
-          <div className="flex items-start gap-3">
-            <div className="flex size-10 items-center justify-center rounded-xl bg-brand/15 text-brand">
-              <ShieldCheck className="size-5" />
+      {!isUsCitizen && (
+        <Card variant="elevated" className="overflow-hidden">
+          <div className="flex flex-wrap items-start justify-between gap-3 border-b border-border p-6">
+            <div className="flex items-start gap-3">
+              <div className="flex size-10 items-center justify-center rounded-xl bg-brand/15 text-brand">
+                <ShieldCheck className="size-5" />
+              </div>
+              <div>
+                <h2 className="font-semibold text-xl text-foreground">Indian KYC</h2>
+                <p className="text-sm text-muted-foreground">
+                  Required to receive money into an Indian bank account.
+                </p>
+              </div>
             </div>
-            <div>
-              <h2 className="font-semibold text-xl text-foreground">Indian KYC</h2>
-              <p className="text-sm text-muted-foreground">
-                Required to receive money into an Indian bank account.
-              </p>
-            </div>
+            <Badge variant={getIndianKycStatusVariant(indianStatus)}>{indianStatusLabel}</Badge>
           </div>
-          <Badge variant={getIndianKycStatusVariant(indianStatus)}>{indianStatusLabel}</Badge>
-        </div>
-        <div className="p-6">
-          {indianStatus === "PENDING" ? (
-            <p className="text-sm text-muted-foreground">
-              Your Indian KYC is being processed. This typically takes 3–5 minutes.
-            </p>
-          ) : indianStatus === "APPROVED" ? (
-            <p className="text-sm text-muted-foreground">
-              Indian KYC verified — you can add an Indian bank account.
-            </p>
-          ) : (
-            <div className="space-y-4">
+          <div className="p-6">
+            {indianStatus === "PENDING" ? (
               <p className="text-sm text-muted-foreground">
-                Submit your Aadhar and PAN to verify your Indian identity. Data is encrypted in your
-                browser before being sent.
+                Your Indian KYC is being processed. This typically takes 3–5 minutes.
               </p>
-              <Button asChild variant="brand">
-                <Link href={ROUTES.KYC_INDIAN}>
-                  {indianStatus === "REJECTED" || indianStatus === "FAILED"
-                    ? "Resubmit Indian KYC"
-                    : "Start Indian KYC"}
-                </Link>
-              </Button>
-            </div>
-          )}
-        </div>
-      </Card>
+            ) : indianStatus === "APPROVED" ? (
+              <p className="text-sm text-muted-foreground">
+                Indian KYC verified — you can add an Indian bank account.
+              </p>
+            ) : (
+              <div className="space-y-4">
+                <p className="text-sm text-muted-foreground">
+                  Submit your Aadhar and PAN to verify your Indian identity. Data is encrypted in
+                  your browser before being sent.
+                </p>
+                <Button asChild variant="brand">
+                  <Link href={ROUTES.KYC_INDIAN}>
+                    {indianStatus === "REJECTED" || indianStatus === "FAILED"
+                      ? "Resubmit Indian KYC"
+                      : "Start Indian KYC"}
+                  </Link>
+                </Button>
+              </div>
+            )}
+          </div>
+        </Card>
+      )}
 
       <Dialog
         open={modalOpen}

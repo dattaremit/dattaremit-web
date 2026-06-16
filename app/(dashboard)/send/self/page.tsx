@@ -131,6 +131,12 @@ export default function SendToSelfPage() {
 
   const hasDepositAccount = !!account?.hasDepositAccount;
   const hasNreBank = !!account?.hasNreBank;
+  // US citizens off-ramp their regular (NRO/savings) account to a locally-saved
+  // bank (no Zynk deposit account), so its readiness is hasUserBank. They may
+  // also hold an NRE account — Credible identifies them by their US KYC docs
+  // (not PAN/Aadhaar), so the NRE flow is offered to them too.
+  const isUsCitizen = account?.user?.nationality === "US";
+  const hasRegularAccount = isUsCitizen ? !!account?.hasUserBank : hasDepositAccount;
 
   const handleAddNre = async (data: NreBankAccountFormData) => {
     try {
@@ -160,7 +166,7 @@ export default function SendToSelfPage() {
       })} left this week`
     : undefined;
 
-  if (!hasDepositAccount) {
+  if (!hasRegularAccount) {
     return (
       <div className="mx-auto w-full max-w-lg space-y-7">
         <BackLink href="/" />
@@ -170,7 +176,9 @@ export default function SendToSelfPage() {
             You need to link your own receiving bank account before you can send money to yourself.
           </p>
           <Button asChild variant="brand" className="mt-5">
-            <Link href={ROUTES.LINK_BANK_RECEIVE}>Link deposit account</Link>
+            <Link href={isUsCitizen ? ROUTES.ACCOUNT_BANKS : ROUTES.LINK_BANK_RECEIVE}>
+              {isUsCitizen ? "Add Indian bank" : "Link deposit account"}
+            </Link>
           </Button>
         </Card>
       </div>
@@ -216,6 +224,7 @@ export default function SendToSelfPage() {
               nreAccount={nreAccount}
               regularAccountLast4={account?.depositAccountLast4}
               nreFeeRate={selfFee?.nreFeeRate ?? 0}
+              allowNre
               selected={accountType}
               onSelect={setAccountType}
               onAddNre={() => setStep("add-nre")}
