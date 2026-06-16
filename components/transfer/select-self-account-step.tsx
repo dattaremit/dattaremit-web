@@ -32,8 +32,9 @@ interface SelectSelfAccountStepProps {
   /** Fee fraction charged on NRE self-transfers (0.003 = 0.3%). When > 0 and
    *  NRE is selected, a warning is shown so the user knows about the cut. */
   nreFeeRate?: number;
-  /** Whether the NRE option is offered at all. US citizens off-ramp to a
-   *  regular account only — NRE is an NRI-only flow — so it's hidden for them. */
+  /** Whether the NRE option is offered at all. Defaults on; callers may hide it
+   *  for account types that have no NRE path. US citizens DO get it — Credible
+   *  identifies them by their US KYC docs, not PAN/Aadhaar. */
   allowNre?: boolean;
   selected: SelfAccountType;
   onSelect: (type: SelfAccountType) => void;

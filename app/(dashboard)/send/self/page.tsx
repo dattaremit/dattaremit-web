@@ -131,8 +131,10 @@ export default function SendToSelfPage() {
 
   const hasDepositAccount = !!account?.hasDepositAccount;
   const hasNreBank = !!account?.hasNreBank;
-  // US citizens off-ramp to a locally-saved bank (no Zynk deposit account) and
-  // never use the NRE flow. Their "regular account" readiness is hasUserBank.
+  // US citizens off-ramp their regular (NRO/savings) account to a locally-saved
+  // bank (no Zynk deposit account), so its readiness is hasUserBank. They may
+  // also hold an NRE account — Credible identifies them by their US KYC docs
+  // (not PAN/Aadhaar), so the NRE flow is offered to them too.
   const isUsCitizen = account?.user?.nationality === "US";
   const hasRegularAccount = isUsCitizen ? !!account?.hasUserBank : hasDepositAccount;
 
@@ -222,7 +224,7 @@ export default function SendToSelfPage() {
               nreAccount={nreAccount}
               regularAccountLast4={account?.depositAccountLast4}
               nreFeeRate={selfFee?.nreFeeRate ?? 0}
-              allowNre={!isUsCitizen}
+              allowNre
               selected={accountType}
               onSelect={setAccountType}
               onAddNre={() => setStep("add-nre")}
