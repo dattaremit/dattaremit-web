@@ -1,7 +1,7 @@
 "use client";
 
 import { useCallback, useRef, useState } from "react";
-import { StepUpDialog } from "@/components/step-up-dialog";
+import { StepUpDialog } from "@/components/auth/step-up-dialog";
 
 export interface StepUpOptions {
   title?: string;

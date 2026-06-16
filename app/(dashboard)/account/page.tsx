@@ -6,7 +6,7 @@ import { useAccount } from "@/hooks/api";
 import { useAppSignOut } from "@/hooks/use-app-sign-out";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Card } from "@/components/ui/card";
-import { ReferralCard } from "@/components/referral-card";
+import { ReferralCard } from "@/components/referral/referral-card";
 import { toast } from "sonner";
 import {
   Phone,

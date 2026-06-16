@@ -16,7 +16,7 @@ import {
 import { useAccount, useAddDepositAccount } from "@/hooks/api";
 import { ApiError } from "@/services/api";
 import { ROUTES } from "@/constants/routes";
-import { KycGate } from "@/components/kyc-gate";
+import { KycGate } from "@/components/kyc/kyc-gate";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Form } from "@/components/ui/form";

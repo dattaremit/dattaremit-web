@@ -3,7 +3,7 @@
 import { ChevronsUpDown, CircleUser } from "lucide-react";
 
 import { DropdownMenu, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
-import { AccountMenuItems, useAccountIdentity } from "@/components/account-menu";
+import { AccountMenuItems, useAccountIdentity } from "@/components/account/account-menu";
 
 export function SidebarAccountDropdown() {
   const { displayName, email } = useAccountIdentity();

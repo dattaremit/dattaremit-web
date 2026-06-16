@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import { headers } from "next/headers";
 import { Poppins, Geist_Mono } from "next/font/google";
-import { Providers } from "@/components/providers";
+import { Providers } from "@/components/common/providers";
 import "./globals.css";
 
 const poppins = Poppins({

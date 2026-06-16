@@ -11,12 +11,12 @@ import { getClerkErrorMessage } from "@/utils/clerk-error";
 
 import { AuthShell } from "@/components/ui/auth-shell";
 import { AuthLogo } from "@/components/ui/auth-logo";
-import { OrDivider } from "@/components/or-divider";
-import { EmailVerificationForm } from "@/components/email-verification-form";
+import { OrDivider } from "@/components/auth/or-divider";
+import { EmailVerificationForm } from "@/components/auth/email-verification-form";
 import { Form } from "@/components/ui/form";
 import { TextField } from "@/components/ui/text-field";
 import { Button } from "@/components/ui/button";
-import { OAuthButtons } from "@/components/oauth-buttons";
+import { OAuthButtons } from "@/components/auth/oauth-buttons";
 import { useCheckEmailAvailability } from "@/hooks/api";
 import { ROUTES } from "@/constants/routes";
 

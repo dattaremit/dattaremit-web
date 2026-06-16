@@ -16,8 +16,8 @@ import { Form } from "@/components/ui/form";
 import { TextField } from "@/components/ui/text-field";
 import { Button } from "@/components/ui/button";
 import { OtpForm } from "@/components/ui/otp-form";
-import { OAuthButtons } from "@/components/oauth-buttons";
-import { OrDivider } from "@/components/or-divider";
+import { OAuthButtons } from "@/components/auth/oauth-buttons";
+import { OrDivider } from "@/components/auth/or-divider";
 import { ROUTES } from "@/constants/routes";
 
 export default function SignInPage() {

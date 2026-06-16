@@ -7,7 +7,7 @@ import { recipientSchema, type RecipientFormData } from "@/schemas/recipient.sch
 import { Form, FormField, FormItem } from "@/components/ui/form";
 import { Button } from "@/components/ui/button";
 import { TextField } from "@/components/ui/text-field";
-import { PhoneInput } from "@/components/phone-input";
+import { PhoneInput } from "@/components/forms/phone-input";
 import { useCheckEmailAvailability } from "@/hooks/api";
 import { stripPhonePrefix } from "@/lib/phone-utils";
 import { COUNTRIES } from "@/constants/countries";

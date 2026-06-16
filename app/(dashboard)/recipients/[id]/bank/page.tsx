@@ -9,7 +9,7 @@ import { Skeleton } from "@/components/ui/skeleton";
 import { PageHeader } from "@/components/ui/page-header";
 import { BackLink } from "@/components/ui/back-link";
 import { RecipientBankForm } from "@/components/recipients/recipient-bank-form";
-import { KycGate } from "@/components/kyc-gate";
+import { KycGate } from "@/components/kyc/kyc-gate";
 import { ApiError } from "@/services/api";
 
 export default function RecipientBankPage({ params }: { params: Promise<{ id: string }> }) {

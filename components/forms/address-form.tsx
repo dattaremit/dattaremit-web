@@ -26,7 +26,7 @@ import { TextField } from "@/components/ui/text-field";
 import { AddressAutocomplete } from "@/components/ui/address-autocomplete";
 import { PageHeader } from "@/components/ui/page-header";
 import { FormSkeletonLoader } from "@/components/ui/form-skeleton-loader";
-import { CountrySelector } from "@/components/country-selector";
+import { CountrySelector } from "@/components/forms/country-selector";
 import { useAddressAutocomplete } from "@/hooks/use-address-autocomplete";
 import type { Country } from "@/constants/countries";
 
