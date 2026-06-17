@@ -23,8 +23,8 @@ export const MAX_TRANSFER_CENTS = MAX_TRANSFER_AMOUNT * 100;
  * Server enforces the same caps inside the locked transaction in
  * `transfer.service.ts` — these constants exist only for UX preview.
  */
-export const DAILY_TRANSFER_LIMIT_WITH_SSN = 5_000;
-export const DAILY_TRANSFER_LIMIT_WITHOUT_SSN = 3_000;
+export const DAILY_TRANSFER_LIMIT_WITH_SSN = 4_999;
+export const DAILY_TRANSFER_LIMIT_WITHOUT_SSN = 2_999;
 export const WEEKLY_TRANSFER_LIMIT = 15_000;
 
 /** Pagination */
