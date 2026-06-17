@@ -1,7 +1,7 @@
 "use client";
 
 import { useFormContext } from "react-hook-form";
-import { ArrowRight, CreditCard, Fingerprint, Mail, User } from "lucide-react";
+import { ArrowRight, Fingerprint, Mail, User } from "lucide-react";
 
 import { FormField, FormItem } from "@/components/ui/form";
 import { Button } from "@/components/ui/button";
@@ -81,32 +81,16 @@ export function ContactStep({ onContinue, checking }: ContactStepProps) {
         )}
       />
 
-      <div className="grid gap-4 sm:grid-cols-2">
-        <TextField
-          control={form.control}
-          name="aadhaarNumber"
-          label="Aadhaar number"
-          placeholder="123412341234"
-          inputMode="numeric"
-          maxLength={12}
-          leading={<Fingerprint className="size-4" />}
-          transform={(v) => v.replace(/\D/g, "").slice(0, 12)}
-        />
-        <TextField
-          control={form.control}
-          name="panNumber"
-          label="PAN"
-          placeholder="ABCDE1234F"
-          maxLength={10}
-          leading={<CreditCard className="size-4" />}
-          transform={(v) =>
-            v
-              .toUpperCase()
-              .replace(/[^A-Z0-9]/g, "")
-              .slice(0, 10)
-          }
-        />
-      </div>
+      <TextField
+        control={form.control}
+        name="aadhaarNumber"
+        label="Aadhaar number"
+        placeholder="123412341234"
+        inputMode="numeric"
+        maxLength={12}
+        leading={<Fingerprint className="size-4" />}
+        transform={(v) => v.replace(/\D/g, "").slice(0, 12)}
+      />
 
       <div className="flex justify-end pt-2">
         <Button type="button" variant="brand" size="lg" onClick={onContinue} loading={checking}>
