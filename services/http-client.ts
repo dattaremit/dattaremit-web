@@ -9,12 +9,24 @@ export class ApiError extends Error {
   status: number;
   code?: string;
   details?: unknown;
+  /**
+   * The raw `message` from the server envelope. `message` (above) stays the
+   * safe, generic, status-based string used everywhere by default; callers that
+   * want to surface a specific server-authored message (e.g. bank-validation
+   * failures) read this through `getServerErrorMessage`, which filters it.
+   */
+  serverMessage?: string;
 
-  constructor(status: number, message: string, extras?: { code?: string; details?: unknown }) {
+  constructor(
+    status: number,
+    message: string,
+    extras?: { code?: string; details?: unknown; serverMessage?: string },
+  ) {
     super(message);
     this.status = status;
     this.code = extras?.code;
     this.details = extras?.details;
+    this.serverMessage = extras?.serverMessage;
     this.name = "ApiError";
   }
 }
@@ -77,6 +89,7 @@ api.interceptors.response.use(
       throw new ApiError(response.status, safeErrorMessage(response.status), {
         code: body.code,
         details: body.data,
+        serverMessage: body.message,
       });
     }
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -92,6 +105,7 @@ api.interceptors.response.use(
       const apiError = new ApiError(status, safeErrorMessage(status), {
         code: body?.code,
         details: body?.data,
+        serverMessage: body?.message,
       });
       Sentry.logger.error("API request failed", {
         status,

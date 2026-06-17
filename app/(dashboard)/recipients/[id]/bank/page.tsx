@@ -11,6 +11,7 @@ import { BackLink } from "@/components/ui/back-link";
 import { RecipientBankForm } from "@/components/recipients/recipient-bank-form";
 import { KycGate } from "@/components/kyc/kyc-gate";
 import { ApiError } from "@/services/api";
+import { getServerErrorMessage } from "@/lib/safe-error-message";
 
 export default function RecipientBankPage({ params }: { params: Promise<{ id: string }> }) {
   const { id } = use(params);
@@ -77,7 +78,7 @@ export default function RecipientBankPage({ params }: { params: Promise<{ id: st
                   router.push(`/recipients/${id}`);
                   return;
                 }
-                toast.error(err instanceof Error ? err.message : "Failed to save bank");
+                toast.error(getServerErrorMessage(err, "Failed to save bank"));
               }
             }}
           />
