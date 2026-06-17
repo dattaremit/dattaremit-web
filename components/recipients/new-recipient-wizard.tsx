@@ -58,7 +58,6 @@ export function NewRecipientWizard() {
       phoneNumberPrefix: "+91",
       phoneNumber: "",
       aadhaarNumber: "",
-      panNumber: "",
       addressLine1: "",
       city: "",
       state: "",
@@ -77,7 +76,6 @@ export function NewRecipientWizard() {
       "phoneNumberPrefix",
       "phoneNumber",
       "aadhaarNumber",
-      "panNumber",
     ]);
     if (!ok) return;
 

@@ -47,7 +47,6 @@ export function ReviewStep({
           {v.phoneNumberPrefix} {v.phoneNumber}
         </Row>
         <Row label="Aadhaar">{aadhaarMasked}</Row>
-        <Row label="PAN">{v.panNumber ?? "—"}</Row>
       </ReviewCard>
 
       <ReviewCard icon={<MapPin className="size-4" />} title="Address" onEdit={onEditAddress}>
