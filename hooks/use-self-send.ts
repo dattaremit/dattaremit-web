@@ -20,8 +20,8 @@ import {
 } from "@/hooks/api";
 import { useSendMoneyState } from "@/hooks/use-send-money-state";
 import { useStepUp } from "@/hooks/use-step-up";
-import { ApiError } from "@/services/api";
 import type { SelfAccountType } from "@/types/transfer";
+import { getServerErrorMessage } from "@/lib/safe-error-message";
 import { dollarsToCents } from "@/lib/money";
 import { dailyRemaining, validateAmountAgainstLimits, weeklyRemaining } from "@/lib/send-limits";
 
@@ -140,7 +140,7 @@ export function useSelfSend() {
       setAccountType("NRE");
       setStep("amount");
     } catch (err) {
-      toast.error(err instanceof ApiError ? err.message : "Failed to add NRE account");
+      toast.error(getServerErrorMessage(err, "Failed to add NRE account"));
     }
   };
 

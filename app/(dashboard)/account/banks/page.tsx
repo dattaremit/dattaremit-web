@@ -5,6 +5,7 @@ import { Banknote, Check, MoreHorizontal, Plus, Trash2 } from "lucide-react";
 import { toast } from "sonner";
 
 import { useAddMyBank, useDeleteMyBank, useMyBanks, useSetDefaultMyBank } from "@/hooks/api";
+import { getServerErrorMessage } from "@/lib/safe-error-message";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
@@ -159,7 +160,7 @@ export default function MyBanksPage() {
                 toast.success("Bank added");
                 setAddOpen(false);
               } catch (err) {
-                toast.error(err instanceof Error ? err.message : "Failed to add bank");
+                toast.error(getServerErrorMessage(err, "Failed to add bank"));
               }
             }}
           />
