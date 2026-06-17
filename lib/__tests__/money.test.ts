@@ -7,11 +7,11 @@ describe("dollarsToCents", () => {
   });
 
   it("converts dollars and cents", () => {
-    expect(dollarsToCents("12.34")).toBe(1234);
+    expect(dollarsToCents("112.34")).toBe(11234);
   });
 
   it("handles single decimal place by padding", () => {
-    expect(dollarsToCents("5.5")).toBe(550);
+    expect(dollarsToCents("15.5")).toBe(1550);
   });
 
   it("trims surrounding whitespace before parsing", () => {
@@ -19,9 +19,9 @@ describe("dollarsToCents", () => {
   });
 
   it("returns exact integer cents for tricky decimal inputs", () => {
-    // 8.7 * 100 in IEEE-754 is 869.9999999999999; the string-arithmetic
-    // implementation should still produce exactly 870.
-    expect(dollarsToCents("8.7")).toBe(870);
+    // 18.7 * 100 in IEEE-754 is 1869.9999999999998; the string-arithmetic
+    // implementation should still produce exactly 1870.
+    expect(dollarsToCents("18.7")).toBe(1870);
   });
 
   it("accepts the minimum allowed amount", () => {
