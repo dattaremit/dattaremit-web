@@ -6,7 +6,8 @@ import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { PageHeader } from "@/components/ui/page-header";
 import { useExchangeRate } from "@/hooks/api/use-exchange-rate";
-import { computeInrPreview, formatInr } from "@/lib/money";
+import { useRegularFee } from "@/hooks/api";
+import { formatInr } from "@/lib/money";
 import type { BankDetails, Recipient } from "@/types/recipient";
 
 interface ReviewTransferStepProps {
@@ -28,7 +29,10 @@ export function ReviewTransferStep({
 }: ReviewTransferStepProps) {
   const bank = selectedBank ?? recipient.defaultBank;
   const { data: rateData } = useExchangeRate();
-  const inrPreview = computeInrPreview(amount, rateData?.rate);
+  // Use the same server fee-aware quote as the amount step so the INR the user
+  // sees here matches what they saw when entering the amount (fees deducted).
+  const { data: feeQuote } = useRegularFee(amount);
+  const inrPreview = feeQuote?.receiveAmount ?? null;
   return (
     <>
       <PageHeader

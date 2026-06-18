@@ -46,15 +46,3 @@ export function applyNreFee(gross: number | null, feeRate: number): number | nul
   if (!feeRate || feeRate <= 0) return gross;
   return gross * (1 - feeRate);
 }
-
-export function computeInrPreview(
-  usdInput: string,
-  rate: number | undefined | null,
-): number | null {
-  if (!rate || rate <= 0) return null;
-  const trimmed = usdInput.trim();
-  if (!trimmed || !AMOUNT_REGEX.test(trimmed)) return null;
-  const usd = parseFloat(trimmed);
-  if (!Number.isFinite(usd) || usd <= 0) return null;
-  return usd * rate;
-}
