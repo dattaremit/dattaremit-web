@@ -13,6 +13,9 @@ export { useAddNreAccount, useNreAccount } from "./use-nre-account";
 export { useActivities } from "./use-activities";
 export { useExchangeRate } from "./use-exchange-rate";
 
+// Support
+export { useSupportConversations, useSendSupportMessage } from "./use-support";
+
 // Transfers
 export { useSendMoney } from "./use-send-money";
 export { useSendToSelf } from "./use-send-to-self";

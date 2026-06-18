@@ -38,4 +38,5 @@ export const queryKeys = {
     ["check-email", scope, email] as const,
   addressAutocomplete: (sessionToken: string, input: string) =>
     ["address-autocomplete", sessionToken, input] as const,
+  support: { conversations: ["support", "conversations"] as const },
 } as const;

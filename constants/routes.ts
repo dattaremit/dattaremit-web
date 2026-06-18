@@ -15,6 +15,7 @@ export const ROUTES = {
   ACTIVITY: "/activity",
   NOTIFICATIONS: "/notifications",
   REFERRAL: "/referral",
+  SUPPORT: "/support",
   KYC: "/kyc",
   KYC_INDIAN: "/kyc/indian",
   LINK_BANK: "/link-bank",

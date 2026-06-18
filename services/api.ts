@@ -19,3 +19,4 @@ export * from "./notifications";
 export * from "./crypto";
 export * from "./email";
 export * from "./devices";
+export * from "./support";

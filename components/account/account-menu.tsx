@@ -4,7 +4,7 @@ import { useUser } from "@clerk/nextjs";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
 import { useAppSignOut } from "@/hooks/use-app-sign-out";
-import { LogOut, UserPen, MapPin, ShieldCheck, CircleUser } from "lucide-react";
+import { LogOut, UserPen, MapPin, ShieldCheck, CircleUser, LifeBuoy } from "lucide-react";
 
 import { useAccount } from "@/hooks/api";
 import { ROUTES } from "@/constants/routes";
@@ -74,6 +74,10 @@ export function AccountMenuItems({
             Complete KYC
           </DropdownMenuItem>
         )}
+        <DropdownMenuItem onClick={() => router.push(ROUTES.SUPPORT)}>
+          <LifeBuoy />
+          Help &amp; support
+        </DropdownMenuItem>
       </DropdownMenuGroup>
       <DropdownMenuSeparator />
       <DropdownMenuItem
