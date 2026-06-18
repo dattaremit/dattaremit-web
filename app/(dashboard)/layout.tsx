@@ -10,6 +10,7 @@ import { cn } from "@/lib/utils";
 import { SidebarAccountDropdown } from "@/components/account/sidebar-account-dropdown";
 import { NotificationBell } from "@/components/notifications/notification-bell";
 import { KycBanner } from "@/components/kyc/kyc-banner";
+import { SupportFab } from "@/components/support/support-fab";
 import { useAccount } from "@/hooks/api";
 import { ApiError } from "@/services/api";
 import { computeOnboardingState, stepHref } from "@/lib/onboarding-progress";
@@ -183,6 +184,8 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
           })}
         </div>
       </nav>
+
+      <SupportFab />
     </div>
   );
 }
