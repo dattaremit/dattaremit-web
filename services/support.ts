@@ -13,3 +13,6 @@ export const getSupportConversations = (): Promise<SupportConversation[]> =>
 export const sendSupportMessage = (
   input: SendSupportMessageInput,
 ): Promise<SendSupportMessageResult> => api.post("/support/contact", input);
+
+// Browser-reachable SSE URL (with a short-lived token) for live agent replies.
+export const getSupportStreamUrl = (): Promise<{ url: string }> => api.get("/support/stream-url");
