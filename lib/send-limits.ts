@@ -1,6 +1,8 @@
 import {
   DAILY_TRANSFER_LIMIT_WITH_SSN,
   DAILY_TRANSFER_LIMIT_WITHOUT_SSN,
+  MAX_TRANSFER_WITH_SSN,
+  MAX_TRANSFER_WITHOUT_SSN,
   WEEKLY_TRANSFER_LIMIT,
 } from "@/constants/limits";
 import type { SendLimits } from "@/types/transfer";
@@ -14,6 +16,10 @@ function formatUsd(value: number): string {
 
 export function dailyCapFor(hasSsn: boolean): number {
   return hasSsn ? DAILY_TRANSFER_LIMIT_WITH_SSN : DAILY_TRANSFER_LIMIT_WITHOUT_SSN;
+}
+
+export function perTransferMaxFor(hasSsn: boolean): number {
+  return hasSsn ? MAX_TRANSFER_WITH_SSN : MAX_TRANSFER_WITHOUT_SSN;
 }
 
 export function dailyRemaining(past24HoursAmount: number, hasSsn: boolean): number {
@@ -41,6 +47,16 @@ export function validateAmountAgainstLimits(
   if (!limits) return null;
   const amount = parseFloat(amountStr);
   if (!Number.isFinite(amount) || amount <= 0) return null;
+
+  // Per-transfer max (SSN tier). The Yup schema already caps everyone at the
+  // $4,999 ceiling; this enforces the tighter $2,999 cap for users without SSN.
+  const perTransferMax = perTransferMaxFor(limits.hasSsn);
+  if (amount > perTransferMax) {
+    const base = `The most you can send in one transfer is $${formatUsd(perTransferMax)}.`;
+    return limits.hasSsn
+      ? base
+      : `${base} Add your SSN to send up to $${formatUsd(MAX_TRANSFER_WITH_SSN)} per transfer.`;
+  }
 
   const dailyCap = dailyCapFor(limits.hasSsn);
   const dailyLeft = dailyRemaining(limits.past24HoursAmount, limits.hasSsn);

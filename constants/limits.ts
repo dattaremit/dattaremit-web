@@ -1,6 +1,14 @@
-/** Transfer amount bounds (USD, per-transaction). Server enforces the same cap. */
-export const MIN_TRANSFER_AMOUNT = 1;
-export const MAX_TRANSFER_AMOUNT = 10_000;
+/**
+ * Per-transfer amount bounds (USD, per-transaction). Server enforces the same.
+ * Minimum is flat; the maximum is SSN-tiered ($4,999 with SSN / $2,999 without)
+ * like the daily cap. MAX_TRANSFER_AMOUNT is the absolute ceiling (the SSN
+ * tier), used by the schema/cents checks that run before the SSN tier is known;
+ * the tighter no-SSN cap is enforced in `validateAmountAgainstLimits`.
+ */
+export const MIN_TRANSFER_AMOUNT = 15;
+export const MAX_TRANSFER_WITH_SSN = 4_999;
+export const MAX_TRANSFER_WITHOUT_SSN = 2_999;
+export const MAX_TRANSFER_AMOUNT = MAX_TRANSFER_WITH_SSN;
 export const MIN_TRANSFER_CENTS = MIN_TRANSFER_AMOUNT * 100;
 export const MAX_TRANSFER_CENTS = MAX_TRANSFER_AMOUNT * 100;
 
@@ -15,8 +23,8 @@ export const MAX_TRANSFER_CENTS = MAX_TRANSFER_AMOUNT * 100;
  * Server enforces the same caps inside the locked transaction in
  * `transfer.service.ts` — these constants exist only for UX preview.
  */
-export const DAILY_TRANSFER_LIMIT_WITH_SSN = 5_000;
-export const DAILY_TRANSFER_LIMIT_WITHOUT_SSN = 3_000;
+export const DAILY_TRANSFER_LIMIT_WITH_SSN = 4_999;
+export const DAILY_TRANSFER_LIMIT_WITHOUT_SSN = 2_999;
 export const WEEKLY_TRANSFER_LIMIT = 15_000;
 
 /** Pagination */

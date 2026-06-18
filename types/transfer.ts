@@ -65,6 +65,6 @@ export interface SendLimits {
    * the trailing 7 days. Matches the value the server enforces against. */
   past7DaysAmount: number;
   /** True when Zynk captured an SSN during the user's hosted KYC. Unlocks
-   * the higher daily cap ($5,000 vs $3,000). */
+   * the higher daily cap ($4,999 vs $2,999). */
   hasSsn: boolean;
 }
