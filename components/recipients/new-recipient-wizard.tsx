@@ -17,6 +17,7 @@ import { ReviewStep } from "@/components/recipients/wizard/review-step";
 import { SuccessScreen } from "@/components/recipients/wizard/success-screen";
 import { SharedRecipientCard } from "@/components/recipients/shared-recipient-card";
 import { useCheckRecipientIdentity, useCreateRecipient } from "@/hooks/api";
+import { getServerErrorMessage } from "@/lib/safe-error-message";
 import { newRecipientSchema, type NewRecipientFormData } from "@/schemas/recipient.schema";
 import type { CheckIdentityResult, Recipient } from "@/types/recipient";
 
@@ -130,7 +131,9 @@ export function NewRecipientWizard() {
       });
       setStep("success");
     } catch (err) {
-      toast.error(err instanceof Error ? err.message : "Failed to add recipient");
+      toast.error(
+        getServerErrorMessage(err, err instanceof Error ? err.message : "Failed to add recipient"),
+      );
     }
   };
 
