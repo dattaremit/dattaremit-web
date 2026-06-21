@@ -4,6 +4,7 @@ import { use } from "react";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
 import { useRecipient, useUpdateRecipient } from "@/hooks/api";
+import { getServerErrorMessage } from "@/lib/safe-error-message";
 import { Card } from "@/components/ui/card";
 import { Skeleton } from "@/components/ui/skeleton";
 import { PageHeader } from "@/components/ui/page-header";
@@ -63,7 +64,12 @@ export default function EditRecipientPage({ params }: { params: Promise<{ id: st
                 toast.success("Recipient updated");
                 router.push(`/recipients/${id}`);
               } catch (err) {
-                toast.error(err instanceof Error ? err.message : "Failed to update recipient");
+                toast.error(
+                  getServerErrorMessage(
+                    err,
+                    err instanceof Error ? err.message : "Failed to update recipient",
+                  ),
+                );
               }
             }}
           />

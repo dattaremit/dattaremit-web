@@ -13,6 +13,7 @@ import { STORAGE_KEYS } from "@/constants/storage-keys";
 import { ROUTES } from "@/constants/routes";
 import { stripPhonePrefix } from "@/lib/phone-utils";
 import safeStorage from "@/lib/safe-storage";
+import { getServerErrorMessage } from "@/lib/safe-error-message";
 import { reserveReferralCode } from "@/services/api";
 import { isValidReferralCode } from "@/schemas/referral.schema";
 import { toast } from "sonner";
@@ -156,7 +157,13 @@ export function PersonalInfoForm({
         router.push(nextHrefOnUpdate);
       }
     } catch (err: unknown) {
-      const message = err instanceof Error ? err.message : "Something went wrong";
+      // Surface the server's specific copy when it's safe (e.g. the
+      // email-or-phone-already-registered 409); otherwise fall back to the
+      // generic status-based message.
+      const message = getServerErrorMessage(
+        err,
+        err instanceof Error ? err.message : "Something went wrong",
+      );
       toast.error(message);
     }
   };
