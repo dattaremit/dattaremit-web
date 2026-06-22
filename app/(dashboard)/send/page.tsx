@@ -30,6 +30,9 @@ export default function SendPage() {
   const search = useSearchParams();
   const preselectedId = search.get("recipient");
   const preselectedBankId = search.get("bank");
+  // The recipient's "Send via UPI" card lands here with ?method=upi; everything
+  // else (bank picker, "Send money", "Send to this bank") is a bank transfer.
+  const preselectedMethod: PaymentMethod = search.get("method") === "upi" ? "UPI" : "BANK";
   const { data: account } = useAccount();
   const { data: recipients, isLoading } = useRecipients();
   const sendMoney = useSendMoney();
@@ -54,7 +57,7 @@ export default function SendPage() {
   } = useSendMoneyState<Step>(preselectedId ? "amount" : "select");
   const [selectedId, setSelectedId] = useState<string | null>(preselectedId);
   const [selectedBankId, setSelectedBankId] = useState<string | null>(preselectedBankId);
-  const [paymentMethod, setPaymentMethod] = useState<PaymentMethod>("BANK");
+  const [paymentMethod, setPaymentMethod] = useState<PaymentMethod>(preselectedMethod);
   const [upiId, setUpiId] = useState<string | undefined>();
 
   const selected = useMemo<Recipient | undefined>(
@@ -281,6 +284,7 @@ export default function SendPage() {
             <TransferAmountStep
               recipient={selected}
               selectedBank={selectedBank}
+              paymentMethod={paymentMethod}
               onContinue={({ amount: a, note: n, paymentMethod: m, upiId: u }) => {
                 setAmount(a);
                 setNote(n);

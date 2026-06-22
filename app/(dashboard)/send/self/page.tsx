@@ -20,6 +20,7 @@ import { ROUTES } from "@/constants/routes";
 const ACCOUNT_LABELS: Record<SelfAccountType, string> = {
   NRO: "your regular account",
   NRE: "your NRE account",
+  UPI: "your UPI ID",
 };
 
 export default function SendToSelfPage() {
@@ -107,7 +108,7 @@ export default function SendToSelfPage() {
               form={self.form}
               controls={self.controls}
               accountLabel={accountLabel}
-              allowUpi={self.allowUpi}
+              isUpi={self.isUpi}
               limitsHint={self.limitsHint}
               receiveAmount={self.receiveAmount}
               inrFeeLoss={self.inrFeeLoss}

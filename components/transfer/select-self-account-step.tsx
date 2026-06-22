@@ -1,6 +1,6 @@
 "use client";
 
-import { ArrowLeft, ArrowRight, Check, Landmark, Plus, Wallet } from "lucide-react";
+import { ArrowLeft, ArrowRight, Check, Landmark, Plus, Smartphone, Wallet } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
@@ -112,6 +112,14 @@ export function SelectSelfAccountStep({
         {allowNre && selected === "NRE" && hasNreAccount && nreFeeRate != null && (
           <NreFeeNotice feeRate={nreFeeRate} />
         )}
+
+        <AccountRadio
+          icon={<Smartphone className="size-5" />}
+          title="UPI transfer"
+          subtitle="Send to your UPI ID"
+          active={selected === "UPI"}
+          onSelect={() => onSelect("UPI")}
+        />
       </div>
 
       <div className="flex items-center justify-between gap-3 pt-2">

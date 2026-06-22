@@ -13,10 +13,11 @@ export interface SendMoneyPayload {
   upiId?: string;
 }
 
-/** Which of the user's own Indian accounts a self-send lands in (UI concept).
- *  "NRO" is the regular deposit account; "NRE" is the Non-Resident External
- *  account added via the NRE bank-details form. */
-export type SelfAccountType = "NRO" | "NRE";
+/** Which of the user's own Indian destinations a self-send lands in (UI
+ *  concept). "NRO" is the regular deposit account; "NRE" is the Non-Resident
+ *  External account added via the NRE bank-details form; "UPI" routes via the
+ *  regular (OFFRAMP) path but pays out to the user's own UPI VPA. */
+export type SelfAccountType = "NRO" | "NRE" | "UPI";
 
 /** Wire value the server expects on `/transfers/send-to-self`. "OFFRAMP" is
  *  the regular route (maps to the NRO selection); "NRE" pays out to the NRE
