@@ -12,6 +12,7 @@ import { InAppBanner } from "@/components/notifications/in-app-banner";
 import { PushListener } from "@/components/notifications/push-listener";
 import { ReferralCapture } from "@/components/referral/referral-capture";
 import { SentryUserContext } from "@/components/common/sentry-user-context";
+import { SoundProvider } from "@/components/common/sound-provider";
 
 function AuthTokenBridge({ children }: { children: React.ReactNode }) {
   const { getToken, isLoaded, isSignedIn } = useAuth();
@@ -61,7 +62,7 @@ export function Providers({ children, nonce }: { children: React.ReactNode; nonc
           <AuthTokenBridge>
             <SentryUserContext />
             <ReferralCapture />
-            {children}
+            <SoundProvider>{children}</SoundProvider>
             <PushListener />
             <InAppBanner />
             <Toaster />
