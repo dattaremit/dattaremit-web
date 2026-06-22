@@ -5,6 +5,7 @@ import type {
   PlaidLinkToken,
   AddExternalAccountPayload,
   AddDepositAccountPayload,
+  ExternalAccountDetails,
 } from "@/types/api";
 import type { IndianKycEncryptedPayload, IndianKycResponse } from "@/types/indian-kyc";
 
@@ -21,6 +22,9 @@ export const generatePlaidLinkToken = (): Promise<PlaidLinkToken> =>
   api.post("/zynk/plaid-link-token");
 
 // ── Zynk (External Account) ──
+export const getExternalAccount = (): Promise<ExternalAccountDetails | null> =>
+  api.get("/zynk/external-account");
+
 export const addExternalAccount = (
   data: AddExternalAccountPayload,
   idempotencyKey?: string,

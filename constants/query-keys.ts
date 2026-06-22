@@ -1,6 +1,7 @@
 export const queryKeys = {
   users: { me: ["users", "me"] as const },
   account: ["account"] as const,
+  externalAccount: ["external-account"] as const,
   nreAccount: ["nre-account"] as const,
   addresses: {
     all: ["addresses"] as const,

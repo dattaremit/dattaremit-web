@@ -14,8 +14,9 @@ import { Label } from "@/components/ui/label";
 import { PageHeader } from "@/components/ui/page-header";
 import { PlaidLinkButton } from "@/components/bank/plaid-link-button";
 import { KycGate } from "@/components/kyc/kyc-gate";
-import { useAccount, useAddExternalAccount } from "@/hooks/api";
+import { useAccount, useAddExternalAccount, useExternalAccount } from "@/hooks/api";
 import { ApiError } from "@/services/api";
+import { formatExternalAccountLabel } from "@/lib/external-account";
 import { ROUTES } from "@/constants/routes";
 import { cn } from "@/lib/utils";
 
@@ -65,6 +66,8 @@ export default function LinkBankPage() {
   }
 
   const hasBankAccount = !!account?.hasBankAccount;
+  const { data: externalAccount } = useExternalAccount(hasBankAccount);
+  const linkedBankLabel = formatExternalAccountLabel(externalAccount);
   // US citizens off-ramp to a locally-saved Indian bank (no Zynk deposit
   // account, no Indian KYC) → "my banks". NRIs link a Zynk-backed deposit
   // account through the KYC-gated receive flow. Strict "US" mirrors the
@@ -103,6 +106,11 @@ export default function LinkBankPage() {
               description="Link your US bank via Plaid to fund transfers."
               step="01"
             >
+              {hasBankAccount && (
+                <p className="text-sm font-medium text-success">
+                  {linkedBankLabel ? `Linked: ${linkedBankLabel}` : "Account linked"}
+                </p>
+              )}
               {user?.achPushEnabled && !hasBankAccount && (
                 <div className="flex w-full items-center justify-between rounded-xl border border-border bg-muted/40 p-3">
                   <div className="flex items-center gap-2.5">

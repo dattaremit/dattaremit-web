@@ -7,7 +7,7 @@ export { useValidateReferral } from "./use-validate-referral";
 export { useMyReferral } from "./use-my-referral";
 export { useStartKyc } from "./use-start-kyc";
 export { usePlaidLinkToken } from "./use-plaid-link-token";
-export { useAddExternalAccount } from "./use-external-account";
+export { useAddExternalAccount, useExternalAccount } from "./use-external-account";
 export { useAddDepositAccount } from "./use-deposit-account";
 export { useAddNreAccount, useNreAccount } from "./use-nre-account";
 export { useActivities } from "./use-activities";
