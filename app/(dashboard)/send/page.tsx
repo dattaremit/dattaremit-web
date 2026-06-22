@@ -21,6 +21,7 @@ import { SelectBankStep } from "@/components/transfer/select-bank-step";
 import { TransferAmountStep } from "@/components/transfer/transfer-amount-step";
 import { ReviewTransferStep } from "@/components/transfer/review-transfer-step";
 import type { BankDetails, Recipient } from "@/types/recipient";
+import type { PaymentMethod } from "@/types/transfer";
 
 type Step = "select" | "selectBank" | "amount" | "review" | "result";
 
@@ -53,6 +54,8 @@ export default function SendPage() {
   } = useSendMoneyState<Step>(preselectedId ? "amount" : "select");
   const [selectedId, setSelectedId] = useState<string | null>(preselectedId);
   const [selectedBankId, setSelectedBankId] = useState<string | null>(preselectedBankId);
+  const [paymentMethod, setPaymentMethod] = useState<PaymentMethod>("BANK");
+  const [upiId, setUpiId] = useState<string | undefined>();
 
   const selected = useMemo<Recipient | undefined>(
     () => recipients?.find((r) => r.id === selectedId),
@@ -97,12 +100,16 @@ export default function SendPage() {
         return undefined;
       }
       try {
+        const isUpi = paymentMethod === "UPI";
         return await sendMoney.mutateAsync({
           payload: {
             recipientId: selected.id,
-            bankDetailsId: selectedBank?.id ?? undefined,
+            // The server forbids a bank account on UPI sends; it pays the VPA.
+            bankDetailsId: isUpi ? undefined : (selectedBank?.id ?? undefined),
             amountCents,
             note: note || undefined,
+            paymentMethod,
+            upiId: isUpi ? upiId : undefined,
           },
           idempotencyKey,
         });
@@ -274,9 +281,11 @@ export default function SendPage() {
             <TransferAmountStep
               recipient={selected}
               selectedBank={selectedBank}
-              onContinue={({ amount: a, note: n }) => {
+              onContinue={({ amount: a, note: n, paymentMethod: m, upiId: u }) => {
                 setAmount(a);
                 setNote(n);
+                setPaymentMethod(m);
+                setUpiId(u);
                 setStep("review");
               }}
             />
@@ -290,6 +299,8 @@ export default function SendPage() {
               selectedBank={selectedBank}
               amount={amount}
               note={note}
+              paymentMethod={paymentMethod}
+              upiId={upiId}
               isSending={sendMoney.isPending}
               onConfirm={confirmSend}
             />

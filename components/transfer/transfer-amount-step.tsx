@@ -6,11 +6,13 @@ import { yupResolver } from "@hookform/resolvers/yup";
 import { motion, useAnimation } from "motion/react";
 
 import { transferAmountSchema, type TransferAmountFormData } from "@/schemas/transfer.schema";
+import type { PaymentMethod } from "@/types/transfer";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Form } from "@/components/ui/form";
 import { PageHeader } from "@/components/ui/page-header";
 import { TextField } from "@/components/ui/text-field";
+import { PaymentMethodField } from "@/components/transfer/payment-method-field";
 import { useRegularFee, useSendLimits } from "@/hooks/api";
 import { formatInr } from "@/lib/money";
 import { dailyRemaining, validateAmountAgainstLimits, weeklyRemaining } from "@/lib/send-limits";
@@ -23,7 +25,12 @@ interface TransferAmountStepProps {
    * to copy that says "their linked account" so we never render "Bank: null".
    */
   selectedBank?: BankDetails | null;
-  onContinue: (data: { amount: string; note: string }) => void;
+  onContinue: (data: {
+    amount: string;
+    note: string;
+    paymentMethod: PaymentMethod;
+    upiId?: string;
+  }) => void;
 }
 
 export function TransferAmountStep({
@@ -33,7 +40,7 @@ export function TransferAmountStep({
 }: TransferAmountStepProps) {
   const form = useForm<TransferAmountFormData>({
     resolver: yupResolver(transferAmountSchema) as unknown as Resolver<TransferAmountFormData>,
-    defaultValues: { amount: "", note: "" },
+    defaultValues: { amount: "", note: "", paymentMethod: "BANK", upiId: "" },
     // Re-run the resolver on every change so the destructive border + Continue
     // disabled state track the user as they type, not just on submit.
     mode: "onChange",
@@ -42,13 +49,15 @@ export function TransferAmountStep({
   const watchedAmount = form.watch("amount");
   const amountError = form.formState.errors.amount?.message;
   const hasAmountError = !!amountError;
+  // Block Continue when UPI is selected but the VPA is still missing/invalid.
+  const hasUpiError = !!form.formState.errors.upiId;
   // Server computes the recipient's INR net of fees. Gated on the field being
   // error-free so we don't quote an out-of-range amount.
   const { data: feeQuote } = useRegularFee(watchedAmount ?? "", !hasAmountError);
   // Gate Continue on `limits` being loaded — without it the cumulative
   // daily-cap check in `validateAmountAgainstLimits` short-circuits and a
   // user could submit an amount that the server will then reject.
-  const isInvalid = hasAmountError || !watchedAmount?.trim() || !limits;
+  const isInvalid = hasAmountError || hasUpiError || !watchedAmount?.trim() || !limits;
 
   // Layer the SSN-tier / 7-day-cap check on top of the schema-level checks.
   // When yup is happy but the limits aren't, we set our own field error;
@@ -80,12 +89,15 @@ export function TransferAmountStep({
     wasInvalidRef.current = hasAmountError;
   }, [hasAmountError, controls]);
 
+  const isUpi = form.watch("paymentMethod") === "UPI";
   const bank = selectedBank ?? recipient.defaultBank;
-  const destinationLabel = bank?.label
-    ? `their ${bank.label} account`
-    : bank?.bankName
-      ? `their ${bank.bankName} account`
-      : "their linked account";
+  const destinationLabel = isUpi
+    ? "their UPI account"
+    : bank?.label
+      ? `their ${bank.label} account`
+      : bank?.bankName
+        ? `their ${bank.bankName} account`
+        : "their linked account";
 
   const limitsHint = limits
     ? `$${dailyRemaining(limits.past24HoursAmount, limits.hasSsn).toLocaleString("en-US", {
@@ -117,9 +129,15 @@ export function TransferAmountStep({
                 form.setError("amount", { type: "limits", message: limitError });
                 return;
               }
-              onContinue({ amount: data.amount, note: data.note ?? "" });
+              onContinue({
+                amount: data.amount,
+                note: data.note ?? "",
+                paymentMethod: data.paymentMethod === "UPI" ? "UPI" : "BANK",
+                upiId: data.paymentMethod === "UPI" ? data.upiId : undefined,
+              });
             })}
           >
+            <PaymentMethodField form={form} />
             <motion.div animate={controls}>
               <TextField
                 control={form.control}

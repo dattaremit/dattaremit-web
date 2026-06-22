@@ -13,11 +13,15 @@ import { Card } from "@/components/ui/card";
 import { Form } from "@/components/ui/form";
 import { TextField } from "@/components/ui/text-field";
 import { PageHeader } from "@/components/ui/page-header";
+import { PaymentMethodField } from "@/components/transfer/payment-method-field";
 
 interface SelfAmountStepProps {
   form: UseFormReturn<TransferAmountFormData>;
   controls: AnimationControls;
   accountLabel: string;
+  /** Whether the UPI option is offered. Only the regular (NRO/OFFRAMP) route
+   *  supports UPI; the NRE route is bank-only. */
+  allowUpi: boolean;
   limitsHint?: string;
   receiveAmount: number | null;
   inrFeeLoss: number | null;
@@ -32,6 +36,7 @@ export function SelfAmountStep({
   form,
   controls,
   accountLabel,
+  allowUpi,
   limitsHint,
   receiveAmount,
   inrFeeLoss,
@@ -54,6 +59,7 @@ export function SelfAmountStep({
       <Card variant="elevated" className="p-6 sm:p-8">
         <Form {...form}>
           <form className="space-y-5" onSubmit={onSubmit}>
+            {allowUpi && <PaymentMethodField form={form} />}
             <motion.div animate={controls}>
               <TextField
                 control={form.control}

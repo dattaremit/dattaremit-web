@@ -1,8 +1,16 @@
+/** How the INR payout is delivered. "BANK" pays out to a bank account;
+ *  "UPI" pays out to a UPI VPA (`upiId`). The server defaults to "BANK". */
+export type PaymentMethod = "BANK" | "UPI";
+
 export interface SendMoneyPayload {
   recipientId: string;
+  /** Only sent for bank transfers; the server forbids it for UPI. */
   bankDetailsId?: string;
   amountCents: number;
   note?: string;
+  paymentMethod?: PaymentMethod;
+  /** Required when `paymentMethod` is "UPI". */
+  upiId?: string;
 }
 
 /** Which of the user's own Indian accounts a self-send lands in (UI concept).
@@ -19,6 +27,11 @@ export interface SendToSelfPayload {
   amountCents: number;
   note?: string;
   payoutType?: SelfPayoutType;
+  /** UPI is INR-only, so the server only allows it on "OFFRAMP" (regular/NRO)
+   *  self-transfers — never on "NRE". */
+  paymentMethod?: PaymentMethod;
+  /** Required when `paymentMethod` is "UPI". */
+  upiId?: string;
 }
 
 export interface TransferQuote {
