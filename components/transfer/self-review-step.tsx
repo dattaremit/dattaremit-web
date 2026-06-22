@@ -1,9 +1,7 @@
 "use client";
 
-import { Send } from "lucide-react";
-
 import { formatInr } from "@/lib/money";
-import { Button } from "@/components/ui/button";
+import { ConfirmSendButton } from "@/components/transfer/confirm-send-button";
 import { Card } from "@/components/ui/card";
 import { PageHeader } from "@/components/ui/page-header";
 import type { PaymentMethod } from "@/types/transfer";
@@ -93,16 +91,7 @@ export function SelfReviewStep({
         )}
 
         <div className="border-t border-border p-6">
-          <Button
-            variant="brand"
-            size="lg"
-            className="w-full"
-            loading={isPending}
-            onClick={onConfirm}
-          >
-            {!isPending && <Send />}
-            Confirm
-          </Button>
+          <ConfirmSendButton loading={isPending} onClick={onConfirm} estimatedSeconds={60} />
         </div>
       </Card>
     </>
