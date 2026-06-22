@@ -143,6 +143,15 @@ export interface PlaidLinkToken {
 
 // ── External Account ──
 
+/** Display details for the linked US (Plaid) funding account, fetched from the
+ *  provider on demand. Any field may be null if the provider didn't return it. */
+export interface ExternalAccountDetails {
+  accountName: string | null;
+  institutionId: string | null;
+  last4: string | null;
+  paymentRail: string | null;
+}
+
 export interface AddExternalAccountPayload {
   accountName: string;
   paymentRail?: string;

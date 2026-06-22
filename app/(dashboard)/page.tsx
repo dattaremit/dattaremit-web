@@ -2,8 +2,9 @@
 
 import Link from "next/link";
 import { CheckCircle2, ArrowRight, Send, Landmark } from "lucide-react";
-import { useAccount, useExchangeRate } from "@/hooks/api";
+import { useAccount, useExchangeRate, useExternalAccount } from "@/hooks/api";
 import { ApiError } from "@/services/api";
+import { formatExternalAccountLabel } from "@/lib/external-account";
 import { ROUTES } from "@/constants/routes";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Button } from "@/components/ui/button";
@@ -28,6 +29,9 @@ export default function HomePage() {
   const hasSendAccount = !!account?.hasBankAccount;
   const hasReceiveAccount = !!account?.hasDepositAccount;
   const bothLinked = hasSendAccount && hasReceiveAccount;
+
+  const { data: externalAccount } = useExternalAccount(hasSendAccount);
+  const linkedBankLabel = formatExternalAccountLabel(externalAccount);
 
   if (isLoading || needsProfile) {
     return (
@@ -103,6 +107,7 @@ export default function HomePage() {
               hasSendAccount ? <CheckCircle2 className="size-5" /> : <Landmark className="size-5" />
             }
             label={hasSendAccount ? "Bank Connected" : "Connect Bank"}
+            detail={hasSendAccount ? (linkedBankLabel ?? undefined) : undefined}
             href={ROUTES.LINK_BANK}
             tint={hasSendAccount ? "success" : "warning"}
           />
@@ -159,11 +164,13 @@ export default function HomePage() {
 function QuickAction({
   icon,
   label,
+  detail,
   href,
   tint,
 }: {
   icon: React.ReactNode;
   label: string;
+  detail?: string;
   href: string;
   tint: "brand" | "success" | "warning";
 }) {
@@ -181,7 +188,10 @@ function QuickAction({
       <div className={`flex size-11 items-center justify-center rounded-xl ring-1 ${tintClass}`}>
         {icon}
       </div>
-      <span className="flex-1 text-left font-semibold text-foreground">{label}</span>
+      <span className="flex flex-1 flex-col text-left">
+        <span className="font-semibold text-foreground">{label}</span>
+        {detail && <span className="truncate text-xs text-muted-foreground">{detail}</span>}
+      </span>
       <ArrowRight className="size-4 text-muted-foreground transition-transform group-hover:translate-x-0.5 group-hover:text-foreground" />
     </Link>
   );
