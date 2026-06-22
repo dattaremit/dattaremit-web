@@ -30,20 +30,22 @@ export function PaymentMethodField({ form }: PaymentMethodFieldProps) {
 
   return (
     <div className="space-y-3">
-      <RadioCard
-        icon={<Landmark className="size-5" />}
-        title="Bank transfer"
-        subtitle="Pay out to a bank account"
-        active={method !== "UPI"}
-        onSelect={() => select("BANK")}
-      />
-      <RadioCard
-        icon={<Smartphone className="size-5" />}
-        title="UPI"
-        subtitle="Pay out to a UPI ID"
-        active={method === "UPI"}
-        onSelect={() => select("UPI")}
-      />
+      <div className="grid grid-cols-2 gap-3">
+        <RadioCard
+          compact
+          icon={<Landmark className="size-5" />}
+          title="Bank transfer"
+          active={method !== "UPI"}
+          onSelect={() => select("BANK")}
+        />
+        <RadioCard
+          compact
+          icon={<Smartphone className="size-5" />}
+          title="UPI"
+          active={method === "UPI"}
+          onSelect={() => select("UPI")}
+        />
+      </div>
       {method === "UPI" && (
         <TextField
           control={form.control}
