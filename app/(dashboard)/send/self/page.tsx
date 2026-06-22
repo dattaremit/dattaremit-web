@@ -107,6 +107,7 @@ export default function SendToSelfPage() {
               form={self.form}
               controls={self.controls}
               accountLabel={accountLabel}
+              allowUpi={self.allowUpi}
               limitsHint={self.limitsHint}
               receiveAmount={self.receiveAmount}
               inrFeeLoss={self.inrFeeLoss}
@@ -125,6 +126,8 @@ export default function SendToSelfPage() {
               receiveAmount={self.receiveAmount}
               inrFeeLoss={self.inrFeeLoss}
               note={self.note}
+              paymentMethod={self.paymentMethod}
+              upiId={self.upiId}
               isPending={self.sendToSelf.isPending}
               onConfirm={self.handleConfirm}
             />

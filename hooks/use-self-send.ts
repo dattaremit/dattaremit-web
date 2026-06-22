@@ -20,7 +20,7 @@ import {
 } from "@/hooks/api";
 import { useSendMoneyState } from "@/hooks/use-send-money-state";
 import { useStepUp } from "@/hooks/use-step-up";
-import type { SelfAccountType } from "@/types/transfer";
+import type { PaymentMethod, SelfAccountType } from "@/types/transfer";
 import { getServerErrorMessage } from "@/lib/safe-error-message";
 import { dollarsToCents } from "@/lib/money";
 import { dailyRemaining, validateAmountAgainstLimits, weeklyRemaining } from "@/lib/send-limits";
@@ -40,7 +40,7 @@ export function useSelfSend() {
   // Only fetch the linked NRE bank once we know one exists, to show its real
   // bank name / masked number / IFSC in the account picker.
   const { data: nreAccount } = useNreAccount({ enabled: !!account?.hasNreBank });
-  const [accountType, setAccountType] = useState<SelfAccountType>("NRO");
+  const [accountType, setAccountTypeState] = useState<SelfAccountType>("NRO");
   const { gate, stepUpElement } = useStepUp({
     title: "Confirm transfer",
     description: "We emailed you a 6-digit code. Enter it to authorize moving funds.",
@@ -63,7 +63,7 @@ export function useSelfSend() {
 
   const form = useForm<TransferAmountFormData>({
     resolver: yupResolver(transferAmountSchema) as unknown as Resolver<TransferAmountFormData>,
-    defaultValues: { amount: "", note: "" },
+    defaultValues: { amount: "", note: "", paymentMethod: "BANK", upiId: "" },
     // Re-run the resolver on every change so the red-border + Continue
     // disabled state track the user as they type, not just on submit.
     mode: "onChange",
@@ -71,9 +71,23 @@ export function useSelfSend() {
   const { data: limits } = useSendLimits();
   // Still fetched for the account picker, which shows the NRE fee rate.
   const { data: selfFee } = useSelfFee();
+  // UPI is INR-only, so the server only allows it on the regular (NRO/OFFRAMP)
+  // route — never NRE. Picking NRE resets any UPI selection back to bank so a
+  // stale VPA never rides along on a route the server will reject.
+  const allowUpi = accountType === "NRO";
+  const setAccountType = (type: SelfAccountType) => {
+    if (type === "NRE") {
+      form.setValue("paymentMethod", "BANK", { shouldValidate: true });
+      form.setValue("upiId", "", { shouldValidate: true });
+    }
+    setAccountTypeState(type);
+  };
+
   const watchedAmount = form.watch("amount");
   const amountError = form.formState.errors.amount?.message;
   const hasAmountError = !!amountError;
+  // Block Continue when UPI is selected but the VPA is still missing/invalid.
+  const hasUpiError = !!form.formState.errors.upiId;
   const isNre = accountType === "NRE";
   // The server computes the receive amount (and, for NRE, the rupee fee taken)
   // from the amount the user types. We run whichever quote matches the selected
@@ -87,7 +101,7 @@ export function useSelfSend() {
   // Gate Continue on `limits` being loaded — without it the cumulative
   // daily-cap check short-circuits and a user could submit an amount that
   // the server will then reject.
-  const isInvalid = hasAmountError || !watchedAmount?.trim() || !limits;
+  const isInvalid = hasAmountError || hasUpiError || !watchedAmount?.trim() || !limits;
 
   // Layer the SSN-tier / 7-day-cap check on top of yup's schema check.
   useEffect(() => {
@@ -172,12 +186,16 @@ export function useSelfSend() {
         return undefined;
       }
       try {
+        // UPI is only offered (and only valid) on the NRO/OFFRAMP route.
+        const isUpi = accountType === "NRO" && form.getValues("paymentMethod") === "UPI";
         return await sendToSelf.mutateAsync({
           payload: {
             amountCents,
             note: note || undefined,
             // NRO selection routes via the regular OFFRAMP path.
             payoutType: accountType === "NRE" ? "NRE" : "OFFRAMP",
+            paymentMethod: isUpi ? "UPI" : "BANK",
+            upiId: isUpi ? form.getValues("upiId") : undefined,
           },
           idempotencyKey,
         });
@@ -222,6 +240,12 @@ export function useSelfSend() {
     setStep,
     accountType,
     setAccountType,
+    allowUpi,
+    // Resolved payout method for the review/result screens (forced to BANK on NRE).
+    paymentMethod: (allowUpi && form.watch("paymentMethod") === "UPI"
+      ? "UPI"
+      : "BANK") as PaymentMethod,
+    upiId: form.watch("upiId"),
     amount,
     note,
     transactionId,

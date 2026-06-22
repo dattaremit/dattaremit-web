@@ -9,12 +9,15 @@ import { useExchangeRate } from "@/hooks/api/use-exchange-rate";
 import { useRegularFee } from "@/hooks/api";
 import { formatInr } from "@/lib/money";
 import type { BankDetails, Recipient } from "@/types/recipient";
+import type { PaymentMethod } from "@/types/transfer";
 
 interface ReviewTransferStepProps {
   recipient: Recipient;
   selectedBank?: BankDetails | null;
   amount: string;
   note: string;
+  paymentMethod?: PaymentMethod;
+  upiId?: string;
   isSending: boolean;
   onConfirm: () => void;
 }
@@ -24,9 +27,12 @@ export function ReviewTransferStep({
   selectedBank,
   amount,
   note,
+  paymentMethod = "BANK",
+  upiId,
   isSending,
   onConfirm,
 }: ReviewTransferStepProps) {
+  const isUpi = paymentMethod === "UPI";
   const bank = selectedBank ?? recipient.defaultBank;
   const { data: rateData } = useExchangeRate();
   // Use the same server fee-aware quote as the amount step so the INR the user
@@ -72,11 +78,15 @@ export function ReviewTransferStep({
         </div>
 
         <div className="space-y-3 p-6 text-sm">
-          <Row label="Bank">
-            {bank
-              ? `${bank.label ?? bank.bankName ?? "Bank"} · ${bank.bankAccountNumberMasked}`
-              : "—"}
-          </Row>
+          {isUpi ? (
+            <Row label="UPI ID">{upiId ?? "—"}</Row>
+          ) : (
+            <Row label="Bank">
+              {bank
+                ? `${bank.label ?? bank.bankName ?? "Bank"} · ${bank.bankAccountNumberMasked}`
+                : "—"}
+            </Row>
+          )}
           <Row label="Recipient">{recipient.email}</Row>
           {note && <Row label="Note">{note}</Row>}
           {rateData?.rate && (

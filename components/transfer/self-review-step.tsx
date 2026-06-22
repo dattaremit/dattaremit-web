@@ -6,6 +6,7 @@ import { formatInr } from "@/lib/money";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { PageHeader } from "@/components/ui/page-header";
+import type { PaymentMethod } from "@/types/transfer";
 
 interface SelfReviewStepProps {
   amount: string;
@@ -13,6 +14,8 @@ interface SelfReviewStepProps {
   receiveAmount: number | null;
   inrFeeLoss: number | null;
   note: string;
+  paymentMethod?: PaymentMethod;
+  upiId?: string;
   isPending: boolean;
   onConfirm: () => void;
 }
@@ -25,9 +28,12 @@ export function SelfReviewStep({
   receiveAmount,
   inrFeeLoss,
   note,
+  paymentMethod = "BANK",
+  upiId,
   isPending,
   onConfirm,
 }: SelfReviewStepProps) {
+  const isUpi = paymentMethod === "UPI";
   return (
     <>
       <PageHeader
@@ -69,12 +75,20 @@ export function SelfReviewStep({
           )}
         </div>
 
-        {note && (
+        {(isUpi || note) && (
           <div className="space-y-3 p-6 text-sm">
-            <div className="flex items-start justify-between gap-3">
-              <span className="text-muted-foreground">Note</span>
-              <span className="text-right font-medium text-foreground">{note}</span>
-            </div>
+            {isUpi && (
+              <div className="flex items-start justify-between gap-3">
+                <span className="text-muted-foreground">UPI ID</span>
+                <span className="text-right font-medium text-foreground">{upiId ?? "—"}</span>
+              </div>
+            )}
+            {note && (
+              <div className="flex items-start justify-between gap-3">
+                <span className="text-muted-foreground">Note</span>
+                <span className="text-right font-medium text-foreground">{note}</span>
+              </div>
+            )}
           </div>
         )}
 
