@@ -1,6 +1,8 @@
 "use client";
 
-import { Send } from "lucide-react";
+import { useState, useEffect } from "react";
+import { AnimatePresence, motion } from "motion/react";
+import { Send, Loader2 } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
@@ -39,6 +41,18 @@ export function ReviewTransferStep({
   // sees here matches what they saw when entering the amount (fees deducted).
   const { data: feeQuote } = useRegularFee(amount);
   const inrPreview = feeQuote?.receiveAmount ?? null;
+
+  const [seconds, setSeconds] = useState(0);
+
+  useEffect(() => {
+    if (!isSending) return;
+
+    const timer = setInterval(() => {
+      setSeconds((s) => s + 1);
+    }, 1000);
+    return () => clearInterval(timer);
+  }, [isSending]);
+
   return (
     <>
       <PageHeader
@@ -103,12 +117,51 @@ export function ReviewTransferStep({
           <Button
             variant="brand"
             size="lg"
-            className="w-full"
-            loading={isSending}
-            onClick={onConfirm}
+            className="w-full relative overflow-hidden disabled:opacity-100 disabled:pointer-events-none"
+            disabled={isSending}
+            onClick={() => {
+              setSeconds(0);
+              onConfirm();
+            }}
           >
-            {!isSending && <Send />}
-            Confirm and send
+            {isSending && (
+              <motion.div
+                initial={{ width: "0%" }}
+                animate={{ width: `${Math.min((seconds / 10) * 100, 100)}%` }}
+                transition={{ duration: 1, ease: "linear" }}
+                className="absolute inset-y-0 left-0 bg-white/20 dark:bg-black/20"
+              />
+            )}
+            <div className="relative z-10 flex items-center justify-center gap-2">
+              {!isSending ? (
+                <>
+                  <Send className="size-4" />
+                  Confirm and send
+                </>
+              ) : (
+                <>
+                  <Loader2 className="size-4 animate-spin" />
+                  <span className="flex items-center">
+                    Processing...{" "}
+                    <div className="relative w-[1.5ch] overflow-hidden ml-1 flex justify-center">
+                      <AnimatePresence mode="popLayout">
+                        <motion.span
+                          key={seconds}
+                          initial={{ y: 20, opacity: 0 }}
+                          animate={{ y: 0, opacity: 1 }}
+                          exit={{ y: -20, opacity: 0 }}
+                          transition={{ type: "spring", stiffness: 300, damping: 30 }}
+                          className="inline-block tabular-nums"
+                        >
+                          {seconds}
+                        </motion.span>
+                      </AnimatePresence>
+                    </div>
+                    s
+                  </span>
+                </>
+              )}
+            </div>
           </Button>
         </div>
       </Card>
