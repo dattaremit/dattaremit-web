@@ -11,6 +11,7 @@ import {
   Plus,
   RefreshCw,
   Send,
+  Smartphone,
   Trash2,
   UserMinus,
 } from "lucide-react";
@@ -336,6 +337,38 @@ export default function RecipientDetailPage({ params }: { params: Promise<{ id: 
             )}
           </div>
         )}
+      </Card>
+
+      <Card variant="elevated" className="overflow-hidden">
+        <div className="flex items-center justify-between gap-3 border-b border-border p-6">
+          <div className="flex items-center gap-3">
+            <div className="flex size-10 items-center justify-center rounded-xl bg-brand/15 text-brand">
+              <Smartphone className="size-5" />
+            </div>
+            <div>
+              <h2 className="font-semibold text-xl text-foreground">UPI</h2>
+              <p className="text-sm text-muted-foreground">
+                Pay instantly to a UPI ID — no saved account needed.
+              </p>
+            </div>
+          </div>
+        </div>
+        <div className="p-6">
+          {ready ? (
+            <Button
+              variant="brand"
+              size="sm"
+              onClick={() => router.push(`/send?recipient=${recipient.id}&method=upi`)}
+            >
+              <Send />
+              Send via UPI
+            </Button>
+          ) : (
+            <p className="text-sm text-muted-foreground">
+              Once KYC is approved, you can send via UPI.
+            </p>
+          )}
+        </div>
       </Card>
 
       <div className="flex flex-col gap-2">

@@ -71,12 +71,15 @@ export function useSelfSend() {
   const { data: limits } = useSendLimits();
   // Still fetched for the account picker, which shows the NRE fee rate.
   const { data: selfFee } = useSelfFee();
-  // UPI is INR-only, so the server only allows it on the regular (NRO/OFFRAMP)
-  // route — never NRE. Picking NRE resets any UPI selection back to bank so a
-  // stale VPA never rides along on a route the server will reject.
-  const allowUpi = accountType === "NRO";
+  // UPI is INR-only, so it routes via the regular (NRO/OFFRAMP) path — never
+  // NRE. The destination picker now carries the choice: the "UPI transfer"
+  // option drives paymentMethod=UPI; the bank options (NRO/NRE) reset it back
+  // to bank and clear any entered VPA so a stale value never rides along.
+  const isUpi = accountType === "UPI";
   const setAccountType = (type: SelfAccountType) => {
-    if (type === "NRE") {
+    if (type === "UPI") {
+      form.setValue("paymentMethod", "UPI", { shouldValidate: true });
+    } else {
       form.setValue("paymentMethod", "BANK", { shouldValidate: true });
       form.setValue("upiId", "", { shouldValidate: true });
     }
@@ -186,8 +189,7 @@ export function useSelfSend() {
         return undefined;
       }
       try {
-        // UPI is only offered (and only valid) on the NRO/OFFRAMP route.
-        const isUpi = accountType === "NRO" && form.getValues("paymentMethod") === "UPI";
+        // UPI is its own destination option; it pays out via the OFFRAMP route.
         return await sendToSelf.mutateAsync({
           payload: {
             amountCents,
@@ -240,11 +242,9 @@ export function useSelfSend() {
     setStep,
     accountType,
     setAccountType,
-    allowUpi,
-    // Resolved payout method for the review/result screens (forced to BANK on NRE).
-    paymentMethod: (allowUpi && form.watch("paymentMethod") === "UPI"
-      ? "UPI"
-      : "BANK") as PaymentMethod,
+    isUpi,
+    // Resolved payout method for the review/result screens.
+    paymentMethod: (isUpi ? "UPI" : "BANK") as PaymentMethod,
     upiId: form.watch("upiId"),
     amount,
     note,

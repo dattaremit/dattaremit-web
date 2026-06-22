@@ -12,7 +12,7 @@ import { Card } from "@/components/ui/card";
 import { Form } from "@/components/ui/form";
 import { PageHeader } from "@/components/ui/page-header";
 import { TextField } from "@/components/ui/text-field";
-import { PaymentMethodField } from "@/components/transfer/payment-method-field";
+import { UpiIdField } from "@/components/transfer/upi-id-field";
 import { useRegularFee, useSendLimits } from "@/hooks/api";
 import { formatInr } from "@/lib/money";
 import { dailyRemaining, validateAmountAgainstLimits, weeklyRemaining } from "@/lib/send-limits";
@@ -25,6 +25,10 @@ interface TransferAmountStepProps {
    * to copy that says "their linked account" so we never render "Bank: null".
    */
   selectedBank?: BankDetails | null;
+  /** The payout method chosen before this step (BANK from the bank picker /
+   *  "Send money", UPI from the recipient's "Send via UPI"). Fixes the mode
+   *  for the whole step — the Bank vs UPI toggle no longer lives here. */
+  paymentMethod: PaymentMethod;
   onContinue: (data: {
     amount: string;
     note: string;
@@ -36,11 +40,12 @@ interface TransferAmountStepProps {
 export function TransferAmountStep({
   recipient,
   selectedBank,
+  paymentMethod,
   onContinue,
 }: TransferAmountStepProps) {
   const form = useForm<TransferAmountFormData>({
     resolver: yupResolver(transferAmountSchema) as unknown as Resolver<TransferAmountFormData>,
-    defaultValues: { amount: "", note: "", paymentMethod: "BANK", upiId: "" },
+    defaultValues: { amount: "", note: "", paymentMethod, upiId: "" },
     // Re-run the resolver on every change so the destructive border + Continue
     // disabled state track the user as they type, not just on submit.
     mode: "onChange",
@@ -137,7 +142,7 @@ export function TransferAmountStep({
               });
             })}
           >
-            <PaymentMethodField form={form} />
+            {isUpi && <UpiIdField form={form} />}
             <motion.div animate={controls}>
               <TextField
                 control={form.control}
