@@ -38,9 +38,7 @@ export default function SendToSelfPage() {
             You need to link your own receiving bank account before you can send money to yourself.
           </p>
           <Button asChild variant="brand" className="mt-5">
-            <Link href={self.isUsCitizen ? ROUTES.ACCOUNT_BANKS : ROUTES.LINK_BANK_RECEIVE}>
-              {self.isUsCitizen ? "Add Indian bank" : "Link deposit account"}
-            </Link>
+            <Link href={ROUTES.ACCOUNT_BANKS}>Add Indian bank</Link>
           </Button>
         </Card>
       </div>

@@ -9,12 +9,8 @@ import { Skeleton } from "@/components/ui/skeleton";
 import { RecipientCard } from "@/components/recipients/recipient-card";
 import { SelfTransferCard } from "@/components/transfer/self-transfer-card";
 import { isRecipientReady, type Recipient } from "@/types/recipient";
-import type { IndianKycStatus } from "@/types/api";
 
 interface SelectRecipientStepProps {
-  indianKycStatus: IndianKycStatus;
-  hasDepositAccount: boolean;
-  isUsCitizen: boolean;
   hasUserBank: boolean;
   recipients: Recipient[] | undefined;
   isLoading: boolean;
@@ -23,9 +19,6 @@ interface SelectRecipientStepProps {
 }
 
 export function SelectRecipientStep({
-  indianKycStatus,
-  hasDepositAccount,
-  isUsCitizen,
   hasUserBank,
   recipients,
   isLoading,
@@ -49,12 +42,7 @@ export function SelectRecipientStep({
       />
 
       <div className="space-y-3">
-        <SelfTransferCard
-          indianKycStatus={indianKycStatus}
-          hasDepositAccount={hasDepositAccount}
-          isUsCitizen={isUsCitizen}
-          hasUserBank={hasUserBank}
-        />
+        <SelfTransferCard hasUserBank={hasUserBank} />
         <Button variant="outline" size="lg" className="w-full" onClick={onAddRecipient}>
           <UserPlus />
           Add Recipient

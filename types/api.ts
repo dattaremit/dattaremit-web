@@ -105,18 +105,15 @@ export interface ZynkKycData {
 export type AccountUser = Omit<User, "addresses">;
 
 export type AccountStatus = "INITIAL" | "PENDING" | "ACTIVE" | "REJECTED";
-export type IndianKycStatus = "NONE" | "PENDING" | "APPROVED" | "REJECTED" | "FAILED";
 
 export interface Account {
   user: AccountUser | null;
   addresses: Address[];
   accountStatus: AccountStatus | string;
-  indianKycStatus?: IndianKycStatus;
   hasBankAccount?: boolean;
-  hasDepositAccount?: boolean;
-  /** True if the user has any locally-saved bank in bank_details (the off-ramp
-   *  destination for US citizens, who have no Zynk deposit account). Drives the
-   *  "Indian bank linked" state for the US-citizen off-ramp flow. */
+  /** True if the user has any locally-saved bank in bank_details — the off-ramp
+   *  destination for every user (Credible settles INR into it after the trade).
+   *  Drives the "Indian bank linked" state for the off-ramp flow. */
   hasUserBank?: boolean;
   /** Last 4 digits of the linked regular (NRO/savings) deposit account, for
    *  display in the self-send picker. Null for accounts linked before this was
@@ -157,14 +154,6 @@ export interface AddExternalAccountPayload {
   paymentRail?: string;
   plaidPublicToken: string;
   plaidAccountId: string;
-}
-
-// ── Deposit Account ──
-
-export interface AddDepositAccountPayload {
-  accountName: string;
-  accountNumber: string;
-  ifsc: string;
 }
 
 // ── NRE Bank Account ──

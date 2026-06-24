@@ -68,12 +68,9 @@ export default function LinkBankPage() {
   const hasBankAccount = !!account?.hasBankAccount;
   const { data: externalAccount } = useExternalAccount(hasBankAccount);
   const linkedBankLabel = formatExternalAccountLabel(externalAccount);
-  // US citizens off-ramp to a locally-saved Indian bank (no Zynk deposit
-  // account, no Indian KYC) → "my banks". NRIs link a Zynk-backed deposit
-  // account through the KYC-gated receive flow. Strict "US" mirrors the
-  // server's isUsCitizen (null/other → NRI path, fail-closed).
-  const isUsCitizen = account?.user?.nationality === "US";
-  const hasIndianBank = isUsCitizen ? !!account?.hasUserBank : !!account?.hasDepositAccount;
+  // Everyone off-ramps to a locally-saved Indian bank (no Zynk deposit account,
+  // no Indian KYC) — Credible settles INR into it after the trade.
+  const hasIndianBank = !!account?.hasUserBank;
   const allLinked = hasBankAccount && hasIndianBank;
 
   return (
@@ -168,13 +165,7 @@ export default function LinkBankPage() {
               {hasIndianBank ? (
                 <p className="text-sm font-medium text-success">Account linked</p>
               ) : (
-                <Button
-                  variant="brand"
-                  size="lg"
-                  onClick={() =>
-                    router.push(isUsCitizen ? ROUTES.ACCOUNT_BANKS : ROUTES.LINK_BANK_RECEIVE)
-                  }
-                >
+                <Button variant="brand" size="lg" onClick={() => router.push(ROUTES.ACCOUNT_BANKS)}>
                   Add Indian bank
                   <ArrowRight />
                 </Button>

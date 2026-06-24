@@ -132,14 +132,11 @@ export function useSelfSend() {
     wasInvalidRef.current = hasAmountError;
   }, [hasAmountError, controls]);
 
-  const hasDepositAccount = !!account?.hasDepositAccount;
   const hasNreBank = !!account?.hasNreBank;
-  // US citizens off-ramp their regular (NRO/savings) account to a locally-saved
-  // bank (no Zynk deposit account), so its readiness is hasUserBank. They may
-  // also hold an NRE account — Credible identifies them by their US KYC docs
-  // (not PAN/Aadhaar), so the NRE flow is offered to them too.
-  const isUsCitizen = account?.user?.nationality === "US";
-  const hasRegularAccount = isUsCitizen ? !!account?.hasUserBank : hasDepositAccount;
+  // Every user off-ramps their regular (NRO/savings) account to a locally-saved
+  // bank — Credible settles INR into it after the trade, so readiness is just
+  // "is a bank saved?". An NRE account is an optional add-on offered to all.
+  const hasRegularAccount = !!account?.hasUserBank;
 
   const handleAddNre = async (data: NreBankAccountFormData) => {
     try {
@@ -235,7 +232,6 @@ export function useSelfSend() {
     nreAccount,
     selfFee,
     hasNreBank,
-    isUsCitizen,
     hasRegularAccount,
     // step machine
     step,

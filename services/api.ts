@@ -16,7 +16,6 @@ export * from "./recipients";
 export * from "./banks";
 export * from "./transfers";
 export * from "./notifications";
-export * from "./crypto";
 export * from "./email";
 export * from "./devices";
 export * from "./support";
