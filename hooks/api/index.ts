@@ -8,7 +8,6 @@ export { useMyReferral } from "./use-my-referral";
 export { useStartKyc } from "./use-start-kyc";
 export { usePlaidLinkToken } from "./use-plaid-link-token";
 export { useAddExternalAccount, useExternalAccount } from "./use-external-account";
-export { useAddDepositAccount } from "./use-deposit-account";
 export { useAddNreAccount, useNreAccount } from "./use-nre-account";
 export { useActivities } from "./use-activities";
 export { useExchangeRate } from "./use-exchange-rate";
@@ -54,9 +53,6 @@ export { useUnreadCount } from "./use-unread-count";
 export { useMarkNotificationRead } from "./use-mark-notification-read";
 export { useMarkAllNotificationsRead } from "./use-mark-all-notifications-read";
 export { useDeleteNotification } from "./use-delete-notification";
-
-// Indian KYC
-export { useSubmitIndianKyc } from "./use-submit-indian-kyc";
 
 // Email availability
 export { useCheckEmailAvailability } from "./use-check-email-availability";

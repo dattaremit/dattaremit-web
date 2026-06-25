@@ -17,9 +17,7 @@ export const ROUTES = {
   REFERRAL: "/referral",
   SUPPORT: "/support",
   KYC: "/kyc",
-  KYC_INDIAN: "/kyc/indian",
   LINK_BANK: "/link-bank",
-  LINK_BANK_RECEIVE: "/link-bank/receive",
   ONBOARDING: {
     PROFILE: "/onboarding/profile",
     REFERRAL: "/onboarding/referral",
