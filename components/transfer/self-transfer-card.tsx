@@ -1,65 +1,22 @@
 "use client";
 
 import Link from "next/link";
-import { CheckCircle, ChevronRight, Clock, Landmark, Shield } from "lucide-react";
+import { CheckCircle, ChevronRight, Landmark } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { ROUTES } from "@/constants/routes";
-import type { IndianKycStatus } from "@/types/api";
 
 interface SelfTransferCardProps {
-  indianKycStatus: IndianKycStatus;
-  hasDepositAccount: boolean;
-  /** US citizens off-ramp to a locally-saved Indian bank with no Indian KYC. */
-  isUsCitizen: boolean;
-  /** Presence of a locally-saved bank (the US-citizen off-ramp destination). */
+  /** Presence of a locally-saved Indian bank — the self off-ramp destination. */
   hasUserBank: boolean;
 }
 
-export function SelfTransferCard({
-  indianKycStatus,
-  hasDepositAccount,
-  isUsCitizen,
-  hasUserBank,
-}: SelfTransferCardProps) {
-  let StatusIcon = Shield;
-  let statusLabel = "Complete Indian KYC to unlock";
-  let statusClass = "text-muted-foreground";
-  let href: string = ROUTES.KYC_INDIAN;
-
-  if (isUsCitizen) {
-    // No Indian KYC for US citizens — readiness is purely "is a bank saved?".
-    if (hasUserBank) {
-      StatusIcon = CheckCircle;
-      statusLabel = "Ready to send";
-      statusClass = "text-success";
-      href = ROUTES.SEND_SELF;
-    } else {
-      StatusIcon = Landmark;
-      statusLabel = "Add bank account";
-      statusClass = "text-warning";
-      href = ROUTES.ACCOUNT_BANKS;
-    }
-  } else {
-    const isApproved = indianKycStatus === "APPROVED";
-    const isPending = indianKycStatus === "PENDING";
-
-    if (isApproved && hasDepositAccount) {
-      StatusIcon = CheckCircle;
-      statusLabel = "Ready to send";
-      statusClass = "text-success";
-      href = ROUTES.SEND_SELF;
-    } else if (isApproved && !hasDepositAccount) {
-      StatusIcon = Landmark;
-      statusLabel = "Add bank account";
-      statusClass = "text-warning";
-      href = ROUTES.LINK_BANK_RECEIVE;
-    } else if (isPending) {
-      StatusIcon = Clock;
-      statusLabel = "Indian KYC pending…";
-      statusClass = "text-warning";
-      href = ROUTES.KYC_INDIAN;
-    }
-  }
+export function SelfTransferCard({ hasUserBank }: SelfTransferCardProps) {
+  // Readiness is purely "is an Indian bank saved?" — no Indian KYC, every user
+  // off-ramps via the saved /api/banks bank.
+  const StatusIcon = hasUserBank ? CheckCircle : Landmark;
+  const statusLabel = hasUserBank ? "Ready to send" : "Add bank account";
+  const statusClass = hasUserBank ? "text-success" : "text-warning";
+  const href = hasUserBank ? ROUTES.SEND_SELF : ROUTES.ACCOUNT_BANKS;
 
   return (
     <Link

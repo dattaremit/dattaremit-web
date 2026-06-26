@@ -4,10 +4,8 @@ import type {
   ZynkKycData,
   PlaidLinkToken,
   AddExternalAccountPayload,
-  AddDepositAccountPayload,
   ExternalAccountDetails,
 } from "@/types/api";
-import type { IndianKycEncryptedPayload, IndianKycResponse } from "@/types/indian-kyc";
 
 // ── Zynk (KYC) ──
 export const createZynkEntity = (idempotencyKey?: string): Promise<User> =>
@@ -32,17 +30,3 @@ export const addExternalAccount = (
   api.post("/zynk/external-account", data, {
     headers: idempotencyHeaders(idempotencyKey),
   });
-
-// ── Zynk (Deposit Account) ──
-export const addDepositAccount = (
-  data: AddDepositAccountPayload,
-  idempotencyKey?: string,
-): Promise<User> =>
-  api.post("/zynk/deposit-account", data, {
-    headers: idempotencyHeaders(idempotencyKey),
-  });
-
-// ── Zynk (Indian KYC) ──
-export const submitIndianKycEncrypted = (
-  data: IndianKycEncryptedPayload,
-): Promise<IndianKycResponse> => api.post("/zynk/indian-kyc", data);

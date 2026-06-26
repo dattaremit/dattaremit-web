@@ -15,21 +15,6 @@ export const ACCOUNT_STATUS_META: Record<string, StatusMetaEntry> = {
   REJECTED: { label: "Rejected", variant: "destructive", icon: XCircle },
 };
 
-export const INDIAN_KYC_STATUS_LABEL: Record<string, string> = {
-  NONE: "Not started",
-  PENDING: "In review",
-  APPROVED: "Verified",
-  REJECTED: "Rejected",
-  FAILED: "Failed",
-};
-
-export function getIndianKycStatusVariant(status: string): BadgeVariant {
-  if (status === "APPROVED") return "default";
-  if (status === "PENDING") return "secondary";
-  if (status === "REJECTED" || status === "FAILED") return "destructive";
-  return "outline";
-}
-
 export function getActivityStatusVariant(status: string): BadgeVariant {
   switch (status) {
     case "COMPLETE":

@@ -27,7 +27,7 @@ export default function HomePage() {
       : null;
 
   const hasSendAccount = !!account?.hasBankAccount;
-  const hasReceiveAccount = !!account?.hasDepositAccount;
+  const hasReceiveAccount = !!account?.hasUserBank;
   const bothLinked = hasSendAccount && hasReceiveAccount;
 
   const { data: externalAccount } = useExternalAccount(hasSendAccount);

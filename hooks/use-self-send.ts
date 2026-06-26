@@ -11,6 +11,7 @@ import type { NreBankAccountFormData } from "@/schemas/nre-bank-account.schema";
 import {
   useAccount,
   useAddNreAccount,
+  useMyBanks,
   useNreAccount,
   useNreFee,
   useRegularFee,
@@ -132,14 +133,14 @@ export function useSelfSend() {
     wasInvalidRef.current = hasAmountError;
   }, [hasAmountError, controls]);
 
-  const hasDepositAccount = !!account?.hasDepositAccount;
   const hasNreBank = !!account?.hasNreBank;
-  // US citizens off-ramp their regular (NRO/savings) account to a locally-saved
-  // bank (no Zynk deposit account), so its readiness is hasUserBank. They may
-  // also hold an NRE account — Credible identifies them by their US KYC docs
-  // (not PAN/Aadhaar), so the NRE flow is offered to them too.
-  const isUsCitizen = account?.user?.nationality === "US";
-  const hasRegularAccount = isUsCitizen ? !!account?.hasUserBank : hasDepositAccount;
+  // Every user off-ramps their regular (NRO/savings) account to a locally-saved
+  // bank added via /api/banks — no Zynk deposit account, no Indian KYC. Its
+  // readiness and display digits come from that saved bank.
+  const hasRegularAccount = !!account?.hasUserBank;
+  const { data: myBanks } = useMyBanks();
+  const defaultBank = myBanks?.find((b) => b.isDefault) ?? myBanks?.[0];
+  const regularAccountLast4 = defaultBank?.bankAccountNumberMasked?.slice(-4) ?? null;
 
   const handleAddNre = async (data: NreBankAccountFormData) => {
     try {
@@ -235,8 +236,8 @@ export function useSelfSend() {
     nreAccount,
     selfFee,
     hasNreBank,
-    isUsCitizen,
     hasRegularAccount,
+    regularAccountLast4,
     // step machine
     step,
     setStep,

@@ -255,9 +255,6 @@ export default function SendPage() {
         {step === "select" && (
           <StepTransition key="select">
             <SelectRecipientStep
-              indianKycStatus={account?.indianKycStatus ?? "NONE"}
-              hasDepositAccount={!!account?.hasDepositAccount}
-              isUsCitizen={account?.user?.nationality === "US"}
               hasUserBank={!!account?.hasUserBank}
               recipients={recipients}
               isLoading={isLoading}
