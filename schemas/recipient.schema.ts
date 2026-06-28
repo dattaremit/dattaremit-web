@@ -72,6 +72,13 @@ export const recipientBankSchema = yup.object({
     .trim()
     .required("Account number is required")
     .matches(/^\d{8,18}$/, "Account number must be 8–18 digits"),
+  // Re-entry guard: a transposed digit silently routes the payout to the wrong
+  // account with no clawback, so we force the user to confirm the number.
+  confirmAccountNumber: yup
+    .string()
+    .trim()
+    .required("Please re-enter the account number")
+    .oneOf([yup.ref("accountNumber")], "Account numbers do not match"),
   ifsc: yup
     .string()
     .trim()
