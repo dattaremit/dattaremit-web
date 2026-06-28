@@ -32,6 +32,7 @@ export function AddNreAccountStep({ onSubmit, onBack, isPending }: AddNreAccount
       branchName: "",
       accountHolderName: "",
       accountNumber: "",
+      confirmAccountNumber: "",
       ifscCode: "",
       swiftCode: "",
     },
@@ -69,6 +70,15 @@ export function AddNreAccountStep({ onSubmit, onBack, isPending }: AddNreAccount
               name="accountNumber"
               label="Account number"
               placeholder="Enter account number"
+            />
+            <TextField
+              control={form.control}
+              name="confirmAccountNumber"
+              label="Confirm account number"
+              placeholder="Re-enter account number"
+              // Block paste so a mistyped number can't be copied into both
+              // fields, which would defeat the re-entry check.
+              onPaste={(e) => e.preventDefault()}
             />
             <TextField
               control={form.control}

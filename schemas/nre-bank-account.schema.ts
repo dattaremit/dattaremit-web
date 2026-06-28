@@ -8,6 +8,13 @@ export const nreBankAccountSchema = yup.object({
   branchName: yup.string().trim().default(""),
   accountHolderName: yup.string().trim().required("Account holder name is required"),
   accountNumber: yup.string().trim().required("Account number is required"),
+  // Re-entry guard: a transposed digit silently routes the payout to the wrong
+  // account with no clawback, so we force the user to confirm the number.
+  confirmAccountNumber: yup
+    .string()
+    .trim()
+    .required("Please re-enter the account number")
+    .oneOf([yup.ref("accountNumber")], "Account numbers do not match"),
   ifscCode: yup
     .string()
     .trim()
