@@ -14,6 +14,7 @@ import { Form } from "@/components/ui/form";
 import { TextField } from "@/components/ui/text-field";
 import { PageHeader } from "@/components/ui/page-header";
 import { UpiIdField } from "@/components/transfer/upi-id-field";
+import { AmountField } from "@/components/transfer/amount-field";
 
 interface SelfAmountStepProps {
   form: UseFormReturn<TransferAmountFormData>;
@@ -24,6 +25,8 @@ interface SelfAmountStepProps {
    *  lives on the picker, not here. */
   isUpi: boolean;
   limitsHint?: string;
+  /** Live USD→INR rate enabling the amount field's INR-entry toggle. */
+  rate: number | null | undefined;
   receiveAmount: number | null;
   inrFeeLoss: number | null;
   hasAmountError: boolean;
@@ -39,6 +42,7 @@ export function SelfAmountStep({
   accountLabel,
   isUpi,
   limitsHint,
+  rate,
   receiveAmount,
   inrFeeLoss,
   hasAmountError,
@@ -62,16 +66,7 @@ export function SelfAmountStep({
           <form className="space-y-5" onSubmit={onSubmit}>
             {isUpi && <UpiIdField form={form} />}
             <motion.div animate={controls}>
-              <TextField
-                control={form.control}
-                name="amount"
-                label="Amount"
-                inputMode="decimal"
-                placeholder="100.00"
-                leading={<span className="font-semibold text-base text-muted-foreground">$</span>}
-                inputClassName="font-semibold text-2xl h-14 tabular pl-9"
-                description={limitsHint}
-              />
+              <AmountField control={form.control} rate={rate} limitsHint={limitsHint} />
               {receiveAmount !== null && !hasAmountError && (
                 <div className="mt-2 rounded-lg bg-brand-soft/30 px-3 py-2">
                   <div className="flex items-baseline justify-between">

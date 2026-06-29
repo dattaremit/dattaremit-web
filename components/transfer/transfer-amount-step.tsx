@@ -13,6 +13,7 @@ import { Form } from "@/components/ui/form";
 import { PageHeader } from "@/components/ui/page-header";
 import { TextField } from "@/components/ui/text-field";
 import { UpiIdField } from "@/components/transfer/upi-id-field";
+import { AmountField } from "@/components/transfer/amount-field";
 import { useSendLimits } from "@/hooks/api";
 import { useExchangeRate } from "@/hooks/api/use-exchange-rate";
 import { formatInr, usdToInr } from "@/lib/money";
@@ -147,16 +148,7 @@ export function TransferAmountStep({
           >
             {isUpi && <UpiIdField form={form} />}
             <motion.div animate={controls}>
-              <TextField
-                control={form.control}
-                name="amount"
-                label="Amount"
-                inputMode="decimal"
-                placeholder="100.00"
-                leading={<span className="font-semibold text-base text-muted-foreground">$</span>}
-                inputClassName="font-semibold text-2xl h-14 tabular pl-9"
-                description={limitsHint}
-              />
+              <AmountField control={form.control} rate={rateData?.rate} limitsHint={limitsHint} />
               {inrPreview !== null && !hasAmountError && (
                 <div className="mt-2 flex items-baseline justify-between rounded-lg bg-brand-soft/30 px-3 py-2">
                   <span className="text-xs font-medium uppercase tracking-wide text-muted-foreground">

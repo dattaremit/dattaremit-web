@@ -49,6 +49,23 @@ export function usdToInr(amountUsd: string, rate: number | null | undefined): nu
   return usd * rate;
 }
 
+/**
+ * Convert a user-entered INR string back to a USD string (2 decimals) at the
+ * live mid-market rate. The send pipeline is USD end-to-end (schema, limits,
+ * payload), so the INR currency toggle on the amount field uses this to keep
+ * the canonical form value in dollars while the user types rupees. Returns ""
+ * when the amount is empty/malformed or the rate is unavailable, so the field
+ * clears (and yup flags "required") instead of submitting a bad USD value.
+ */
+export function inrToUsd(amountInr: string, rate: number | null | undefined): string {
+  const trimmed = amountInr.trim();
+  if (!AMOUNT_REGEX.test(trimmed)) return "";
+  const inr = parseFloat(trimmed);
+  if (!Number.isFinite(inr) || inr <= 0) return "";
+  if (rate == null || !Number.isFinite(rate) || rate <= 0) return "";
+  return (Math.round((inr / rate) * 100) / 100).toFixed(2);
+}
+
 /** Render a fee fraction as a trimmed percentage, e.g. 0.003 → "0.3%". */
 export function formatRatePercent(rate: number): string {
   if (!Number.isFinite(rate)) return "—";

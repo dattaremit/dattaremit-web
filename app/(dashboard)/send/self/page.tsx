@@ -108,6 +108,7 @@ export default function SendToSelfPage() {
               accountLabel={accountLabel}
               isUpi={self.isUpi}
               limitsHint={self.limitsHint}
+              rate={self.rate}
               receiveAmount={self.receiveAmount}
               inrFeeLoss={self.inrFeeLoss}
               hasAmountError={self.hasAmountError}

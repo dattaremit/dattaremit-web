@@ -258,6 +258,8 @@ export function useSelfSend() {
     form,
     controls,
     limitsHint,
+    // Live USD→INR rate for the amount field's INR-entry toggle.
+    rate: rateData?.rate,
     receiveAmount,
     inrFeeLoss,
     hasAmountError,
