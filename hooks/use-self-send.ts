@@ -14,16 +14,16 @@ import {
   useMyBanks,
   useNreAccount,
   useNreFee,
-  useRegularFee,
   useSelfFee,
   useSendLimits,
   useSendToSelf,
 } from "@/hooks/api";
+import { useExchangeRate } from "@/hooks/api/use-exchange-rate";
 import { useSendMoneyState } from "@/hooks/use-send-money-state";
 import { useStepUp } from "@/hooks/use-step-up";
 import type { PaymentMethod, SelfAccountType } from "@/types/transfer";
 import { getServerErrorMessage } from "@/lib/safe-error-message";
-import { dollarsToCents } from "@/lib/money";
+import { dollarsToCents, usdToInr } from "@/lib/money";
 import { dailyRemaining, validateAmountAgainstLimits, weeklyRemaining } from "@/lib/send-limits";
 
 export type SelfSendStep = "select-account" | "add-nre" | "amount" | "review" | "result";
@@ -93,14 +93,17 @@ export function useSelfSend() {
   // Block Continue when UPI is selected but the VPA is still missing/invalid.
   const hasUpiError = !!form.formState.errors.upiId;
   const isNre = accountType === "NRE";
-  // The server computes the receive amount (and, for NRE, the rupee fee taken)
-  // from the amount the user types. We run whichever quote matches the selected
-  // account; both stay idle while the field has an error.
-  const { data: regularFee } = useRegularFee(watchedAmount ?? "", !hasAmountError && !isNre);
+  // NRO (regular) shows INR at the live mid-market rate (USD × rate), computed
+  // client-side. NRE keeps the server quote, which also carries the rupee fee
+  // taken. The NRE quote stays idle unless NRE is selected and the field is
+  // error-free.
+  const { data: rateData } = useExchangeRate();
   const { data: nreFee } = useNreFee(watchedAmount ?? "", !hasAmountError && isNre);
   // The form value carries over into the review step unchanged, so the same
-  // quote drives both the amount preview and the review summary.
-  const receiveAmount = (isNre ? nreFee?.receiveAmount : regularFee?.receiveAmount) ?? null;
+  // value drives both the amount preview and the review summary.
+  const receiveAmount = isNre
+    ? (nreFee?.receiveAmount ?? null)
+    : usdToInr(watchedAmount ?? "", rateData?.rate);
   const inrFeeLoss = isNre ? (nreFee?.nreFee ?? null) : null;
   // Gate Continue on `limits` being loaded — without it the cumulative
   // daily-cap check short-circuits and a user could submit an amount that

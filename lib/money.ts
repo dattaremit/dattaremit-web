@@ -33,6 +33,22 @@ export function formatInr(amount: number): string {
   return `₹${INR_FORMATTER.format(amount)}`;
 }
 
+/**
+ * Convert a user-entered USD string to INR at the given live mid-market rate.
+ * Used for the regular (NRI) flow's "they'll receive" preview, which quotes the
+ * live rate directly rather than the fee-aware server quote. Returns null when
+ * the amount is empty/malformed or the rate is unavailable, so callers hide the
+ * preview instead of rendering "₹NaN".
+ */
+export function usdToInr(amountUsd: string, rate: number | null | undefined): number | null {
+  const trimmed = amountUsd.trim();
+  if (!AMOUNT_REGEX.test(trimmed)) return null;
+  const usd = parseFloat(trimmed);
+  if (!Number.isFinite(usd) || usd <= 0) return null;
+  if (rate == null || !Number.isFinite(rate) || rate <= 0) return null;
+  return usd * rate;
+}
+
 /** Render a fee fraction as a trimmed percentage, e.g. 0.003 → "0.3%". */
 export function formatRatePercent(rate: number): string {
   if (!Number.isFinite(rate)) return "—";

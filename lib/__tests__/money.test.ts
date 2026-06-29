@@ -1,4 +1,4 @@
-import { dollarsToCents } from "../money";
+import { dollarsToCents, usdToInr } from "../money";
 import { MIN_TRANSFER_CENTS, MAX_TRANSFER_CENTS } from "@/constants/limits";
 
 describe("dollarsToCents", () => {
@@ -55,5 +55,38 @@ describe("dollarsToCents", () => {
   it("throws when above the maximum allowed amount", () => {
     const overMax = String(MAX_TRANSFER_CENTS / 100 + 1);
     expect(() => dollarsToCents(overMax)).toThrow("outside the allowed range");
+  });
+});
+
+describe("usdToInr", () => {
+  it("converts a whole-dollar amount at the live rate", () => {
+    expect(usdToInr("100", 85)).toBeCloseTo(8500, 6);
+  });
+
+  it("converts dollars and cents at the live rate", () => {
+    expect(usdToInr("100.50", 85.5)).toBeCloseTo(8592.75, 6);
+  });
+
+  it("trims surrounding whitespace before parsing", () => {
+    expect(usdToInr("  42.00  ", 80)).toBeCloseTo(3360, 6);
+  });
+
+  it("returns null for an empty or malformed amount", () => {
+    expect(usdToInr("", 85)).toBeNull();
+    expect(usdToInr("abc", 85)).toBeNull();
+    expect(usdToInr("12.", 85)).toBeNull();
+    expect(usdToInr("1.234", 85)).toBeNull();
+  });
+
+  it("returns null for a non-positive amount", () => {
+    expect(usdToInr("0", 85)).toBeNull();
+    expect(usdToInr("-5", 85)).toBeNull();
+  });
+
+  it("returns null when the rate is unavailable or invalid", () => {
+    expect(usdToInr("100", null)).toBeNull();
+    expect(usdToInr("100", undefined)).toBeNull();
+    expect(usdToInr("100", 0)).toBeNull();
+    expect(usdToInr("100", NaN)).toBeNull();
   });
 });

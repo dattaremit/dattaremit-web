@@ -4,8 +4,7 @@ import { ConfirmSendButton } from "@/components/transfer/confirm-send-button";
 import { Card } from "@/components/ui/card";
 import { PageHeader } from "@/components/ui/page-header";
 import { useExchangeRate } from "@/hooks/api/use-exchange-rate";
-import { useRegularFee } from "@/hooks/api";
-import { formatInr } from "@/lib/money";
+import { formatInr, usdToInr } from "@/lib/money";
 import type { BankDetails, Recipient } from "@/types/recipient";
 import type { PaymentMethod } from "@/types/transfer";
 
@@ -33,10 +32,10 @@ export function ReviewTransferStep({
   const isUpi = paymentMethod === "UPI";
   const bank = selectedBank ?? recipient.defaultBank;
   const { data: rateData } = useExchangeRate();
-  // Use the same server fee-aware quote as the amount step so the INR the user
-  // sees here matches what they saw when entering the amount (fees deducted).
-  const { data: feeQuote } = useRegularFee(amount);
-  const inrPreview = feeQuote?.receiveAmount ?? null;
+  // Quote the live mid-market rate (USD × rate) — the same client-side calc as
+  // the amount step — so the INR shown here matches what they saw when entering
+  // the amount.
+  const inrPreview = usdToInr(amount, rateData?.rate);
 
   return (
     <>

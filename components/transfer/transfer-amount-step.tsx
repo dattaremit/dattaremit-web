@@ -13,8 +13,9 @@ import { Form } from "@/components/ui/form";
 import { PageHeader } from "@/components/ui/page-header";
 import { TextField } from "@/components/ui/text-field";
 import { UpiIdField } from "@/components/transfer/upi-id-field";
-import { useRegularFee, useSendLimits } from "@/hooks/api";
-import { formatInr } from "@/lib/money";
+import { useSendLimits } from "@/hooks/api";
+import { useExchangeRate } from "@/hooks/api/use-exchange-rate";
+import { formatInr, usdToInr } from "@/lib/money";
 import { dailyRemaining, validateAmountAgainstLimits, weeklyRemaining } from "@/lib/send-limits";
 import type { BankDetails, Recipient } from "@/types/recipient";
 
@@ -56,9 +57,11 @@ export function TransferAmountStep({
   const hasAmountError = !!amountError;
   // Block Continue when UPI is selected but the VPA is still missing/invalid.
   const hasUpiError = !!form.formState.errors.upiId;
-  // Server computes the recipient's INR net of fees. Gated on the field being
-  // error-free so we don't quote an out-of-range amount.
-  const { data: feeQuote } = useRegularFee(watchedAmount ?? "", !hasAmountError);
+  // Show the recipient's INR at the live mid-market rate (USD × rate), computed
+  // client-side from the entered amount. Null until the amount is valid and the
+  // rate has loaded, so we never render "₹NaN".
+  const { data: rateData } = useExchangeRate();
+  const inrPreview = usdToInr(watchedAmount ?? "", rateData?.rate);
   // Gate Continue on `limits` being loaded — without it the cumulative
   // daily-cap check in `validateAmountAgainstLimits` short-circuits and a
   // user could submit an amount that the server will then reject.
@@ -154,13 +157,13 @@ export function TransferAmountStep({
                 inputClassName="font-semibold text-2xl h-14 tabular pl-9"
                 description={limitsHint}
               />
-              {feeQuote && !hasAmountError && (
+              {inrPreview !== null && !hasAmountError && (
                 <div className="mt-2 flex items-baseline justify-between rounded-lg bg-brand-soft/30 px-3 py-2">
                   <span className="text-xs font-medium uppercase tracking-wide text-muted-foreground">
                     They&rsquo;ll receive
                   </span>
                   <span className="font-semibold text-base tabular text-foreground">
-                    {formatInr(feeQuote.receiveAmount)}
+                    {formatInr(inrPreview)}
                   </span>
                 </div>
               )}
