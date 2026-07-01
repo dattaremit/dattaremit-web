@@ -9,7 +9,6 @@ import {
   MoreHorizontal,
   Pencil,
   Plus,
-  RefreshCw,
   Send,
   Trash2,
   UserMinus,
@@ -21,7 +20,6 @@ import {
   useDeleteRecipientBank,
   useRecipient,
   useRecipientBanks,
-  useResendRecipientKyc,
   useSetDefaultRecipientBank,
   useUnlinkRecipient,
 } from "@/hooks/api";
@@ -50,7 +48,7 @@ import {
   AlertDialogTitle,
 } from "@/components/ui/alert-dialog";
 import { ROUTES } from "@/constants/routes";
-import { isRecipientReady, type BankDetails } from "@/types/recipient";
+import { type BankDetails } from "@/types/recipient";
 
 export default function RecipientDetailPage({ params }: { params: Promise<{ id: string }> }) {
   const { id } = use(params);
@@ -62,22 +60,12 @@ export default function RecipientDetailPage({ params }: { params: Promise<{ id: 
   const currentUserId = account?.user?.id ?? null;
   const canEditRecipient =
     !!recipient?.createdByUserId && !!currentUserId && recipient.createdByUserId === currentUserId;
-  const resendKyc = useResendRecipientKyc();
   const setDefaultBank = useSetDefaultRecipientBank();
   const deleteBank = useDeleteRecipientBank();
   const unlinkRecipient = useUnlinkRecipient();
 
   const [confirmUnlink, setConfirmUnlink] = useState(false);
   const [bankToRemove, setBankToRemove] = useState<BankDetails | null>(null);
-
-  const handleResend = async () => {
-    try {
-      await resendKyc.mutateAsync(id);
-      toast.success("KYC email resent");
-    } catch (err) {
-      toast.error(err instanceof Error ? err.message : "Failed to resend");
-    }
-  };
 
   const handleSetDefault = async (bankId: string) => {
     try {
@@ -136,13 +124,8 @@ export default function RecipientDetailPage({ params }: { params: Promise<{ id: 
     );
   }
 
-  // "Ready" = cleared to receive: KYC approved, or KYC not required for this
-  // recipient (created while recipient KYC was turned off). Both unlock adding a
-  // bank and sending; only genuine pending/failed KYC shows the wait UI.
-  const ready = isRecipientReady(recipient.kycStatus);
   const hasBanks = banks.length > 0;
-  const canSend = ready && hasBanks;
-  const kycLabel = recipient.kycStatus === "NOT_REQUIRED" ? "Ready" : recipient.kycStatus;
+  const canSend = hasBanks;
   const initials = `${recipient.firstName[0] ?? ""}${recipient.lastName[0] ?? ""}`;
 
   return (
@@ -166,15 +149,6 @@ export default function RecipientDetailPage({ params }: { params: Promise<{ id: 
               <p className="text-sm text-muted-foreground">{recipient.email}</p>
             </div>
           </div>
-          <div className="flex items-center gap-2">
-            <Badge
-              variant={
-                ready ? "default" : recipient.kycStatus === "PENDING" ? "secondary" : "destructive"
-              }
-            >
-              {kycLabel}
-            </Badge>
-          </div>
         </div>
 
         <Separator className="my-6" />
@@ -197,23 +171,12 @@ export default function RecipientDetailPage({ params }: { params: Promise<{ id: 
         </Detail>
 
         <div className="mt-6 flex flex-wrap gap-2">
-          {canEditRecipient && !ready && (
+          {canEditRecipient && (
             <Button variant="outline" size="sm" asChild>
               <a href={`/recipients/${recipient.id}/edit`}>
                 <Pencil />
                 Edit details
               </a>
-            </Button>
-          )}
-          {!ready && (
-            <Button
-              variant="outline"
-              size="sm"
-              onClick={handleResend}
-              loading={resendKyc.isPending}
-            >
-              {!resendKyc.isPending && <RefreshCw />}
-              Resend KYC
             </Button>
           )}
           <Button variant="outline" size="sm" onClick={() => setConfirmUnlink(true)}>
@@ -244,14 +207,12 @@ export default function RecipientDetailPage({ params }: { params: Promise<{ id: 
               </p>
             </div>
           </div>
-          {ready && (
-            <Button variant="outline" size="sm" asChild>
-              <a href={`/recipients/${recipient.id}/bank`}>
-                <Plus />
-                Add bank
-              </a>
-            </Button>
-          )}
+          <Button variant="outline" size="sm" asChild>
+            <a href={`/recipients/${recipient.id}/bank`}>
+              <Plus />
+              Add bank
+            </a>
+          </Button>
         </div>
 
         {banksLoading ? (
@@ -323,18 +284,12 @@ export default function RecipientDetailPage({ params }: { params: Promise<{ id: 
           </ul>
         ) : (
           <div className="p-6">
-            {ready ? (
-              <Button variant="brand" size="sm" asChild>
-                <a href={`/recipients/${recipient.id}/bank`}>
-                  <LinkIcon />
-                  Link a bank account
-                </a>
-              </Button>
-            ) : (
-              <p className="text-sm text-muted-foreground">
-                Once KYC is approved, you can add bank accounts.
-              </p>
-            )}
+            <Button variant="brand" size="sm" asChild>
+              <a href={`/recipients/${recipient.id}/bank`}>
+                <LinkIcon />
+                Link a bank account
+              </a>
+            </Button>
           </div>
         )}
       </Card>
@@ -354,20 +309,14 @@ export default function RecipientDetailPage({ params }: { params: Promise<{ id: 
           </div>
         </div>
         <div className="p-6">
-          {ready ? (
-            <Button
-              variant="brand"
-              size="sm"
-              onClick={() => router.push(`/send?recipient=${recipient.id}&method=upi`)}
-            >
-              <Send />
-              Send via UPI
-            </Button>
-          ) : (
-            <p className="text-sm text-muted-foreground">
-              Once KYC is approved, you can send via UPI.
-            </p>
-          )}
+          <Button
+            variant="brand"
+            size="sm"
+            onClick={() => router.push(`/send?recipient=${recipient.id}&method=upi`)}
+          >
+            <Send />
+            Send via UPI
+          </Button>
         </div>
       </Card>
 
@@ -384,9 +333,7 @@ export default function RecipientDetailPage({ params }: { params: Promise<{ id: 
         </Button>
         {!canSend && (
           <p className="text-center text-xs text-muted-foreground">
-            {ready
-              ? "Add a bank account to send money."
-              : "Recipient must complete KYC before you can send money."}
+            Add a bank account to send money.
           </p>
         )}
       </div>

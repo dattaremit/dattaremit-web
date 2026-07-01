@@ -1,35 +1,12 @@
 "use client";
 
 import { motion } from "motion/react";
-import {
-  ArrowRight,
-  Banknote,
-  CheckCircle2,
-  Clock,
-  Sparkles,
-  UserCheck,
-  XCircle,
-} from "lucide-react";
+import { ArrowRight, Banknote, Sparkles, UserCheck } from "lucide-react";
 
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { EASE_OUT_SMOOTH } from "@/constants/motion";
-import type { CheckIdentityResult, RecipientKycStatus } from "@/types/recipient";
-
-const KYC_META: Record<
-  RecipientKycStatus,
-  {
-    label: string;
-    icon: React.ComponentType<{ className?: string }>;
-    variant: "default" | "secondary" | "destructive";
-  }
-> = {
-  APPROVED: { label: "Identity verified", icon: CheckCircle2, variant: "default" },
-  NOT_REQUIRED: { label: "Ready", icon: CheckCircle2, variant: "default" },
-  PENDING: { label: "KYC pending", icon: Clock, variant: "secondary" },
-  REJECTED: { label: "KYC rejected", icon: XCircle, variant: "destructive" },
-  FAILED: { label: "KYC failed", icon: XCircle, variant: "destructive" },
-};
+import type { CheckIdentityResult } from "@/types/recipient";
 
 interface SharedRecipientCardProps {
   match: Extract<CheckIdentityResult, { exists: true }>;
@@ -51,9 +28,6 @@ export function SharedRecipientCard({
 }: SharedRecipientCardProps) {
   const { recipient, alreadyLinked } = match;
   const initials = `${recipient.firstName[0] ?? ""}${recipient.lastName[0] ?? ""}`.toUpperCase();
-
-  const kyc = recipient.kycStatus ? KYC_META[recipient.kycStatus] : KYC_META.PENDING;
-  const KycIcon = kyc.icon;
 
   return (
     <motion.div
@@ -88,10 +62,6 @@ export function SharedRecipientCard({
                 : "Another sender has already verified this person."}
             </p>
             <div className="mt-3 flex flex-wrap items-center gap-1.5">
-              <Badge variant={kyc.variant} className="gap-1">
-                <KycIcon className="size-3" />
-                {kyc.label}
-              </Badge>
               <Badge variant={recipient.hasBankAccount ? "default" : "outline"} className="gap-1">
                 <Banknote className="size-3" />
                 {recipient.hasBankAccount ? "Bank linked" : "No bank yet"}

@@ -7,7 +7,7 @@ import { EmptyState } from "@/components/ui/empty-state";
 import { Skeleton } from "@/components/ui/skeleton";
 import { RecipientCard } from "@/components/recipients/recipient-card";
 import { SelfDestinationOptions } from "@/components/transfer/self-destination-options";
-import { isRecipientReady, type Recipient } from "@/types/recipient";
+import type { Recipient } from "@/types/recipient";
 
 interface SelectRecipientStepProps {
   recipients: Recipient[] | undefined;
@@ -22,9 +22,8 @@ export function SelectRecipientStep({
   onSelect,
   onAddRecipient,
 }: SelectRecipientStepProps) {
-  const eligible = recipients?.filter((r) => isRecipientReady(r.kycStatus) && r.hasBankAccount);
-  const pendingCount =
-    recipients?.filter((r) => !isRecipientReady(r.kycStatus) || !r.hasBankAccount).length ?? 0;
+  const eligible = recipients?.filter((r) => r.hasBankAccount);
+  const needsBankCount = recipients?.filter((r) => !r.hasBankAccount).length ?? 0;
 
   return (
     <>
@@ -49,10 +48,10 @@ export function SelectRecipientStep({
           {!isLoading && (!eligible || eligible.length === 0) && (
             <EmptyState
               icon={<UserPlus className="size-5" />}
-              title={pendingCount > 0 ? "Nobody's ready to send to yet" : "No recipients yet"}
+              title={needsBankCount > 0 ? "Nobody's ready to send to yet" : "No recipients yet"}
               description={
-                pendingCount > 0
-                  ? `You have ${pendingCount} recipient${pendingCount === 1 ? "" : "s"} waiting on KYC or a bank link. Open one from the Recipients page to continue.`
+                needsBankCount > 0
+                  ? `You have ${needsBankCount} recipient${needsBankCount === 1 ? "" : "s"} without a linked bank account. Open one from the Recipients page to add their bank.`
                   : "Add one to get started."
               }
             />

@@ -49,8 +49,6 @@ export interface Recipient {
   createdByUserId: string | null;
   /** True when the create call linked the user to an already-existing recipient. */
   shared?: boolean;
-  /** True if the backend sent the KYC email to the recipient; false if send failed. */
-  kycEmailSent?: boolean;
   created_at: string;
 }
 

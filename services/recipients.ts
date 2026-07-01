@@ -55,9 +55,6 @@ export const unlinkRecipient = (id: string): Promise<void> => api.delete(`/recip
 export const checkRecipientIdentity = (data: CheckIdentityPayload): Promise<CheckIdentityResult> =>
   api.post("/recipients/check-identity", data);
 
-export const resendRecipientKyc = (id: string): Promise<void> =>
-  api.post(`/recipients/${id}/resend-kyc`);
-
 // Authed — used by the recipient form; scope is per-user.
 export const checkRecipientEmailAvailable = (email: string): Promise<{ available: boolean }> =>
   api.get("/recipients/check-email", { params: { email } });

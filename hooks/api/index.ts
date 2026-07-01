@@ -28,7 +28,6 @@ export { useRecipient } from "./use-recipient";
 export { useCreateRecipient } from "./use-create-recipient";
 export { useUpdateRecipient } from "./use-update-recipient";
 export { useAddRecipientBank } from "./use-add-recipient-bank";
-export { useResendRecipientKyc } from "./use-resend-recipient-kyc";
 export { useCheckRecipientIdentity } from "./use-check-recipient-identity";
 export { useUnlinkRecipient } from "./use-unlink-recipient";
 export {

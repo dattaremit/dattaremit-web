@@ -24,7 +24,7 @@ export function AddressStep({ onBack, onContinue }: AddressStepProps) {
       <header className="space-y-1.5">
         <h2 className="font-semibold text-2xl text-foreground">Their address in India</h2>
         <p className="text-sm text-muted-foreground">
-          Used for KYC. Postal code precision matters — double-check before continuing.
+          Postal code precision matters — double-check before continuing.
         </p>
       </header>
 

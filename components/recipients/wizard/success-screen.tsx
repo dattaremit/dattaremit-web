@@ -2,11 +2,11 @@
 
 import Link from "next/link";
 import { motion } from "motion/react";
-import { ArrowRight, Check, Mail, Sparkles } from "lucide-react";
+import { ArrowRight, Check, Sparkles } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
 import { EASE_OUT_SMOOTH } from "@/constants/motion";
-import { isRecipientReady, type Recipient } from "@/types/recipient";
+import type { Recipient } from "@/types/recipient";
 
 interface SuccessScreenProps {
   recipient: Recipient;
@@ -14,45 +14,28 @@ interface SuccessScreenProps {
 }
 
 /**
- * Animated completion screen with a contextual next-step CTA:
- *  - If the recipient is ready (KYC approved, or KYC not required), push the
- *    user straight to add a bank (or send, if a bank already exists).
- *  - Otherwise, tell them what's in flight (KYC email) and point to the profile.
+ * Animated completion screen with a contextual next-step CTA: push the user
+ * straight to add a bank, or to send if a bank already exists.
  */
 export function SuccessScreen({ recipient, wasShared }: SuccessScreenProps) {
-  const ready = isRecipientReady(recipient.kycStatus);
   const hasBank = recipient.banks.length > 0;
   const name = recipient.firstName;
-
-  // Only trust `kycEmailSent === false` as "delivery failed" — older
-  // responses without the field fall back to the optimistic copy.
-  const kycEmailDelivered = recipient.kycEmailSent !== false;
 
   let headline: string;
   let body: string;
   let primaryLabel: string;
   let primaryHref: string;
 
-  if (ready && hasBank) {
+  if (hasBank) {
     headline = `${name} is ready to receive money`;
-    body = `Their identity and bank are set, so you can send right now.`;
+    body = `Their bank account is set, so you can send right now.`;
     primaryLabel = "Send money now";
     primaryHref = `/send?recipient=${recipient.id}`;
-  } else if (ready) {
+  } else {
     headline = `${name} is ready — add a bank next`;
     body = `Add their Indian bank account to unlock transfers.`;
     primaryLabel = "Add bank account";
     primaryHref = `/recipients/${recipient.id}/bank`;
-  } else if (kycEmailDelivered) {
-    headline = `We emailed ${name} a KYC link`;
-    body = `Once ${name} finishes verification you'll be able to add their bank and send money.`;
-    primaryLabel = "Open profile";
-    primaryHref = `/recipients/${recipient.id}`;
-  } else {
-    headline = `${name} is added — KYC email didn't send`;
-    body = `Their identity verification hasn't been emailed yet. You can resend the link from their profile.`;
-    primaryLabel = "Resend KYC";
-    primaryHref = `/recipients/${recipient.id}`;
   }
 
   return (
@@ -98,19 +81,6 @@ export function SuccessScreen({ recipient, wasShared }: SuccessScreenProps) {
           <h2 className="font-semibold text-2xl text-foreground leading-snug">{headline}</h2>
           <p className="max-w-md text-sm text-muted-foreground">{body}</p>
         </div>
-
-        {!ready && kycEmailDelivered && (
-          <div className="flex items-center gap-2 rounded-full bg-muted/50 px-4 py-2 text-xs text-muted-foreground">
-            <Mail className="size-3.5" />
-            Sent to {recipient.email}
-          </div>
-        )}
-        {!ready && !kycEmailDelivered && (
-          <div className="flex items-center gap-2 rounded-full bg-destructive/10 px-4 py-2 text-xs text-destructive">
-            <Mail className="size-3.5" />
-            Email to {recipient.email} didn&rsquo;t send
-          </div>
-        )}
 
         <div className="flex w-full flex-col gap-2 sm:max-w-sm">
           <Button asChild variant="brand" size="lg" className="w-full">
