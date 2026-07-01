@@ -34,14 +34,16 @@ export type SelfSendStep = "select-account" | "add-nre" | "amount" | "review" | 
  * queries, the amount form (with the SSN-tier limit check + shake animation),
  * the NRE-add and send-to-self mutations, and the step-up gate.
  */
-export function useSelfSend() {
+export function useSelfSend(init?: { accountType?: SelfAccountType; step?: SelfSendStep }) {
   const { data: account } = useAccount();
   const sendToSelf = useSendToSelf();
   const addNre = useAddNreAccount();
   // Only fetch the linked NRE bank once we know one exists, to show its real
   // bank name / masked number / IFSC in the account picker.
   const { data: nreAccount } = useNreAccount({ enabled: !!account?.hasNreBank });
-  const [accountType, setAccountTypeState] = useState<SelfAccountType>("NRO");
+  // The account picker on /send can deep-link straight into a chosen
+  // destination (amount step) or the add-NRE form, seeding these initial values.
+  const [accountType, setAccountTypeState] = useState<SelfAccountType>(init?.accountType ?? "NRO");
   const { gate, stepUpElement } = useStepUp({
     title: "Confirm transfer",
     description: "We emailed you a 6-digit code. Enter it to authorize moving funds.",
@@ -60,11 +62,18 @@ export function useSelfSend() {
     setSendError,
     idempotencyKey,
     resetIdempotencyKey,
-  } = useSendMoneyState<SelfSendStep>("select-account");
+  } = useSendMoneyState<SelfSendStep>(init?.step ?? "select-account");
 
   const form = useForm<TransferAmountFormData>({
     resolver: yupResolver(transferAmountSchema) as unknown as Resolver<TransferAmountFormData>,
-    defaultValues: { amount: "", note: "", paymentMethod: "BANK", upiId: "" },
+    // Seed the payment method so a UPI deep-link starts with UPI selected
+    // (matches setAccountType's side effect) instead of defaulting to BANK.
+    defaultValues: {
+      amount: "",
+      note: "",
+      paymentMethod: init?.accountType === "UPI" ? "UPI" : "BANK",
+      upiId: "",
+    },
     // Re-run the resolver on every change so the red-border + Continue
     // disabled state track the user as they type, not just on submit.
     mode: "onChange",

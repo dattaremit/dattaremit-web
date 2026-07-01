@@ -1,10 +1,10 @@
 "use client";
 
 import Link from "next/link";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import { AnimatePresence } from "motion/react";
 
-import { useSelfSend } from "@/hooks/use-self-send";
+import { useSelfSend, type SelfSendStep } from "@/hooks/use-self-send";
 import type { SelfAccountType } from "@/types/transfer";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
@@ -23,9 +23,26 @@ const ACCOUNT_LABELS: Record<SelfAccountType, string> = {
   UPI: "your UPI ID",
 };
 
+function parseAccountType(value: string | null): SelfAccountType | undefined {
+  return value === "NRO" || value === "NRE" || value === "UPI" ? value : undefined;
+}
+
 export default function SendToSelfPage() {
   const router = useRouter();
-  const self = useSelfSend();
+  const search = useSearchParams();
+  // The account picker on /send deep-links here with a pre-chosen destination,
+  // jumping straight to the amount step (or the add-NRE form for an unlinked
+  // NRE account) rather than replaying the picker.
+  const initialAccountType = parseAccountType(search.get("account"));
+  const initialStep: SelfSendStep | undefined = initialAccountType
+    ? search.get("start") === "add-nre"
+      ? "add-nre"
+      : "amount"
+    : undefined;
+  const isDeepLinked = !!initialAccountType;
+  const self = useSelfSend(
+    initialAccountType ? { accountType: initialAccountType, step: initialStep } : undefined,
+  );
   const accountLabel = ACCOUNT_LABELS[self.accountType];
 
   if (!self.hasRegularAccount) {
@@ -65,7 +82,17 @@ export default function SendToSelfPage() {
       {self.stepUpElement}
       {(self.step === "amount" || self.step === "review") && (
         <button
-          onClick={() => self.setStep(self.step === "review" ? "amount" : "select-account")}
+          onClick={() => {
+            if (self.step === "review") {
+              self.setStep("amount");
+            } else if (isDeepLinked) {
+              // Came straight from the /send picker — go back to it, not the
+              // local account step (which was skipped on a deep link).
+              router.push(ROUTES.SEND);
+            } else {
+              self.setStep("select-account");
+            }
+          }}
           className="group inline-flex items-center gap-1.5 self-start text-xs font-medium uppercase tracking-[0.16em] text-muted-foreground transition-colors hover:text-foreground"
         >
           ← Back
@@ -94,7 +121,9 @@ export default function SendToSelfPage() {
           <StepTransition key="add-nre">
             <AddNreAccountStep
               onSubmit={self.handleAddNre}
-              onBack={() => self.setStep("select-account")}
+              onBack={() =>
+                isDeepLinked ? router.push(ROUTES.SEND) : self.setStep("select-account")
+              }
               isPending={self.addNre.isPending}
             />
           </StepTransition>

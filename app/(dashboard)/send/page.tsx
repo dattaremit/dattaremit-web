@@ -204,7 +204,9 @@ export default function SendPage() {
           : "select";
 
   return (
-    <div className="mx-auto flex w-full max-w-2xl flex-col gap-8">
+    <div
+      className={`mx-auto flex w-full flex-col gap-8 ${step === "select" ? "max-w-4xl" : "max-w-2xl"}`}
+    >
       {stepUpElement}
 
       <div className="flex items-center justify-between gap-3">
@@ -255,7 +257,6 @@ export default function SendPage() {
         {step === "select" && (
           <StepTransition key="select">
             <SelectRecipientStep
-              hasUserBank={!!account?.hasUserBank}
               recipients={recipients}
               isLoading={isLoading}
               onSelect={(r) => advanceFromSelect(r)}
