@@ -91,6 +91,7 @@ export function AmountField({ control, rate, limitsHint }: AmountFieldProps) {
                           : "text-muted-foreground hover:text-foreground",
                       )}
                     >
+                      <span className="mr-1 opacity-70">{c === "USD" ? "$" : "₹"}</span>
                       {c}
                     </button>
                   ))}

@@ -4,7 +4,6 @@ import { UserPlus } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
 import { EmptyState } from "@/components/ui/empty-state";
-import { PageHeader } from "@/components/ui/page-header";
 import { Skeleton } from "@/components/ui/skeleton";
 import { RecipientCard } from "@/components/recipients/recipient-card";
 import { SelfDestinationOptions } from "@/components/transfer/self-destination-options";
@@ -29,16 +28,6 @@ export function SelectRecipientStep({
 
   return (
     <>
-      <PageHeader
-        eyebrow="Send money"
-        title={
-          <>
-            Where&apos;s it <span className="text-brand">going</span>?
-          </>
-        }
-        subtitle="Send to someone else, or move money to your own accounts in India."
-      />
-
       <div className="grid gap-6 md:grid-cols-2 md:gap-8">
         {/* Recipient column */}
         <section className="space-y-4">
