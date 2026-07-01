@@ -36,7 +36,7 @@ export function ReviewStep({
       <header className="space-y-1.5">
         <h2 className="font-semibold text-2xl text-foreground">Review and confirm</h2>
         <p className="text-sm text-muted-foreground">
-          Once KYC starts we can&rsquo;t edit these details. Anything off? Edit now.
+          Once you add them we can&rsquo;t edit these details. Anything off? Edit now.
         </p>
       </header>
 
@@ -60,8 +60,8 @@ export function ReviewStep({
         <div className="flex items-start gap-2.5">
           <CheckCircle2 className="mt-0.5 size-4 shrink-0 text-brand" />
           <span>
-            After you tap <strong className="text-foreground">Add recipient</strong>, we&rsquo;ll
-            email them a KYC link. You can add their bank account once they&rsquo;re verified.
+            After you tap <strong className="text-foreground">Add recipient</strong>, you can add
+            their bank account and start sending money.
           </span>
         </div>
       </div>

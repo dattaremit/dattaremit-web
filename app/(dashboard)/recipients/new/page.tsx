@@ -30,7 +30,7 @@ export default function NewRecipientPage() {
               Add <span className="text-brand">someone new</span>.
             </>
           }
-          subtitle="We'll check if they're already verified so you can skip KYC."
+          subtitle="Add their details so you can send money to them."
         />
       </div>
 

@@ -32,7 +32,7 @@ export function ContactStep({ onContinue, checking }: ContactStepProps) {
       <header className="space-y-1.5">
         <h2 className="font-semibold text-2xl text-foreground">Who are you sending to?</h2>
         <p className="text-sm text-muted-foreground">
-          We&rsquo;ll check if they&rsquo;re already verified so you can skip KYC.
+          We&rsquo;ll check if they&rsquo;re already in your recipients.
         </p>
       </header>
 
