@@ -1,10 +1,11 @@
 "use client";
 
-import { ArrowLeft, ArrowRight, Check, Landmark, Plus, Smartphone, Wallet } from "lucide-react";
+import { ArrowLeft, ArrowRight, Check, Landmark, Plus, Wallet } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { PageHeader } from "@/components/ui/page-header";
+import { UpiLogo } from "@/components/ui/upi-logo";
 import { cn } from "@/lib/utils";
 import type { NreBankAccount } from "@/types/api";
 import type { SelfAccountType } from "@/types/transfer";
@@ -114,7 +115,12 @@ export function SelectSelfAccountStep({
         )}
 
         <AccountRadio
-          icon={<Smartphone className="size-5" />}
+          icon={
+            <span className="flex h-full w-full items-center justify-center rounded-xl bg-white ring-1 ring-border">
+              <UpiLogo className="h-5" />
+            </span>
+          }
+          plainIcon
           title="UPI transfer"
           subtitle="Send to your UPI ID"
           active={selected === "UPI"}
@@ -142,12 +148,16 @@ function AccountRadio({
   subtitle,
   active,
   onSelect,
+  plainIcon = false,
 }: {
   icon: React.ReactNode;
   title: string;
   subtitle: string;
   active: boolean;
   onSelect: () => void;
+  /** When true the icon slot is rendered as-is (self-contained, e.g. a logo
+   *  chip) instead of inside the tinted, active-aware icon box. */
+  plainIcon?: boolean;
 }) {
   return (
     <button type="button" onClick={onSelect} className="block w-full text-left">
@@ -162,8 +172,12 @@ function AccountRadio({
       >
         <div
           className={cn(
-            "flex size-10 shrink-0 items-center justify-center rounded-xl transition-colors",
-            active ? "bg-brand text-brand-foreground" : "bg-muted text-muted-foreground",
+            "size-10 shrink-0",
+            !plainIcon &&
+              cn(
+                "flex items-center justify-center rounded-xl transition-colors",
+                active ? "bg-brand text-brand-foreground" : "bg-muted text-muted-foreground",
+              ),
           )}
         >
           {icon}

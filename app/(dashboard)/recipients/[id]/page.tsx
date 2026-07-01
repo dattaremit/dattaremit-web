@@ -11,7 +11,6 @@ import {
   Plus,
   RefreshCw,
   Send,
-  Smartphone,
   Trash2,
   UserMinus,
 } from "lucide-react";
@@ -32,6 +31,7 @@ import { Card } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
 import { Skeleton } from "@/components/ui/skeleton";
 import { BackLink } from "@/components/ui/back-link";
+import { UpiLogo } from "@/components/ui/upi-logo";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -342,8 +342,8 @@ export default function RecipientDetailPage({ params }: { params: Promise<{ id: 
       <Card variant="elevated" className="overflow-hidden">
         <div className="flex items-center justify-between gap-3 border-b border-border p-6">
           <div className="flex items-center gap-3">
-            <div className="flex size-10 items-center justify-center rounded-xl bg-brand/15 text-brand">
-              <Smartphone className="size-5" />
+            <div className="flex size-10 items-center justify-center rounded-xl bg-white ring-1 ring-border">
+              <UpiLogo className="h-5" />
             </div>
             <div>
               <h2 className="font-semibold text-xl text-foreground">UPI</h2>

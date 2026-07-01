@@ -4,6 +4,7 @@ import type { UseFormReturn } from "react-hook-form";
 
 import type { TransferAmountFormData } from "@/schemas/transfer.schema";
 import { TextField } from "@/components/ui/text-field";
+import { UpiLogo } from "@/components/ui/upi-logo";
 
 interface UpiIdFieldProps {
   form: UseFormReturn<TransferAmountFormData>;
@@ -26,6 +27,7 @@ export function UpiIdField({ form }: UpiIdFieldProps) {
       autoCorrect="off"
       spellCheck={false}
       inputMode="email"
+      trailing={<UpiLogo className="h-4" />}
       description="Funds are sent to this UPI ID."
     />
   );
