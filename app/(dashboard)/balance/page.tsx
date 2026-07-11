@@ -50,8 +50,8 @@ export default function BalancePage() {
             Your <span className="text-brand">balance</span>.
           </h1>
           <p className="max-w-xl text-sm leading-relaxed text-muted-foreground sm:text-base">
-            Funds credited to your account. Send them to a recipient or your own bank — an admin
-            settles the payout at the live rate.
+            Funds credited to your account. Send them to a recipient or your own bank — settled at
+            the live rate.
           </p>
         </div>
       </Reveal>
@@ -76,14 +76,14 @@ export default function BalancePage() {
             onClick={() => setSendOpen(true)}
           >
             <Send className="size-4" />
-            Send from balance
+            Send
           </Button>
         </div>
       </Reveal>
 
       <Reveal direction="up" delay={0.1}>
         <div className="space-y-4">
-          <h2 className="font-semibold text-lg text-foreground">Transfer requests</h2>
+          <h2 className="font-semibold text-lg text-foreground">Transaction history</h2>
           {requestsLoading ? (
             <div className="space-y-2">
               <Skeleton className="h-16 w-full" />
@@ -91,7 +91,7 @@ export default function BalancePage() {
             </div>
           ) : !requests || requests.length === 0 ? (
             <p className="text-sm text-muted-foreground">
-              No transfer requests yet. Use “Send from balance” to create one.
+              No transactions yet. Use “Send” to create one.
             </p>
           ) : (
             <ul className="space-y-2">

@@ -143,7 +143,7 @@ export function BalanceSendDialog({ open, onOpenChange }: BalanceSendDialogProps
       await createRequest.mutateAsync({
         payload: { ...selected.payload, amountUsd: usd, exchangeRate: rate },
       });
-      toast.success("Transfer request submitted. An admin will process it shortly.");
+      toast.success("Transaction processing. Your transfer is on its way.");
       close();
     } catch (err) {
       toast.error(getServerErrorMessage(err, "Failed to submit transfer request"));
@@ -154,10 +154,10 @@ export function BalanceSendDialog({ open, onOpenChange }: BalanceSendDialogProps
     <Dialog open={open} onOpenChange={(o) => (o ? onOpenChange(true) : close())}>
       <DialogContent className="max-h-[90vh] overflow-y-auto">
         <DialogHeader>
-          <DialogTitle>Send from balance</DialogTitle>
+          <DialogTitle>Send</DialogTitle>
           <DialogDescription>
-            Request a payout from your ${balance.toFixed(2)} balance. We record it at the live rate
-            and an admin pays it out manually.
+            Send from your ${balance.toFixed(2)} balance. The transfer is processed at the live
+            rate.
           </DialogDescription>
         </DialogHeader>
 
