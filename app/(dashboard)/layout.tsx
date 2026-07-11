@@ -5,7 +5,7 @@ import { useAuth } from "@clerk/nextjs";
 import { useRouter, usePathname } from "next/navigation";
 import Link from "next/link";
 import Image from "next/image";
-import { Home, Clock3, CircleUser, Send, Users, Bell, Loader2 } from "lucide-react";
+import { Home, Clock3, CircleUser, Send, Users, Bell, Wallet, Loader2 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { SidebarAccountDropdown } from "@/components/account/sidebar-account-dropdown";
 import { NotificationBell } from "@/components/notifications/notification-bell";
@@ -17,7 +17,7 @@ import { computeOnboardingState, stepHref } from "@/lib/onboarding-progress";
 import { ROUTES } from "@/constants/routes";
 import { FullScreenLoader } from "@/components/ui/full-screen-loader";
 
-const tabs = [
+const baseTabs = [
   { href: ROUTES.ROOT, label: "Home", icon: Home },
   { href: ROUTES.SEND, label: "Send", icon: Send },
   { href: ROUTES.RECIPIENTS, label: "Recipients", icon: Users },
@@ -25,6 +25,8 @@ const tabs = [
   { href: ROUTES.NOTIFICATIONS, label: "Alerts", icon: Bell },
   { href: ROUTES.ACCOUNT, label: "Account", icon: CircleUser },
 ];
+
+const balanceTab = { href: ROUTES.BALANCE, label: "Balance", icon: Wallet };
 
 function isTabActive(tabHref: string, pathname: string) {
   return tabHref === ROUTES.ROOT ? pathname === ROUTES.ROOT : pathname.startsWith(tabHref);
@@ -35,6 +37,13 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
   const router = useRouter();
   const pathname = usePathname();
   const { data: account, isLoading: accountLoading, error } = useAccount();
+
+  // Show the Balance tab only when the admin has credited this user a balance.
+  // Sits just before the Account tab so it reads as an account-level thing.
+  const hasBalance = typeof account?.balance === "number" && account.balance > 0;
+  const tabs = hasBalance
+    ? [...baseTabs.slice(0, -1), balanceTab, baseTabs[baseTabs.length - 1]]
+    : baseTabs;
 
   useEffect(() => {
     if (isLoaded && !isSignedIn) {
@@ -161,7 +170,10 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
         aria-label="Primary"
         className="sticky bottom-0 z-20 border-t border-border bg-background/85 backdrop-blur-xl lg:hidden"
       >
-        <div className="mx-auto grid max-w-2xl grid-cols-6">
+        <div
+          className="mx-auto grid max-w-2xl"
+          style={{ gridTemplateColumns: `repeat(${tabs.length}, minmax(0, 1fr))` }}
+        >
           {tabs.map((tab) => {
             const active = isTabActive(tab.href, pathname);
             const Icon = tab.icon;

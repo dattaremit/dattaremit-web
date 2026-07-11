@@ -7,6 +7,8 @@ import type {
   SelfFee,
   RegularFeeQuote,
   NreFeeQuote,
+  CreateTransferRequestPayload,
+  TransferRequest,
 } from "@/types/transfer";
 
 export const sendMoney = (
@@ -35,3 +37,15 @@ export const getRegularFee = (amount: number): Promise<RegularFeeQuote> =>
   api.get(`/fee/regular/${amount}`);
 
 export const getNreFee = (amount: number): Promise<NreFeeQuote> => api.get(`/fee/nre/${amount}`);
+
+// ── Balance Send (transfer requests) ──
+export const createTransferRequest = (
+  data: CreateTransferRequestPayload,
+  idempotencyKey?: string,
+): Promise<TransferRequest> =>
+  api.post("/transfer-requests", data, {
+    headers: idempotencyHeaders(idempotencyKey),
+  });
+
+export const getMyTransferRequests = (): Promise<TransferRequest[]> =>
+  api.get("/transfer-requests");

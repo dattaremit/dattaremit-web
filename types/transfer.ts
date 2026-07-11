@@ -82,3 +82,39 @@ export interface SendLimits {
    * the higher daily cap ($4,999 vs $2,999). */
   hasSsn: boolean;
 }
+
+// ── Balance Send (transfer requests) ──
+// A "balance send" filed against the user's admin-credited balance. It is NOT a
+// real transfer — the server just records it (USD amount, captured live rate,
+// computed INR end amount, destination) for an admin to fulfil manually.
+
+export type TransferRequestDestinationType = "RECIPIENT" | "SELF_BANK" | "SELF_NRE";
+
+export type TransferRequestStatus = "PENDING" | "COMPLETED" | "REJECTED";
+
+export interface CreateTransferRequestPayload {
+  destinationType: TransferRequestDestinationType;
+  /** Required when destinationType is "RECIPIENT". */
+  recipientId?: string;
+  /** Required when destinationType is "RECIPIENT" or "SELF_BANK". */
+  bankDetailsId?: string;
+  /** Required when destinationType is "SELF_NRE". */
+  nreBankAccountId?: string;
+  /** Whole/decimal USD spent from the user's balance. */
+  amountUsd: number;
+  /** Live USD→INR rate captured on the client at submit time. */
+  exchangeRate: number;
+  note?: string;
+}
+
+export interface TransferRequest {
+  id: string;
+  amountUsd: number;
+  exchangeRate: number;
+  endAmountInr: number;
+  destinationType: TransferRequestDestinationType;
+  destinationLabel: string;
+  status: TransferRequestStatus;
+  note: string | null;
+  created_at: string;
+}

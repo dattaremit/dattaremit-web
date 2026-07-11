@@ -13,6 +13,7 @@ export const ROUTES = {
   RECIPIENTS: "/recipients",
   RECIPIENTS_NEW: "/recipients/new",
   ACTIVITY: "/activity",
+  BALANCE: "/balance",
   NOTIFICATIONS: "/notifications",
   REFERRAL: "/referral",
   SUPPORT: "/support",

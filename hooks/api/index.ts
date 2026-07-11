@@ -21,6 +21,7 @@ export { useSendToSelf } from "./use-send-to-self";
 export { useSendLimits } from "./use-send-limits";
 export { useSelfFee } from "./use-self-fee";
 export { useRegularFee, useNreFee } from "./use-fee";
+export { useMyTransferRequests, useCreateTransferRequest } from "./use-transfer-requests";
 
 // Recipients
 export { useRecipients } from "./use-recipients";

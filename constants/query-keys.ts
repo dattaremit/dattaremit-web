@@ -28,6 +28,7 @@ export const queryKeys = {
     unreadCount: ["notifications", "unread-count"] as const,
   },
   referral: ["referral", "me"] as const,
+  transferRequests: ["transfer-requests"] as const,
   exchangeRate: ["exchange-rate"] as const,
   transferLimits: ["transfer", "limits"] as const,
   selfFee: ["transfer", "self-fee"] as const,
