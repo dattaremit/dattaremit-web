@@ -105,6 +105,16 @@ export type AccountUser = Omit<User, "addresses">;
 
 export type AccountStatus = "INITIAL" | "PENDING" | "ACTIVE" | "REJECTED";
 
+/** Admin-assigned USD receiving bank account, shown on the balance page so the
+ *  credited balance reads like real funds held in a US account. Null until an
+ *  admin assigns one. Fixed nested shape mirrored from the admin dashboard. */
+export interface UsdBankAccount {
+  accountHolder: { name: string };
+  bank: { name: string; country: string; bic: string; abaRoutingNumber: string };
+  account: { accountNumber: string };
+  address: { line1: string; city: string; state: string; postalCode: string; country: string };
+}
+
 export interface Account {
   user: AccountUser | null;
   addresses: Address[];
@@ -125,6 +135,7 @@ export interface Account {
   isOnWaitlist?: boolean;
   isBlocked?: boolean;
   balance?: number;
+  usdBankAccount?: UsdBankAccount | null;
 }
 
 // ── Plaid ──
