@@ -223,7 +223,7 @@ export function BalanceSendDialog({ open, onOpenChange }: BalanceSendDialogProps
               </Button>
               <Button type="submit" disabled={createRequest.isPending}>
                 <Wallet className="size-4" />
-                {createRequest.isPending ? "Submitting..." : "Send request"}
+                {createRequest.isPending ? "Submitting..." : "Send now"}
               </Button>
             </div>
           </form>

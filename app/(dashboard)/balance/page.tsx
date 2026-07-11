@@ -57,7 +57,7 @@ export default function BalancePage() {
       <Reveal>
         <div className="flex flex-col gap-3">
           <h1 className="font-semibold text-4xl leading-[1.05] text-foreground sm:text-5xl">
-            Your <span className="text-brand">balance</span>.
+            Your <span className="text-brand">Account</span>
           </h1>
           <p className="max-w-xl text-sm leading-relaxed text-muted-foreground sm:text-base">
             Funds credited to your account. Send them to a recipient or your own bank — settled at
@@ -75,7 +75,6 @@ export default function BalancePage() {
                 $<span className="text-brand">{formatUsd(balance)}</span>
               </>
             }
-            hint="USD · credited by Dattaremit"
             icon={<Wallet className="size-4" />}
             accent
           />
