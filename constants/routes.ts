@@ -19,6 +19,7 @@ export const ROUTES = {
   SUPPORT: "/support",
   KYC: "/kyc",
   LINK_BANK: "/link-bank",
+  MAINTENANCE: "/maintenance",
   ONBOARDING: {
     PROFILE: "/onboarding/profile",
     REFERRAL: "/onboarding/referral",
