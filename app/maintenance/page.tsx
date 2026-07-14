@@ -80,7 +80,8 @@ export default function MaintenancePage() {
             variants={fadeUp}
             className="mt-6 text-2xl font-semibold tracking-tight text-foreground sm:text-3xl"
           >
-            Hi Maintanance mode is not active, even after enabling from admin
+            DattaRemit is currently under maintenance. We&rsquo;ll be back shortly. Thank you for
+            your patience.
           </motion.h1>
 
           {/* Indeterminate progress sweep */}
