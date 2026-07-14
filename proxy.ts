@@ -1,6 +1,5 @@
 import { clerkMiddleware, createRouteMatcher } from "@clerk/nextjs/server";
 import { NextResponse } from "next/server";
-import { isMaintenanceEnabled } from "@/lib/maintenance-flag";
 
 const isPublicRoute = createRouteMatcher([
   "/sign-in(.*)",
@@ -96,11 +95,11 @@ export default clerkMiddleware(async (auth, request) => {
   requestHeaders.set("x-nonce", nonce);
   requestHeaders.set("Content-Security-Policy", csp);
 
-  // Full-site maintenance gate. When the flag is on, serve the maintenance page
-  // for every non-exempt route and skip auth so users aren't bounced to
-  // sign-in. A rewrite preserves the user's URL, so once maintenance clears the
-  // same navigation resolves to the real page.
-  if (!isMaintenanceExempt(request) && (await isMaintenanceEnabled())) {
+  // Full-site maintenance gate. HARDCODED ON: every non-exempt route is served
+  // the maintenance page unconditionally, with no backend/admin lookup. Auth is
+  // skipped so users aren't bounced to sign-in. A rewrite preserves the user's
+  // URL, so removing this hardcode restores the same navigation.
+  if (!isMaintenanceExempt(request)) {
     const url = request.nextUrl.clone();
     url.pathname = "/maintenance";
     const maintenanceResponse = NextResponse.rewrite(url, {

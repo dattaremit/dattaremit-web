@@ -1,6 +1,5 @@
 "use client";
 
-import { useEffect } from "react";
 import Image from "next/image";
 import { motion, useReducedMotion } from "motion/react";
 import { Wrench } from "lucide-react";
@@ -8,55 +7,14 @@ import { Wrench } from "lucide-react";
 import { AuroraBackground } from "@/components/ui/aurora-background";
 import { EASE_OUT_SMOOTH } from "@/constants/motion";
 
-const POLL_INTERVAL_MS = 12_000;
-
-function statusUrl(): string | null {
-  const base = process.env.NEXT_PUBLIC_API_URL ?? process.env.NEXT_PUBLIC_API_BASE_URL;
-  if (!base) return null;
-  return `${base.replace(/\/$/, "")}/maintenance-status`;
-}
-
 /**
- * Full-screen maintenance page. Shown for every route while maintenance mode is
- * on (the edge proxy rewrites here). It quietly polls the backend and, the
- * moment an admin turns maintenance off, sends the user back into the app — no
- * manual refresh needed.
+ * Full-screen maintenance page. HARDCODED: the edge proxy rewrites every
+ * non-exempt route here unconditionally (no backend/admin lookup), so this
+ * page does not poll for a status change — removing the hardcode in proxy.ts
+ * restores normal navigation.
  */
 export default function MaintenancePage() {
   const reduceMotion = useReducedMotion();
-
-  useEffect(() => {
-    const url = statusUrl();
-    if (!url) return;
-
-    let cancelled = false;
-
-    async function check() {
-      try {
-        const res = await fetch(url as string, {
-          headers: { accept: "application/json" },
-          cache: "no-store",
-        });
-        if (!res.ok) return;
-        const body = (await res.json()) as { data?: { enabled?: boolean } };
-        if (!cancelled && body?.data?.enabled === false) {
-          // Maintenance is over — reload back into the app the user came from.
-          window.location.reload();
-        }
-      } catch {
-        // Ignore transient errors; the next tick will retry.
-      }
-    }
-
-    const id = setInterval(check, POLL_INTERVAL_MS);
-    const onFocus = () => check();
-    window.addEventListener("focus", onFocus);
-    return () => {
-      cancelled = true;
-      clearInterval(id);
-      window.removeEventListener("focus", onFocus);
-    };
-  }, []);
 
   return (
     <div className="relative flex min-h-screen items-center justify-center overflow-hidden bg-background px-5 py-12">
@@ -120,18 +78,10 @@ export default function MaintenancePage() {
           {/* Copy */}
           <motion.h1
             variants={fadeUp}
-            className="mt-6 text-3xl font-semibold tracking-tight text-foreground sm:text-4xl"
+            className="mt-6 text-2xl font-semibold tracking-tight text-foreground sm:text-3xl"
           >
-            We&apos;ll be right back
+            Hi Maintanance mode is not active, even after enabling from admin
           </motion.h1>
-
-          <motion.p
-            variants={fadeUp}
-            className="mt-3 max-w-md text-balance text-base leading-relaxed text-muted-foreground"
-          >
-            DattaRemit is getting a quick tune-up so your transfers stay fast, secure, and reliable.
-            Thank you for your patience — we&apos;re almost done.
-          </motion.p>
 
           {/* Indeterminate progress sweep */}
           <motion.div
@@ -147,29 +97,6 @@ export default function MaintenancePage() {
                 repeat: Infinity,
               }}
             />
-          </motion.div>
-
-          {/* Live status */}
-          <motion.div
-            variants={fadeUp}
-            className="mt-5 flex items-center gap-2 text-sm text-muted-foreground"
-          >
-            <span className="flex items-center gap-1">
-              {[0, 1, 2].map((i) => (
-                <motion.span
-                  key={i}
-                  className="h-1.5 w-1.5 rounded-full bg-success"
-                  animate={reduceMotion ? undefined : { opacity: [0.3, 1, 0.3] }}
-                  transition={{
-                    duration: 1.2,
-                    repeat: Infinity,
-                    delay: i * 0.2,
-                    ease: "easeInOut",
-                  }}
-                />
-              ))}
-            </span>
-            <span>Reconnecting automatically — no need to refresh</span>
           </motion.div>
         </div>
 
