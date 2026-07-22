@@ -9,16 +9,6 @@ const isPublicRoute = createRouteMatcher([
   "/api/exchange-rate",
 ]);
 
-// Paths that must keep working while maintenance mode is on: the maintenance
-// page itself, Next route handlers / Sentry tunnel, and Clerk's auth callbacks
-// (so the flow that lets an admin sign in elsewhere isn't broken).
-const isMaintenanceExempt = createRouteMatcher([
-  "/maintenance",
-  "/api/(.*)",
-  "/monitoring(.*)",
-  "/sso-callback(.*)",
-]);
-
 function apiOrigin(): string {
   const url = process.env.NEXT_PUBLIC_API_URL;
   if (!url) return "";
@@ -94,20 +84,6 @@ export default clerkMiddleware(async (auth, request) => {
   const requestHeaders = new Headers(request.headers);
   requestHeaders.set("x-nonce", nonce);
   requestHeaders.set("Content-Security-Policy", csp);
-
-  // Full-site maintenance gate. HARDCODED ON: every non-exempt route is served
-  // the maintenance page unconditionally, with no backend/admin lookup. Auth is
-  // skipped so users aren't bounced to sign-in. A rewrite preserves the user's
-  // URL, so removing this hardcode restores the same navigation.
-  if (!isMaintenanceExempt(request)) {
-    const url = request.nextUrl.clone();
-    url.pathname = "/maintenance";
-    const maintenanceResponse = NextResponse.rewrite(url, {
-      request: { headers: requestHeaders },
-    });
-    maintenanceResponse.headers.set("Content-Security-Policy", csp);
-    return maintenanceResponse;
-  }
 
   if (!isPublicRoute(request)) {
     await auth.protect();
